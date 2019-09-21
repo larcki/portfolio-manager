@@ -1,0 +1,85 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Getting Started: Serving Web Content</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<br>
+<br>
+
+<canvas id="canvas"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js"></script>
+
+<script th:inline="javascript">
+
+
+    var days = [[${days}]];
+    var result = [[${dataset}]];
+
+    var processedData = result.map(function (dataset) {
+        return {
+            label: dataset.label,
+            borderColor: dataset.colour,
+            backgroundColor: dataset.colour,
+            data: dataset.data,
+            pointRadius: 0
+        }
+    });
+
+
+    var config = {
+        type: 'line',
+        data: {
+            labels: days,
+            datasets: processedData
+        },
+        options: {
+            responsive: true,
+            title: {
+                display: true,
+                text: 'Asset allocation by time'
+            },
+            tooltips: {
+                mode: 'index',
+            },
+            hover: {
+                mode: 'index'
+            },
+            scales: {
+                xAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Time'
+                    }
+                }],
+                yAxes: [{
+                    stacked: true,
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Value'
+                    }
+                }]
+            }
+        }
+    };
+    window.onload = function () {
+        var ctx = document.getElementById('canvas').getContext('2d');
+        window.myLine = new Chart(ctx, config);
+    };
+
+    function getRandomColor() {
+        var letters = '0123456789ABCDEF'.split('');
+        var color = '#';
+        for (var i = 0; i < 6; i++ ) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+
+</script>
+
+</body>
+</html>
