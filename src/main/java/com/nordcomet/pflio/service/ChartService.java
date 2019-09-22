@@ -11,8 +11,10 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class ChartService {
@@ -23,13 +25,16 @@ public class ChartService {
     @Autowired
     private AssetRepo assetRepo;
 
+    @Autowired
+    ChartDaysResolver daysResolver;
+
 
     public ChartView lineChartFor(int sinceDays, Asset... assets) {
 
         Map<Integer, String> colourPalette = ColourPalette.createColourPalette(assets);
 
         List<ChartDataset> datasets = new ArrayList<>();
-        List<LocalDate> days = resolveDays(sinceDays);
+        List<LocalDate> days = daysResolver.resolveDays(sinceDays);
         for (Asset asset : assets) {
             String assetColor = colourPalette.get(asset.getId());
             List<AssetPosition> assetPositions = assetPositionRepo.findAllByAssetIdAndTimestampAfter(asset.getId(), days.get(0).atStartOfDay());
@@ -50,13 +55,5 @@ public class ChartService {
 
         return new ChartView(days, datasets);
     }
-
-    private List<LocalDate> resolveDays(int sinceDays) {
-        LocalDate startDate = LocalDate.now().minusDays(sinceDays);
-        return startDate
-                .datesUntil(LocalDate.now())
-                .collect(Collectors.toList());
-    }
-
 
 }

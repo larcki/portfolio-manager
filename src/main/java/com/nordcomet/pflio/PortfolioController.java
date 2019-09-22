@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.stream.StreamSupport;
@@ -23,13 +24,11 @@ public class PortfolioController {
     private AssetRepo assetRepo;
 
     @RequestMapping("/")
-    public String landing(Model model) {
+    public String landing(@RequestParam int period, Model model) {
 
         List<Tags> tags = List.of(Tags.BOND, Tags.STOCK);
-
         Iterable<Asset> all = assetRepo.findAssetsByTagsNameIn(tags);
-
-        ChartView chartView = chartService.lineChartFor(180, StreamSupport.stream(all.spliterator(), false).toArray(Asset[]::new));
+        ChartView chartView = chartService.lineChartFor(period, StreamSupport.stream(all.spliterator(), false).toArray(Asset[]::new));
 
         model.addAttribute("days", chartView.getTimes());
         model.addAttribute("dataset", chartView.getChartDatasets());
