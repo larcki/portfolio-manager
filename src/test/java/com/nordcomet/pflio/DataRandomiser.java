@@ -6,17 +6,27 @@ import com.nordcomet.pflio.model.snapshot.AssetPosition;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
-public class ModelCreator {
+public class DataRandomiser {
 
     public static Asset randomAsset() {
         Asset asset = new Asset();
         asset.setName(randomString());
         asset.setCode(randomString());
+        asset.setTags(randomTags());
         return asset;
+    }
+
+    private static List<Tag> randomTags() {
+        return Arrays.stream(Tags.values())
+                .filter(tags -> probabilityOf(0.5))
+                .map(tags -> new Tag(BigDecimal.ONE, tags))
+                .collect(Collectors.toList());
     }
 
     public static PriceUpdate randomPriceUpdate(Asset asset) {
@@ -47,36 +57,24 @@ public class ModelCreator {
     }
 
     private static BigDecimal randomPrice() {
-        return adjust(new BigDecimal("10"), -5, 10).setScale(4, RoundingMode.HALF_UP);
+        return adjust(new BigDecimal("10"), -1, 3).setScale(4, RoundingMode.HALF_UP);
     }
 
     private static BigDecimal randomQuantity() {
-        return new BigDecimal(randomInt(0, 10)).setScale(4, RoundingMode.HALF_UP);
+        return new BigDecimal(randomInt(0, 3)).setScale(4, RoundingMode.HALF_UP);
     }
 
     private static String randomString() {
         return UUID.randomUUID().toString();
     }
 
-
-    public static Asset asset(String name, Tags tag) {
-        Asset asset = new Asset();
-        asset.setName(name);
-        asset.setCode(name);
-        asset.setTags(List.of(new Tag(BigDecimal.ONE, tag)));
-        return asset;
-    }
-
     public static int randomInt(int from, int to) {
         return from + new Random().nextInt(to);
     }
 
-    public static Transaction transaction(Asset google, int daysOfData, int value) {
-        Transaction transaction = new Transaction();
-        transaction.setAsset(google);
-        transaction.setTimestamp(LocalDateTime.now().minusDays(daysOfData).plusDays(value));
-        transaction.setPrice(adjust(new BigDecimal("10"), -0.3, 0.4));
-        transaction.setQuantityChange(new BigDecimal(randomInt(5, 10)));
+    public static Transaction transaction(Asset asset, int daysOfData, int daysOffset) {
+        Transaction transaction = randomTransaction(asset);
+        transaction.setTimestamp(LocalDateTime.now().minusDays(daysOfData).plusDays(daysOffset));
         return transaction;
     }
 
@@ -89,11 +87,14 @@ public class ModelCreator {
         return price.add(BigDecimal.valueOf(random(from, to)));
     }
 
-    public static PriceUpdate priceUpdate(Asset google, int daysOfData, int value) {
-        PriceUpdate priceUpdate = new PriceUpdate();
-        priceUpdate.setAsset(google);
-        priceUpdate.setTimestamp(LocalDateTime.now().minusDays(daysOfData).plusDays(value));
-        priceUpdate.setPrice(adjust(new BigDecimal("10"), -0.3, 0.4));
+    public static PriceUpdate priceUpdate(Asset asset, int daysOfData, int daysOffset) {
+        PriceUpdate priceUpdate = randomPriceUpdate(asset);
+        priceUpdate.setTimestamp(LocalDateTime.now().minusDays(daysOfData).plusDays(daysOffset));
         return priceUpdate;
     }
+
+    static boolean probabilityOf(Double value) {
+        return Math.random() <= value;
+    }
+
 }

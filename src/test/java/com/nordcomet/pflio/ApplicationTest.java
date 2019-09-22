@@ -1,6 +1,7 @@
 package com.nordcomet.pflio;
 
-import com.nordcomet.pflio.model.*;
+import com.nordcomet.pflio.model.Asset;
+import com.nordcomet.pflio.model.Tags;
 import com.nordcomet.pflio.model.snapshot.AssetPosition;
 import com.nordcomet.pflio.repo.*;
 import com.nordcomet.pflio.service.ChartService;
@@ -13,10 +14,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.IntPredicate;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static com.nordcomet.pflio.DataRandomiser.*;
 
 @SpringBootTest
 class ApplicationTest {
@@ -53,32 +54,20 @@ class ApplicationTest {
     @Test
     void setTestDate() {
         clearDB();
-        assertThat(assetRepo).isNotNull();
-
-        Asset google = assetRepo.save(ModelCreator.asset("Google", Tags.STOCK));
-        Asset amazon = assetRepo.save(ModelCreator.asset("Amazon", Tags.STOCK));
-        Asset nokia = assetRepo.save(ModelCreator.asset("Nokia", Tags.STOCK));
-        Asset bondIndex = assetRepo.save(ModelCreator.asset("BondIndex", Tags.BOND));
-
         int daysOfData = 180;
 
-        IntStream.range(1, daysOfData)
-                .filter(probability(0.3))
-                .forEach(value -> {
-                    transactionService.save(ModelCreator.transaction(google, daysOfData, value));
-                    transactionService.save(ModelCreator.transaction(amazon, daysOfData, value));
-                    transactionService.save(ModelCreator.transaction(nokia, daysOfData, value));
-                    transactionService.save(ModelCreator.transaction(bondIndex, daysOfData, value));
-                });
+        List<Asset> assets = IntStream.range(1, 10)
+                .mapToObj(value -> assetRepo.save(randomAsset()))
+                .collect(Collectors.toList());
 
-        IntStream.range(1, daysOfData)
-                .filter(probability(0.8))
-                .forEach(value -> {
-                    priceUpdateRepo.save(ModelCreator.priceUpdate(google, daysOfData, value));
-                    priceUpdateRepo.save(ModelCreator.priceUpdate(amazon, daysOfData, value));
-                    priceUpdateRepo.save(ModelCreator.priceUpdate(nokia, daysOfData, value));
-                    priceUpdateRepo.save(ModelCreator.priceUpdate(bondIndex, daysOfData, value));
-                });
+        IntStream.range(1, daysOfData).forEach(value -> assets.forEach(asset -> {
+            if (probabilityOf(0.3)) {
+                transactionService.save(transaction(asset, daysOfData, value));
+            }
+            if (probabilityOf(0.8)) {
+                priceUpdateRepo.save(priceUpdate(asset, daysOfData, value));
+            }
+        }));
     }
 
     @Test
@@ -99,14 +88,6 @@ class ApplicationTest {
         List<Tags> tags = List.of(Tags.BOND);
         List<Asset> assets = assetRepo.findAssetsByTagsNameIn(tags);
         System.out.println(assets);
-    }
-
-    private IntPredicate probability(double value) {
-        return it -> probabilityOf(value);
-    }
-
-    private boolean probabilityOf(Double value) {
-        return Math.random() <= value;
     }
 
 }
