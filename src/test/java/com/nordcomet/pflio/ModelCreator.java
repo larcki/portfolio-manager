@@ -19,6 +19,14 @@ public class ModelCreator {
         return asset;
     }
 
+    public static PriceUpdate randomPriceUpdate(Asset asset) {
+        PriceUpdate priceUpdate = new PriceUpdate();
+        priceUpdate.setPrice(randomPrice());
+        priceUpdate.setTimestamp(LocalDateTime.now());
+        priceUpdate.setAsset(asset);
+        return priceUpdate;
+    }
+
     public static AssetPosition randomAssetPosition(Asset asset) {
         return new AssetPosition(
                 asset,

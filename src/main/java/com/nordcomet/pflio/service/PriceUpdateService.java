@@ -18,12 +18,18 @@ public class PriceUpdateService {
     private AssetPositionService assetPositionService;
 
     public PriceUpdate save(PriceUpdate priceUpdate) {
-        PriceUpdate result = priceUpdateRepo.save(priceUpdate);
         BigDecimal totalQuantity = assetPositionService.resolveTotalQuantityForAsset(priceUpdate.getAsset().getId());
+        PriceUpdate newPriceUpdate = priceUpdateRepo.save(priceUpdate);
+        if (totalQuantity.compareTo(BigDecimal.ZERO) > 0) {
+            AssetPosition assetPosition = createAssetPosition(priceUpdate, totalQuantity);
+            assetPositionService.save(assetPosition);
+        }
+        return newPriceUpdate;
+    }
+
+    private AssetPosition createAssetPosition(PriceUpdate priceUpdate, BigDecimal totalQuantity) {
         BigDecimal newTotalPrice = totalQuantity.multiply(priceUpdate.getPrice());
-        AssetPosition assetPosition = new AssetPosition(priceUpdate.getAsset(), totalQuantity, priceUpdate.getPrice(), newTotalPrice, priceUpdate.getTimestamp());
-        assetPositionService.save(assetPosition);
-        return result;
+        return new AssetPosition(priceUpdate.getAsset(), totalQuantity, priceUpdate.getPrice(), newTotalPrice, priceUpdate.getTimestamp());
     }
 
 }
