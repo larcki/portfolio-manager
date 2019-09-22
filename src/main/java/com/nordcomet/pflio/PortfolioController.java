@@ -11,7 +11,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.StreamSupport;
 
 @Controller
@@ -24,11 +26,15 @@ public class PortfolioController {
     private AssetRepo assetRepo;
 
     @RequestMapping("/")
-    public String landing(@RequestParam int period, Model model) {
+    public String landing(@RequestParam(required = false) Integer period, Model model) {
+
+        if (period == null) {
+            period = 365;
+        }
 
         List<Tags> tags = List.of(Tags.BOND, Tags.STOCK);
-        Iterable<Asset> all = assetRepo.findAssetsByTagsNameIn(tags);
-        ChartView chartView = chartService.lineChartFor(period, StreamSupport.stream(all.spliterator(), false).toArray(Asset[]::new));
+        Set<Asset> all = assetRepo.findAssetsByTagsNameIn(tags);
+        ChartView chartView = chartService.lineChartFor(period, new ArrayList<>(all));
 
         model.addAttribute("days", chartView.getTimes());
         model.addAttribute("dataset", chartView.getChartDatasets());

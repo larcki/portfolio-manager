@@ -3,7 +3,6 @@ package com.nordcomet.pflio.service;
 import com.nordcomet.pflio.model.Asset;
 import com.nordcomet.pflio.model.snapshot.AssetPosition;
 import com.nordcomet.pflio.repo.AssetPositionRepo;
-import com.nordcomet.pflio.repo.AssetRepo;
 import com.nordcomet.pflio.view.ChartDataset;
 import com.nordcomet.pflio.view.ChartView;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,13 +22,10 @@ public class ChartService {
     private AssetPositionRepo assetPositionRepo;
 
     @Autowired
-    private AssetRepo assetRepo;
-
-    @Autowired
     ChartDaysResolver daysResolver;
 
 
-    public ChartView lineChartFor(int sinceDays, Asset... assets) {
+    public ChartView lineChartFor(int sinceDays, List<Asset> assets) {
 
         Map<Integer, String> colourPalette = ColourPalette.createColourPalette(assets);
 

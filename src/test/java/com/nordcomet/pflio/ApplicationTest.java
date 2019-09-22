@@ -6,7 +6,6 @@ import com.nordcomet.pflio.model.snapshot.AssetPosition;
 import com.nordcomet.pflio.repo.*;
 import com.nordcomet.pflio.service.ChartService;
 import com.nordcomet.pflio.service.TransactionService;
-import com.nordcomet.pflio.view.ChartView;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -77,16 +77,9 @@ class ApplicationTest {
     }
 
     @Test
-    void testChartService() {
-        Asset asset = assetRepo.findAll().iterator().next();
-        ChartView chartView = chartService.lineChartFor(180, asset);
-        System.out.println(chartView.getChartDatasets());
-    }
-
-    @Test
     void tagSearchTest() {
         List<Tags> tags = List.of(Tags.BOND);
-        List<Asset> assets = assetRepo.findAssetsByTagsNameIn(tags);
+        Set<Asset> assets = assetRepo.findAssetsByTagsNameIn(tags);
         System.out.println(assets);
     }
 
