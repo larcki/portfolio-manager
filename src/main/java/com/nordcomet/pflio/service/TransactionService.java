@@ -2,7 +2,6 @@ package com.nordcomet.pflio.service;
 
 import com.nordcomet.pflio.model.Transaction;
 import com.nordcomet.pflio.model.snapshot.AssetPosition;
-import com.nordcomet.pflio.repo.AssetPositionRepo;
 import com.nordcomet.pflio.repo.TransactionRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,13 +16,13 @@ public class TransactionService {
     private TransactionRepo transactionRepo;
 
     @Autowired
-    private AssetPositionRepo assetPositionRepo;
+    private AssetPositionService assetPositionService;
 
     public void save(Transaction transaction) {
         checkThatIsLatest(transaction);
+        BigDecimal previousQuantity = assetPositionService.resolveTotalQuantityForAsset(transaction.getAsset().getId());
         transactionRepo.save(transaction);
-        BigDecimal previousQuantity = resolvePreviousQuantity(transaction.getAsset().getId());
-        assetPositionRepo.save(createAssetPosition(transaction, previousQuantity));
+        assetPositionService.save(createAssetPosition(transaction, previousQuantity));
     }
 
     private AssetPosition createAssetPosition(Transaction transaction, BigDecimal previousQuantity) {
@@ -39,23 +38,6 @@ public class TransactionService {
                 throw new IllegalArgumentException("Can not store transaction when more recent exists");
             }
         }
-    }
-
-    private BigDecimal resolvePreviousQuantity(Integer assetId) {
-        Optional<AssetPosition> previousAssetPosition = assetPositionRepo.findFirstByAssetIdOrderByTimestampDesc(assetId);
-        if (previousAssetPosition.isPresent()) {
-            return previousAssetPosition.get().getQuantity();
-        } else {
-            return calculateQuantityFromPreviousTransactions();
-        }
-    }
-
-    private BigDecimal calculateQuantityFromPreviousTransactions() {
-        BigDecimal previousQuantity = BigDecimal.ZERO;
-        for (Transaction previousTransaction : transactionRepo.findAll()) {
-            previousQuantity = previousQuantity.add(previousTransaction.getQuantityChange());
-        }
-        return previousQuantity;
     }
 
 }

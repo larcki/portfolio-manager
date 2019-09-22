@@ -5,6 +5,7 @@ import com.nordcomet.pflio.model.Asset;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 public class AssetPosition {
@@ -17,8 +18,13 @@ public class AssetPosition {
     @JoinColumn(name = "asset_id")
     private Asset asset;
 
+    @Column(precision = 12, scale = 4)
     private BigDecimal quantity;
+
+    @Column(precision = 12, scale = 4)
     private BigDecimal price;
+
+    @Column(precision = 12, scale = 4)
     private BigDecimal totalPrice;
 
     private LocalDateTime timestamp;
@@ -57,5 +63,23 @@ public class AssetPosition {
 
     public LocalDateTime getTimestamp() {
         return timestamp;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AssetPosition that = (AssetPosition) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(asset, that.asset) &&
+                Objects.equals(quantity, that.quantity) &&
+                Objects.equals(price, that.price) &&
+                Objects.equals(totalPrice, that.totalPrice) &&
+                Objects.equals(timestamp, that.timestamp);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, asset, quantity, price, totalPrice, timestamp);
     }
 }

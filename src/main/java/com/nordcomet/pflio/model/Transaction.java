@@ -18,8 +18,10 @@ public class Transaction {
 
     private LocalDateTime timestamp;
 
+    @Column(precision = 12, scale = 4)
     private BigDecimal price;
 
+    @Column(precision = 12, scale = 4)
     private BigDecimal quantityChange;
 
     public Integer getId() {

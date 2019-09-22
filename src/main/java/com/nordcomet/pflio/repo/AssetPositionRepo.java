@@ -1,7 +1,6 @@
 package com.nordcomet.pflio.repo;
 
 import com.nordcomet.pflio.model.snapshot.AssetPosition;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 import java.time.LocalDateTime;
@@ -16,4 +15,6 @@ public interface AssetPositionRepo extends CrudRepository<AssetPosition, Integer
     Optional<AssetPosition> findFirstByAssetIdAndTimestampBefore(Integer assetId, LocalDateTime timestamp);
 
     List<AssetPosition> findAllByAssetIdAndTimestampAfter(Integer assetId, LocalDateTime timestamp);
+    List<AssetPosition> findAllByAssetId(Integer assetId);
+
 }

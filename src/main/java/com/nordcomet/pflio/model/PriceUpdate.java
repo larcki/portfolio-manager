@@ -18,6 +18,7 @@ public class PriceUpdate {
 
     private LocalDateTime timestamp;
 
+    @Column(precision = 12, scale = 4)
     private BigDecimal price;
 
     public Integer getId() {
