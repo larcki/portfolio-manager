@@ -35,7 +35,11 @@ public class PortfolioController {
         Set<Asset> all = assetRepo.findAssetsByTagsNameIn(tags);
 
         ChartView chartView;
-        chartView = chartService.lineChartFor(period, new ArrayList<>(all));
+        if (tags != null) {
+            chartView = chartService.getStackedValueChart(tags, period);
+        } else {
+            chartView = chartService.lineChartFor(period, new ArrayList<>(all));
+        }
 
         model.addAttribute("days", chartView.getTimes());
         model.addAttribute("dataset", chartView.getChartDatasets());

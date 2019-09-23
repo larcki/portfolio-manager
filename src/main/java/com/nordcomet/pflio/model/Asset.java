@@ -1,6 +1,7 @@
 package com.nordcomet.pflio.model;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 
@@ -59,6 +60,13 @@ public class Asset {
 
     public List<Tag> getTags() {
         return tags;
+    }
+
+    public BigDecimal getProportionOfTag(Tags tag) {
+        return getTags().stream()
+                .filter(assetTag -> assetTag.getName() == tag)
+                .findFirst().map(Tag::getProportion)
+                .orElse(BigDecimal.ZERO);
     }
 
     public void setTags(List<Tag> tags) {
