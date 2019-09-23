@@ -6,11 +6,9 @@ import com.nordcomet.pflio.model.snapshot.AssetPosition;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class DataRandomiser {
 
@@ -23,10 +21,11 @@ public class DataRandomiser {
     }
 
     private static List<Tag> randomTags() {
-        return Arrays.stream(Tags.values())
-                .filter(tags -> probabilityOf(0.5))
-                .map(tags -> new Tag(BigDecimal.ONE, tags))
-                .collect(Collectors.toList());
+        if (probabilityOf(0.5)) {
+            return List.of(new Tag(BigDecimal.ONE, Tags.STOCK));
+        } else {
+            return List.of(new Tag(BigDecimal.ONE, Tags.BOND));
+        }
     }
 
     public static PriceUpdate randomPriceUpdate(Asset asset) {

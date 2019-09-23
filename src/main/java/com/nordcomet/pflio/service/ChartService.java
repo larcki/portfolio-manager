@@ -26,13 +26,12 @@ public class ChartService {
 
 
     public ChartView lineChartFor(int sinceDays, List<Asset> assets) {
-
-        Map<Integer, String> colourPalette = ColourPalette.createColourPalette(assets);
+        Map<Object, String> colourPalette = ColourPalette.createColourPalette(assets);
 
         List<ChartDataset> datasets = new ArrayList<>();
         List<LocalDate> days = daysResolver.resolveDays(sinceDays);
         for (Asset asset : assets) {
-            String assetColor = colourPalette.get(asset.getId());
+            String assetColor = colourPalette.get(asset);
             List<AssetPosition> assetPositions = assetPositionRepo.findAllByAssetIdAndTimestampAfter(asset.getId(), days.get(0).atStartOfDay());
 
             List<BigDecimal> values = new ArrayList<>();

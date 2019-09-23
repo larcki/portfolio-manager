@@ -62,7 +62,7 @@ public class ColourPalette {
             "#b93d4d"
     );
 
-    public static Map<Integer, String> createColourPalette(List<Asset> assets) {
+    public static Map<Object, String> createColourPalette(List<?> assets) {
         if (assets.size() <= 5) {
             return createPalette(colourScheme_5, assets);
         } else if (assets.size() <= 10) {
@@ -72,10 +72,10 @@ public class ColourPalette {
         }
     }
 
-    private static Map<Integer, String> createPalette(List<String> colourScheme_10, List<Asset> assets) {
-        Map<Integer, String> result = new HashMap<>();
+    private static Map<Object, String> createPalette(List<String> colourScheme_10, List<?> assets) {
+        Map<Object, String> result = new HashMap<>();
         for (int i = 0; i < assets.size(); i++) {
-            result.put(assets.get(i).getId(), colourScheme_10.get(i));
+            result.put(assets.get(i), colourScheme_10.get(i));
         }
         return result;
     }
