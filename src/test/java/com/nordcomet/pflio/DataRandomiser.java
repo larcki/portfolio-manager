@@ -63,12 +63,16 @@ public class DataRandomiser {
         return new BigDecimal(randomInt(0, 3)).setScale(4, RoundingMode.HALF_UP);
     }
 
-    private static String randomString() {
+    public static String randomString() {
         return UUID.randomUUID().toString();
     }
 
     public static int randomInt(int from, int to) {
         return from + new Random().nextInt(to);
+    }
+
+    public static int randomInt() {
+        return new Random().nextInt(100000);
     }
 
     public static Transaction transaction(Asset asset, int daysOfData, int daysOffset) {
