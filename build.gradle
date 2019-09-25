@@ -33,5 +33,5 @@ if (project.hasProperty('frontend')) {
         }
     }
 
-    processResources.dependsOn('frontend:npm_run_build')
+    processResources.dependsOn('frontend:yarn_build')
 }
