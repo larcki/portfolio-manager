@@ -1,17 +1,21 @@
 <template>
     <div id="app">
         <img alt="Vue logo" src="./assets/logo.png">
-        <Chart/>
+        <PortfolioChart/>
+        <PortfolioChart/>
+        <PortfolioChart/>
+        <PortfolioChart/>
+
     </div>
 </template>
 
 <script>
-    import Chart from './components/Chart.vue'
+    import PortfolioChart from './components/PortfolioChart.vue'
 
     export default {
         name: 'app',
         components: {
-            Chart
+            PortfolioChart
         }
     }
 </script>

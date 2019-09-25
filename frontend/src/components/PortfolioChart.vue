@@ -1,22 +1,28 @@
 <template>
     <div class="hello">
-        <h1>{{ msg }}</h1>
+        <div>{{msg}}</div>
+        <canvas ref="chart"></canvas>
     </div>
 </template>
 
 <script>
     import api from "./backend-api";
+    import Chart from "../../node_modules/chart.js";
 
     export default {
-        name: 'HelloWorld',
-        data () {
+        name: 'PortfolioChart',
+        data() {
             return {
                 msg: {}
             }
         },
         mounted() {
             api.getChart()
-                .then(response => this.msg = response)
+                .then(response => {
+                    this.msg = response.data
+                    let ctx = this.$refs.chart
+                    var myChart = new Chart(ctx, response.data);
+                })
         }
     }
 </script>
