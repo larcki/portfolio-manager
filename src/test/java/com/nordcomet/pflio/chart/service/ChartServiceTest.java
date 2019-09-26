@@ -1,15 +1,13 @@
 package com.nordcomet.pflio.chart.service;
 
-import com.nordcomet.pflio.chart.service.ChartDaysResolver;
-import com.nordcomet.pflio.chart.service.ChartService;
 import com.nordcomet.pflio.asset.model.Asset;
 import com.nordcomet.pflio.asset.model.Tag;
 import com.nordcomet.pflio.asset.model.Tags;
 import com.nordcomet.pflio.asset.model.snapshot.AssetPosition;
 import com.nordcomet.pflio.asset.repo.AssetPositionRepo;
 import com.nordcomet.pflio.asset.repo.AssetRepo;
-import com.nordcomet.pflio.chart.chartjs.ChartJSDataset;
-import com.nordcomet.pflio.chart.model.ChartView;
+import com.nordcomet.pflio.chart.model.ChartJSData;
+import com.nordcomet.pflio.chart.model.ChartJSDataset;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -74,10 +72,10 @@ class ChartServiceTest {
                 createAssetPosition(stockAsset2, new BigDecimal("3"), new BigDecimal("9"), now)
         ));
 
-        ChartView result = underTest.getStackedValueChart(tags, daysAgoExcluding);
+        ChartJSData result = underTest.getStackedValueChart(tags, daysAgoExcluding);
 
-        assertThat(result.getTimes().size(), is(daysReturnedByDaysResolver.size()));
-        assertThat(result.getChartDatasets().size(), is(tags.size()));
+        assertThat(result.getLabels().size(), is(daysReturnedByDaysResolver.size()));
+        assertThat(result.getDatasets().size(), is(tags.size()));
         Optional<ChartJSDataset> bondDataset = findDataset(result, BOND.name());
         assertThat(bondDataset.get().getData().get(0), is(new BigDecimal("25.0000")));
         assertThat(bondDataset.get().getData().get(1), is(new BigDecimal("30.0000")));
@@ -108,7 +106,7 @@ class ChartServiceTest {
                 createAssetPosition(pureStock, new BigDecimal("1"), new BigDecimal("100"), yesterdayMidnight)
         ));
 
-        ChartView result = underTest.getStackedValueChart(tags, daysAgoExcluding);
+        ChartJSData result = underTest.getStackedValueChart(tags, daysAgoExcluding);
 
         Optional<ChartJSDataset> bondDataset = findDataset(result, BOND.name());
         assertThat(bondDataset.get().getData().get(0), is(new BigDecimal("120.0000")));
@@ -133,8 +131,8 @@ class ChartServiceTest {
         when(assetPositionRepo.findAllByAssetIdAndTimestampAfter(bondAsset1.getId(), yesterdayMidnight.minusDays(10))).thenReturn(positions);
     }
 
-    private Optional<ChartJSDataset> findDataset(ChartView result, String label) {
-        return result.getChartDatasets().stream().filter(chartDataset -> chartDataset.getLabel().equals(label)).findFirst();
+    private Optional<ChartJSDataset> findDataset(ChartJSData result, String label) {
+        return result.getDatasets().stream().filter(chartDataset -> chartDataset.getLabel().equals(label)).findFirst();
     }
 
     private AssetPosition createAssetPosition(Asset asset, BigDecimal quantity, BigDecimal totalPrice, LocalDateTime timestamp) {

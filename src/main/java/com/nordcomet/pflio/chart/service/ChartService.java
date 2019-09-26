@@ -5,8 +5,8 @@ import com.nordcomet.pflio.asset.model.Tags;
 import com.nordcomet.pflio.asset.model.snapshot.AssetPosition;
 import com.nordcomet.pflio.asset.repo.AssetPositionRepo;
 import com.nordcomet.pflio.asset.repo.AssetRepo;
-import com.nordcomet.pflio.chart.model.ChartView;
-import com.nordcomet.pflio.chart.chartjs.ChartJSDataset;
+import com.nordcomet.pflio.chart.model.ChartJSData;
+import com.nordcomet.pflio.chart.model.ChartJSDataset;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,7 +41,7 @@ public class ChartService {
         this.daysResolver = daysResolver;
     }
 
-    public ChartView lineChartFor(int sinceDays, List<Asset> assets) {
+    public ChartJSData lineChartFor(int sinceDays, List<Asset> assets) {
         Map<Object, String> colourPalette = ColourPalette.createColourPalette(assets);
         List<LocalDate> days = daysResolver.resolveDays(sinceDays);
 
@@ -53,11 +53,11 @@ public class ChartService {
             datasets.add(chart);
         }
 
-        return new ChartView(days, datasets);
+        return new ChartJSData(days, datasets);
     }
 
     @Transactional
-    public ChartView getStackedValueChart(List<Tags> tags, int daysAgoExcluding) {
+    public ChartJSData getStackedValueChart(List<Tags> tags, int daysAgoExcluding) {
         Map<Object, String> colourPalette = ColourPalette.createColourPalette(tags);
         List<LocalDate> days = daysResolver.resolveDays(daysAgoExcluding);
         Set<Asset> assets = assetRepo.findAssetsByTagsNameIn(tags);
@@ -73,7 +73,7 @@ public class ChartService {
 
         }).collect(toList());
 
-        return new ChartView(days, datasets);
+        return new ChartJSData(days, datasets);
     }
 
     private List<BigDecimal> combinePrices(List<LocalDate> days, List<List<BigDecimal>> prices) {

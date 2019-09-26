@@ -1,10 +1,9 @@
 package com.nordcomet.pflio.chart;
 
 import com.nordcomet.pflio.asset.model.Tags;
-import com.nordcomet.pflio.chart.chartjs.ChartJSData;
-import com.nordcomet.pflio.chart.chartjs.ChartJSOptions;
-import com.nordcomet.pflio.chart.chartjs.ChartJS;
-import com.nordcomet.pflio.chart.model.ChartView;
+import com.nordcomet.pflio.chart.model.ChartJSData;
+import com.nordcomet.pflio.chart.model.ChartJSOptions;
+import com.nordcomet.pflio.chart.model.ChartJS;
 import com.nordcomet.pflio.chart.service.ChartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,10 +21,10 @@ public class ChartController {
     @RequestMapping("/api/chart")
     public ChartJS chart() {
         List<Tags> tags = List.of(Tags.BOND, Tags.STOCK);
-        ChartView chartView = chartService.getStackedValueChart(tags, 180);
+        ChartJSData chartView = chartService.getStackedValueChart(tags, 180);
 
 
-        ChartJSData chartData = new ChartJSData(chartView.getTimes(), chartView.getChartDatasets());
+        ChartJSData chartData = new ChartJSData(chartView.getLabels(), chartView.getDatasets());
         Map<Object, Object> options = Map.of(
                 "responsive", true,
                 "title", Map.of(

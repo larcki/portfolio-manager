@@ -1,4 +1,4 @@
-package com.nordcomet.pflio.chart.chartjs;
+package com.nordcomet.pflio.chart.model;
 
 import java.util.Map;
 
