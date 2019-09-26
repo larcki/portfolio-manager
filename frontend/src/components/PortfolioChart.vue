@@ -1,39 +1,56 @@
 <template>
     <div>
-        Period <input v-model="period" :placeholder="initialPeriod">
-        Tags <input v-model="tags" :placeholder="initialTags">
-        <button v-on:click=loadChart>Refresh</button>
+        <div class="columns">
+            <div class="column">
+                Period
+                <b-input v-model="period" :placeholder="initialPeriod"></b-input>
+            </div>
+            <div class="column">
+                Tags
+                <b-input v-model="tags" :placeholder="initialTags"></b-input>
+            </div>
+            <div class="column">
+                <b-button  v-on:click=updateChart>Refresh</b-button>
+            </div>
+        </div>
+
         <canvas ref="chart"></canvas>
     </div>
 </template>
 
 <script>
     import api from "./backend-api";
-    import Chart from "../../node_modules/chart.js";
+    import Chart from "chart.js";
 
     export default {
         name: 'PortfolioChart',
         props: {
-            initialPeriod: Number,
-            initialTags: Array
+            initialPeriod: String,
+            initialTags: String
         },
         data() {
             return {
                 period: this.initialPeriod,
-                tags: this.initialTags
+                tags: this.initialTags,
+                chart: null
             }
         },
         methods: {
-            loadChart() {
+            getChartData(successAction) {
                 api.getChart(this.period, 'STACKED_VALUE', this.tags)
-                    .then(response => {
-                        let ctx = this.$refs.chart
-                        new Chart(ctx, response.data);
-                    })
+                    .then(successAction)
+            },
+            updateChart() {
+                this.getChartData(response => {
+                    this.chart.destroy()
+                    this.chart = new Chart(this.$refs.chart, response.data);
+                });
             }
         },
         mounted() {
-            this.loadChart()
+            this.getChartData(response => {
+                this.chart = new Chart(this.$refs.chart, response.data);
+            })
         }
     }
 </script>

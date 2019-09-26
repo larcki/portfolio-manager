@@ -1,8 +1,29 @@
 <template>
-    <div id="app">
-        <PortfolioChart initial-period="180" initial-tags="BOND,STOCK"/>
-        <PortfolioChart initial-period="360" initial-tags="BOND"/>
+
+    <div id="app" class="container">
+        <div class="columns">
+            <div class="column">
+
+                <section class="info-tiles">
+                    <div class="tile is-ancestor has-text-centered">
+                        <div class="tile is-parent">
+                            <article class="tile is-child box">
+                                <portfolio-chart initial-period="180" initial-tags="BOND,STOCK"/>
+                            </article>
+                        </div>
+                        <div class="tile is-parent">
+                            <article class="tile is-child box">
+                                <portfolio-chart initial-period="30" initial-tags="BOND"/>
+                            </article>
+                        </div>
+                    </div>
+                </section>
+
+
+            </div>
+        </div>
     </div>
+
 </template>
 
 <script>
