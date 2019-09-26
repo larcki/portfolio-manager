@@ -1,13 +1,15 @@
 import axios from 'axios'
 
 const AXIOS = axios.create({
-  baseURL: `/api`,
-  timeout: 1000
+    baseURL: '/api',
+    timeout: 1000
 });
 
 
 export default {
-    getChart() {
-        return AXIOS.get(`/chart`);
+    getChart(period, chartType, tags, assets) {
+        return AXIOS.get('/chart', {
+            params: {'period': period, 'chartType': chartType, 'tags': tags, 'assets': assets}
+        });
     }
 }

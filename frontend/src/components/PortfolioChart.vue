@@ -1,6 +1,8 @@
 <template>
-    <div class="hello">
-        <div>{{msg}}</div>
+    <div>
+        Period <input v-model="period" :placeholder="initialPeriod">
+        Tags <input v-model="tags" :placeholder="initialTags">
+        <button v-on:click=loadChart>Refresh</button>
         <canvas ref="chart"></canvas>
     </div>
 </template>
@@ -11,18 +13,27 @@
 
     export default {
         name: 'PortfolioChart',
+        props: {
+            initialPeriod: Number,
+            initialTags: Array
+        },
         data() {
             return {
-                msg: {}
+                period: this.initialPeriod,
+                tags: this.initialTags
+            }
+        },
+        methods: {
+            loadChart() {
+                api.getChart(this.period, 'STACKED_VALUE', this.tags)
+                    .then(response => {
+                        let ctx = this.$refs.chart
+                        new Chart(ctx, response.data);
+                    })
             }
         },
         mounted() {
-            api.getChart()
-                .then(response => {
-                    this.msg = response.data
-                    let ctx = this.$refs.chart
-                    var myChart = new Chart(ctx, response.data);
-                })
+            this.loadChart()
         }
     }
 </script>

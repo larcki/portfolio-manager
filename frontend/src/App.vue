@@ -1,11 +1,7 @@
 <template>
     <div id="app">
-        <img alt="Vue logo" src="./assets/logo.png">
-        <PortfolioChart/>
-        <PortfolioChart/>
-        <PortfolioChart/>
-        <PortfolioChart/>
-
+        <PortfolioChart initial-period="180" initial-tags="BOND,STOCK"/>
+        <PortfolioChart initial-period="360" initial-tags="BOND"/>
     </div>
 </template>
 
