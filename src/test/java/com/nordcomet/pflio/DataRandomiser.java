@@ -1,7 +1,7 @@
 package com.nordcomet.pflio;
 
-import com.nordcomet.pflio.model.*;
-import com.nordcomet.pflio.model.snapshot.AssetPosition;
+import com.nordcomet.pflio.asset.model.*;
+import com.nordcomet.pflio.asset.model.snapshot.AssetPosition;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -60,7 +60,7 @@ public class DataRandomiser {
     }
 
     private static BigDecimal randomQuantity() {
-        return new BigDecimal(randomInt(0, 3)).setScale(4, RoundingMode.HALF_UP);
+        return new BigDecimal(randomInt(1, 3)).setScale(4, RoundingMode.HALF_UP);
     }
 
     public static String randomString() {

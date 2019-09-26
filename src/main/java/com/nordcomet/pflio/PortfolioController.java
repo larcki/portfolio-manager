@@ -1,11 +1,11 @@
 package com.nordcomet.pflio;
 
-import com.nordcomet.pflio.model.Asset;
-import com.nordcomet.pflio.model.Tags;
-import com.nordcomet.pflio.repo.AssetRepo;
-import com.nordcomet.pflio.service.ChartService;
-import com.nordcomet.pflio.view.ChartView;
-import com.nordcomet.pflio.view.PortfolioChartType;
+import com.nordcomet.pflio.asset.model.Asset;
+import com.nordcomet.pflio.asset.model.Tags;
+import com.nordcomet.pflio.asset.repo.AssetRepo;
+import com.nordcomet.pflio.chart.service.ChartService;
+import com.nordcomet.pflio.chart.model.ChartView;
+import com.nordcomet.pflio.chart.model.PortfolioChartType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
