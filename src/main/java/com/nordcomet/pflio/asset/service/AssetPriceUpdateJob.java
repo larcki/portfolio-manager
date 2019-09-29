@@ -3,6 +3,7 @@ package com.nordcomet.pflio.asset.service;
 import com.nordcomet.pflio.asset.model.Asset;
 import com.nordcomet.pflio.asset.model.AssetPrice;
 import com.nordcomet.pflio.asset.model.PriceUpdate;
+import com.nordcomet.pflio.asset.parser.PriceParserService;
 import com.nordcomet.pflio.asset.repo.AssetRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;

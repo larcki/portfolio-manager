@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -94,7 +93,7 @@ class GenerateTestData {
 
     private static List<Asset> createAssetsWithPriceParser() {
         Asset superFondetNorge = new Asset();
-        superFondetNorge.setParserOptions(new ParserOptions(ParserType.MORNINGSTAR_FI, "F00000TH8U", "NOK", "EUR"));
+        superFondetNorge.setParserOptions(new ParserOptions(ParserType.MORNINGSTAR_FUND, "F00000TH8U", "NOK", "EUR"));
         superFondetNorge.setName("Nordnet Superfondet Norge");
         superFondetNorge.setTags(List.of(new Tag(BigDecimal.ONE, Tags.TMP_ASSETS_WITH_PARSER)));
         return List.of(superFondetNorge);

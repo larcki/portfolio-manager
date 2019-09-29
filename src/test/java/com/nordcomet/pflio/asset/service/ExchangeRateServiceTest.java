@@ -13,7 +13,7 @@ class ExchangeRateServiceTest {
 
     @Test
     void shouldGetExchangeRate() {
-        Optional<BigDecimal> result = exchangeRateService.getRateInEURFor("NOK");
+        Optional<BigDecimal> result = exchangeRateService.convert(new BigDecimal("10"), "NOK", "EUR");
         assertTrue(result.isPresent());
     }
 }
