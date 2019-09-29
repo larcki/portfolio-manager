@@ -11,4 +11,6 @@ public interface AssetRepo extends CrudRepository<Asset, Integer> {
 
     Set<Asset> findAssetsByTagsNameIn(List<Tags> tags);
 
+    Set<Asset> findAssetsByParserOptionsNotNull();
+
 }

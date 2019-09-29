@@ -14,9 +14,7 @@ public class Asset {
 
     private String name;
 
-    private String code;
-
-    private String source;
+    private ParserOptions parserOptions;
 
     @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(
@@ -42,21 +40,6 @@ public class Asset {
         this.name = name;
     }
 
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getSource() {
-        return source;
-    }
-
-    public void setSource(String source) {
-        this.source = source;
-    }
 
     public List<Tag> getTags() {
         return tags;
@@ -73,6 +56,14 @@ public class Asset {
         this.tags = tags;
     }
 
+    public ParserOptions getParserOptions() {
+        return parserOptions;
+    }
+
+    public void setParserOptions(ParserOptions parserOptions) {
+        this.parserOptions = parserOptions;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -80,13 +71,12 @@ public class Asset {
         Asset asset = (Asset) o;
         return Objects.equals(id, asset.id) &&
                 Objects.equals(name, asset.name) &&
-                Objects.equals(code, asset.code) &&
-                Objects.equals(source, asset.source) &&
+                Objects.equals(parserOptions, asset.parserOptions) &&
                 Objects.equals(tags, asset.tags);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, code, source, tags);
+        return Objects.hash(id, name, parserOptions, tags);
     }
 }

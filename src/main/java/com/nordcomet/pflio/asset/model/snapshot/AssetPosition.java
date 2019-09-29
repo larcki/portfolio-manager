@@ -82,4 +82,16 @@ public class AssetPosition {
     public int hashCode() {
         return Objects.hash(id, asset, quantity, price, totalPrice, timestamp);
     }
+
+    @Override
+    public String toString() {
+        return "AssetPosition{" +
+                "id=" + id +
+                ", asset=" + asset +
+                ", quantity=" + quantity +
+                ", price=" + price +
+                ", totalPrice=" + totalPrice +
+                ", timestamp=" + timestamp +
+                '}';
+    }
 }

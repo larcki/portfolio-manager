@@ -4,6 +4,6 @@ public enum Tags {
 
     STOCK,
     BOND,
-
+    TMP_ASSETS_WITH_PARSER,
 
 }

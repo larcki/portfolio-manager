@@ -118,7 +118,6 @@ class ChartServiceTest {
         Asset asset = new Asset();
         asset.setTags(tags);
         asset.setId(randomInt());
-        asset.setCode(randomString());
         asset.setName(randomString());
         return asset;
     }

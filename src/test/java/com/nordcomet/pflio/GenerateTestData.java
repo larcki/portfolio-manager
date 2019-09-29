@@ -1,16 +1,17 @@
 package com.nordcomet.pflio;
 
-import com.nordcomet.pflio.asset.model.Asset;
-import com.nordcomet.pflio.asset.model.Tags;
+import com.nordcomet.pflio.asset.model.*;
 import com.nordcomet.pflio.asset.model.snapshot.AssetPosition;
 import com.nordcomet.pflio.asset.repo.*;
-import com.nordcomet.pflio.chart.service.ChartService;
 import com.nordcomet.pflio.asset.service.TransactionService;
-import org.junit.Ignore;
+import com.nordcomet.pflio.chart.service.ChartService;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -21,7 +22,7 @@ import java.util.stream.IntStream;
 import static com.nordcomet.pflio.DataRandomiser.*;
 
 @SpringBootTest
-@Ignore
+@Disabled
 class GenerateTestData {
 
     @Autowired
@@ -62,7 +63,13 @@ class GenerateTestData {
                 .mapToObj(value -> assetRepo.save(randomAsset()))
                 .collect(Collectors.toList());
 
-        IntStream.range(1, daysOfData).forEach(value -> assets.forEach(asset -> {
+        List<Asset> assetsWithPriceParser = createAssetsWithPriceParser().stream()
+                .map(asset -> assetRepo.save(asset))
+                .collect(Collectors.toList());
+
+        assets.addAll(assetsWithPriceParser);
+
+        IntStream.range(1, daysOfData - 5).forEach(value -> assets.forEach(asset -> {
             if (probabilityOf(0.3)) {
                 transactionService.save(transaction(asset, daysOfData, value));
             }
@@ -83,6 +90,14 @@ class GenerateTestData {
         List<Tags> tags = List.of(Tags.BOND);
         Set<Asset> assets = assetRepo.findAssetsByTagsNameIn(tags);
         System.out.println(assets);
+    }
+
+    private static List<Asset> createAssetsWithPriceParser() {
+        Asset superFondetNorge = new Asset();
+        superFondetNorge.setParserOptions(new ParserOptions(ParserType.MORNINGSTAR_FI, "F00000TH8U", "NOK", "EUR"));
+        superFondetNorge.setName("Nordnet Superfondet Norge");
+        superFondetNorge.setTags(List.of(new Tag(BigDecimal.ONE, Tags.TMP_ASSETS_WITH_PARSER)));
+        return List.of(superFondetNorge);
     }
 
 }

@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.Optional;
 
 @Service
 public class AssetPositionService {
@@ -22,16 +21,16 @@ public class AssetPositionService {
     public BigDecimal resolveTotalQuantityForAsset(Integer assetId) {
         return assetPositionRepo.findFirstByAssetIdOrderByTimestampDesc(assetId)
                 .map(AssetPosition::getQuantity)
-                .orElse(calculateQuantityFromPreviousTransactions());
+                .orElse(calculateQuantityFromPreviousTransactions(assetId));
     }
 
     public AssetPosition save(AssetPosition assetPosition) {
         return assetPositionRepo.save(assetPosition);
     }
 
-    private BigDecimal calculateQuantityFromPreviousTransactions() {
+    private BigDecimal calculateQuantityFromPreviousTransactions(Integer assetId) {
         BigDecimal previousQuantity = BigDecimal.ZERO;
-        for (Transaction previousTransaction : transactionRepo.findAll()) {
+        for (Transaction previousTransaction : transactionRepo.findAllByAssetId(assetId)) {
             previousQuantity = previousQuantity.add(previousTransaction.getQuantityChange());
         }
         return previousQuantity;

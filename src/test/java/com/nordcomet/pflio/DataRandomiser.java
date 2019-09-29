@@ -15,7 +15,6 @@ public class DataRandomiser {
     public static Asset randomAsset() {
         Asset asset = new Asset();
         asset.setName(randomString());
-        asset.setCode(randomString());
         asset.setTags(randomTags());
         return asset;
     }
