@@ -2,14 +2,17 @@ package com.nordcomet.pflio.asset.service;
 
 import com.nordcomet.pflio.asset.model.Asset;
 import com.nordcomet.pflio.asset.model.Transaction;
+import com.nordcomet.pflio.asset.model.TransactionDto;
 import com.nordcomet.pflio.asset.model.snapshot.AssetPosition;
 import com.nordcomet.pflio.asset.repo.AssetPositionRepo;
 import com.nordcomet.pflio.asset.repo.AssetRepo;
+import com.nordcomet.pflio.asset.repo.TransactionRepo;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -20,6 +23,7 @@ import java.util.Optional;
 import static com.nordcomet.pflio.DataRandomiser.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
@@ -35,6 +39,36 @@ class TransactionServiceTest {
 
     @Autowired
     private AssetPositionRepo assetPositionRepo;
+
+    @Autowired
+    private TransactionRepo transactionRepo;
+
+    @Test
+    void saveDto_shouldSaveTransactionWithFeeAndAssetPosition() {
+        Asset asset = randomAsset();
+        assetRepo.save(asset);
+
+        BigDecimal quantity = new BigDecimal("2");
+        BigDecimal unitPrice = new BigDecimal("3");
+        BigDecimal totalPrice = new BigDecimal("7");
+        TransactionDto dto = new TransactionDto(asset.getId(), quantity, unitPrice, totalPrice, "GBP");
+
+        underTest.save(dto);
+
+        List<Transaction> transaction = transactionRepo.findAllByAssetId(asset.getId());
+        assertEquals(transaction.size(), 1);
+        assertEquals(transaction.get(0).getQuantityChange(), new BigDecimal("2.0000"));
+        assertEquals(transaction.get(0).getPrice(), new BigDecimal("3.0000"));
+        assertEquals(transaction.get(0).getFee(), new BigDecimal("1.00"));
+        assertEquals(transaction.get(0).getCurrency(), "GBP");
+    }
+
+    @Test
+    void saveDto_shouldThrowException_whenAssetNotFound() {
+        assertThrows(ResponseStatusException.class, () -> {
+            underTest.save(new TransactionDto(0, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, "EUR"));
+        });
+    }
 
     @Test
     void save_shouldCreateAssetPosition() {

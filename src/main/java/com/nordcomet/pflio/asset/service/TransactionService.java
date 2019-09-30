@@ -1,13 +1,20 @@
 package com.nordcomet.pflio.asset.service;
 
+import com.nordcomet.pflio.asset.model.Asset;
 import com.nordcomet.pflio.asset.model.Transaction;
+import com.nordcomet.pflio.asset.model.TransactionDto;
 import com.nordcomet.pflio.asset.model.snapshot.AssetPosition;
+import com.nordcomet.pflio.asset.repo.AssetRepo;
 import com.nordcomet.pflio.asset.repo.TransactionRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.util.Optional;
+
+import static java.time.LocalDateTime.now;
 
 @Service
 public class TransactionService {
@@ -17,6 +24,17 @@ public class TransactionService {
 
     @Autowired
     private AssetPositionService assetPositionService;
+
+    @Autowired
+    private AssetRepo assetRepo;
+
+    public void save(TransactionDto dto) {
+        Asset asset = assetRepo.findAssetsById(dto.getAssetId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        BigDecimal fee = dto.getTotalPrice().subtract(
+                dto.getUnitPrice().multiply(dto.getQuantity())
+        );
+        save(new Transaction(asset, now(), dto.getUnitPrice(), dto.getQuantity(), fee, dto.getCurrency()));
+    }
 
     public void save(Transaction transaction) {
         checkThatIsLatest(transaction);

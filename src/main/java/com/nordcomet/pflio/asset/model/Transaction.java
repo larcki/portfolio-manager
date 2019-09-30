@@ -24,6 +24,23 @@ public class Transaction {
     @Column(precision = 12, scale = 4)
     private BigDecimal quantityChange;
 
+    private BigDecimal fee;
+
+    private String currency;
+
+    public Transaction() {
+
+    }
+
+    public Transaction(Asset asset, LocalDateTime timestamp, BigDecimal price, BigDecimal quantityChange, BigDecimal fee, String currency) {
+        this.asset = asset;
+        this.timestamp = timestamp;
+        this.price = price;
+        this.quantityChange = quantityChange;
+        this.fee = fee;
+        this.currency = currency;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -64,6 +81,22 @@ public class Transaction {
         this.quantityChange = quantityChange;
     }
 
+    public BigDecimal getFee() {
+        return fee;
+    }
+
+    public void setFee(BigDecimal fee) {
+        this.fee = fee;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -73,11 +106,13 @@ public class Transaction {
                 Objects.equals(asset, that.asset) &&
                 Objects.equals(timestamp, that.timestamp) &&
                 Objects.equals(price, that.price) &&
-                Objects.equals(quantityChange, that.quantityChange);
+                Objects.equals(quantityChange, that.quantityChange) &&
+                Objects.equals(fee, that.fee) &&
+                Objects.equals(currency, that.currency);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, asset, timestamp, price, quantityChange);
+        return Objects.hash(id, asset, timestamp, price, quantityChange, fee, currency);
     }
 }
