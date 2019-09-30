@@ -15,15 +15,17 @@ class PriceParserServiceTest {
     private final ExchangeRateService exchangeRateService = new ExchangeRateService();
     private final MorningstarStockParser morningstarStockParser = new MorningstarStockParser(exchangeRateService);
     private final MorningstarFundParser morningstarFundParser = new MorningstarFundParser(exchangeRateService);
+    private final MorningstarFundUkParser morningstarFundUkParser = new MorningstarFundUkParser(exchangeRateService);
 
-    private final PriceParserService priceParserService = new PriceParserService(morningstarStockParser, morningstarFundParser);
+    private final PriceParserService priceParserService = new PriceParserService(morningstarStockParser, morningstarFundParser, morningstarFundUkParser);
 
     @Test
     public void getPrice_shouldParsePriceFromMorningstarFi() {
         assertParserFor(new ParserOptions(MORNINGSTAR_FUND, "F00000TH8U", "NOK", "EUR"));
         assertParserFor(new ParserOptions(MORNINGSTAR_FUND, "F00000TH8W", "EUR", "EUR"));
-        assertParserFor(new ParserOptions(MORNINGSTAR_STOCK, "0P00018W8O", "EUR", "EUR"));
         assertParserFor(new ParserOptions(MORNINGSTAR_STOCK, "0P00009VJH", "CAD", "EUR"));
+        assertParserFor(new ParserOptions(MORNINGSTAR_FUND_UK, "F00000OXGD", "GBX", "GBP"));
+        assertParserFor(new ParserOptions(MORNINGSTAR_FUND_UK, "F000003VEC", "GBP", "GBP"));
     }
 
     private void assertParserFor(ParserOptions options) {

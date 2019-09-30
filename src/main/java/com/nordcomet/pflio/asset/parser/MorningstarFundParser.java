@@ -53,7 +53,7 @@ public class MorningstarFundParser {
         }
     }
 
-    private Optional<Document> getPage(String code) {
+    protected Optional<Document> getPage(String code) {
         try {
             return of(Jsoup.connect("http://www.morningstar.fi/fi/funds/snapshot/snapshot.aspx?id=" + code).get());
         } catch (IOException e) {

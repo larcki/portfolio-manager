@@ -1,6 +1,7 @@
 package com.nordcomet.pflio.asset.service;
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -11,9 +12,19 @@ class ExchangeRateServiceTest {
 
     private ExchangeRateService exchangeRateService = new ExchangeRateService();
 
-    @Test
-    void shouldGetExchangeRate() {
-        Optional<BigDecimal> result = exchangeRateService.convert(new BigDecimal("10"), "NOK", "EUR");
+    @ParameterizedTest
+    @CsvSource({
+            "NOK, EUR",
+            "CAD, EUR",
+            "GBP, EUR",
+            "SEK, EUR",
+            "DKK, EUR",
+            "GBX, GBP",
+    })
+    void shouldConvert(String sourceCurrency, String targetCurrency) {
+        Optional<BigDecimal> result = exchangeRateService.convert(new BigDecimal("10"), sourceCurrency, targetCurrency);
         assertTrue(result.isPresent());
+        System.out.println(result.get());
     }
+
 }

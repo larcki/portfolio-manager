@@ -18,14 +18,19 @@ public class ExchangeRateService {
     private static final Logger logger = LoggerFactory.getLogger(ExchangeRateService.class);
 
     public Optional<BigDecimal> convert(BigDecimal price, String sourceCurrency, String targetCurrency) {
+
         if (sourceCurrency.equals(targetCurrency)) {
             return of(price);
-        } else if ("EUR".equals(targetCurrency)) {
-            return toEurPrice(price, sourceCurrency);
-        } else {
-            logger.error("Target currency not supported: {}", sourceCurrency);
-            return empty();
         }
+        if ("EUR".equals(targetCurrency)) {
+            return toEurPrice(price, sourceCurrency);
+        }
+        if ("GBX".equals(sourceCurrency) && "GBP".equals(targetCurrency)) {
+            return of(price.divide(new BigDecimal("100"), 4, RoundingMode.HALF_UP));
+        }
+
+        logger.error("Target currency not supported: {}", sourceCurrency);
+        return empty();
     }
 
     private Optional<BigDecimal> toEurPrice(BigDecimal price, String sourceCurrency) {
