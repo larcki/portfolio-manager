@@ -2,7 +2,6 @@ package com.nordcomet.pflio.chart.service;
 
 import com.nordcomet.pflio.chart.model.ChartJS;
 import com.nordcomet.pflio.chart.model.ChartJSData;
-import com.nordcomet.pflio.chart.model.ChartJSOptions;
 import com.nordcomet.pflio.chart.model.PortfolioChartType;
 
 import java.util.List;
@@ -22,8 +21,8 @@ public class ChartJSFactory {
         return new ChartJS(chartTypes.get(type), chartJSData, createOptions(titleText));
     }
 
-    private static ChartJSOptions createOptions(String titleText) {
-        return new ChartJSOptions(Map.of(
+    private static Map<Object, Object> createOptions(String titleText) {
+        return Map.of(
                 "responsive", true,
                 "title", Map.of(
                         "display", true,
@@ -38,8 +37,7 @@ public class ChartJSFactory {
                                 "scaleLabel", Map.of(
                                         "display", true,
                                         "labelString", "value")))
-
                 )
-        ));
+        );
     }
 }

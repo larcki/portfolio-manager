@@ -1,6 +1,7 @@
 package com.nordcomet.pflio.asset.model;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class TransactionDto {
@@ -10,13 +11,15 @@ public class TransactionDto {
     private final BigDecimal unitPrice;
     private final BigDecimal totalPrice;
     private final String currency;
+    private final LocalDateTime timestamp;
 
-    public TransactionDto(Integer assetId, BigDecimal quantityChange, BigDecimal unitPrice, BigDecimal totalPrice, String currency) {
+    public TransactionDto(Integer assetId, BigDecimal quantityChange, BigDecimal unitPrice, BigDecimal totalPrice, String currency, LocalDateTime timestamp) {
         this.assetId = assetId;
         this.quantityChange = quantityChange;
         this.unitPrice = unitPrice;
         this.totalPrice = totalPrice;
         this.currency = currency;
+        this.timestamp = timestamp;
     }
 
     public Integer getAssetId() {
@@ -37,6 +40,10 @@ public class TransactionDto {
 
     public String getCurrency() {
         return currency;
+    }
+
+    public LocalDateTime getTimestamp() {
+        return timestamp;
     }
 
     @Override

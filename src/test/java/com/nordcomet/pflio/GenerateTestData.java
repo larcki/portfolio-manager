@@ -74,10 +74,7 @@ class GenerateTestData {
 
         IntStream.range(1, daysOfData - 5).forEach(value -> assets.forEach(asset -> {
             if (probabilityOf(0.3)) {
-                transactionService.save(randomTransactionDto(asset));
-                Transaction latestTransaction = transactionRepo.findFirstByAssetIdOrderByTimestampDesc(asset.getId()).get();
-                latestTransaction.setTimestamp(LocalDateTime.now().minusDays(daysOfData).plusDays(value));
-                transactionRepo.save(latestTransaction);
+                transactionService.save(randomTransactionDto(asset, LocalDateTime.now().minusDays(daysOfData).plusDays(value)));
             }
             if (probabilityOf(0.8)) {
                 priceUpdateRepo.save(priceUpdate(asset, daysOfData, value));

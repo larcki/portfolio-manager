@@ -48,7 +48,7 @@ public class TransactionService {
     }
 
     private Transaction toTransaction(TransactionDto dto, Asset asset, Fee fee) {
-        return new Transaction(asset, now(), dto.getUnitPrice(), dto.getQuantityChange(), dto.getCurrency(), fee);
+        return new Transaction(asset, dto.getTimestamp(), dto.getUnitPrice(), dto.getQuantityChange(), dto.getCurrency(), fee);
     }
 
 }

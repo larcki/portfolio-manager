@@ -1,15 +1,17 @@
 package com.nordcomet.pflio.chart.model;
 
+import java.util.Map;
+
 public class ChartJS {
 
     private String type;
     private ChartJSData data;
-    private ChartJSOptions options;
+    private Map<Object, Object> options;
 
     public ChartJS() {
     }
 
-    public ChartJS(String type, ChartJSData data, ChartJSOptions options) {
+    public ChartJS(String type, ChartJSData data, Map<Object, Object> options) {
         this.type = type;
         this.data = data;
         this.options = options;
@@ -23,7 +25,7 @@ public class ChartJS {
         return data;
     }
 
-    public ChartJSOptions getOptions() {
+    public Map<Object, Object> getOptions() {
         return options;
     }
 }

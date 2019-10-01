@@ -52,7 +52,7 @@ class TransactionServiceTest {
         BigDecimal quantity = new BigDecimal("2");
         BigDecimal unitPrice = new BigDecimal("3");
         BigDecimal totalPrice = new BigDecimal("7");
-        TransactionDto dto = new TransactionDto(asset.getId(), quantity, unitPrice, totalPrice, "GBP");
+        TransactionDto dto = new TransactionDto(asset.getId(), quantity, unitPrice, totalPrice, "GBP", LocalDateTime.now());
 
         underTest.save(dto);
 
@@ -72,7 +72,7 @@ class TransactionServiceTest {
     @Test
     void save_shouldThrowException_whenAssetNotFound() {
         assertThrows(ResponseStatusException.class, () -> {
-            underTest.save(new TransactionDto(0, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, "EUR"));
+            underTest.save(new TransactionDto(0, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, "EUR", LocalDateTime.now()));
         });
     }
 
