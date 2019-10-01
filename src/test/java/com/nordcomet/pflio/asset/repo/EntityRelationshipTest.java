@@ -27,10 +27,7 @@ class EntityRelationshipTest {
         Asset asset = randomAsset();
         assetRepo.save(asset);
 
-        Account account = randomAccount();
-        accountRepo.save(account);
-
-        Fee fee = randomFee(asset, account);
+        Fee fee = randomFee(asset);
         feeRepo.save(fee);
 
         assertEquals(feeRepo.count(), 1);

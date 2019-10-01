@@ -1,41 +1,38 @@
 package com.nordcomet.pflio.asset.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Entity
 public class Fee {
 
     @Id
     @GeneratedValue
-    private UUID id;
+    private Integer id;
 
-    private final BigDecimal amount;
+    @Column(precision = 12, scale = 4)
+    private BigDecimal amount;
 
-    private final String currency;
-
-    @ManyToOne
-    private final Asset asset;
+    private String currency;
 
     @ManyToOne
-    private final Account account;
+    private Asset asset;
 
-    private final LocalDateTime timestamp;
+    private LocalDateTime timestamp;
 
-    public Fee(BigDecimal amount, String currency, Asset asset, Account account, LocalDateTime timestamp) {
+    public Fee() {
+
+    }
+
+    public Fee(BigDecimal amount, String currency, Asset asset, LocalDateTime timestamp) {
         this.amount = amount;
         this.currency = currency;
         this.asset = asset;
-        this.account = account;
         this.timestamp = timestamp;
     }
 
-    public UUID getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -49,10 +46,6 @@ public class Fee {
 
     public Asset getAsset() {
         return asset;
-    }
-
-    public Account getAccount() {
-        return account;
     }
 
     public LocalDateTime getTimestamp() {

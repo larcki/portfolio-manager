@@ -43,6 +43,9 @@ class GenerateTestData {
     private TransactionService transactionService;
 
     @Autowired
+    private FeeRepo feeRepo;
+
+    @Autowired
     private ChartService chartService;
 
     void clearDB() {
@@ -51,6 +54,7 @@ class GenerateTestData {
         assetPositionRepo.deleteAll();
         assetRepo.deleteAll();
         tagRepo.deleteAll();
+        feeRepo.deleteAll();
     }
 
     @Test
@@ -70,7 +74,10 @@ class GenerateTestData {
 
         IntStream.range(1, daysOfData - 5).forEach(value -> assets.forEach(asset -> {
             if (probabilityOf(0.3)) {
-                transactionService.save(transaction(asset, daysOfData, value));
+                transactionService.save(randomTransactionDto(asset));
+                Transaction latestTransaction = transactionRepo.findFirstByAssetIdOrderByTimestampDesc(asset.getId()).get();
+                latestTransaction.setTimestamp(LocalDateTime.now().minusDays(daysOfData).plusDays(value));
+                transactionRepo.save(latestTransaction);
             }
             if (probabilityOf(0.8)) {
                 priceUpdateRepo.save(priceUpdate(asset, daysOfData, value));

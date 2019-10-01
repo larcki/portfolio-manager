@@ -1,12 +1,11 @@
 package com.nordcomet.pflio.asset.service;
 
 import com.nordcomet.pflio.asset.model.Asset;
+import com.nordcomet.pflio.asset.model.Fee;
 import com.nordcomet.pflio.asset.model.Transaction;
 import com.nordcomet.pflio.asset.model.TransactionDto;
 import com.nordcomet.pflio.asset.model.snapshot.AssetPosition;
-import com.nordcomet.pflio.asset.repo.AssetPositionRepo;
-import com.nordcomet.pflio.asset.repo.AssetRepo;
-import com.nordcomet.pflio.asset.repo.TransactionRepo;
+import com.nordcomet.pflio.asset.repo.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -23,8 +22,7 @@ import java.util.Optional;
 import static com.nordcomet.pflio.DataRandomiser.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @AutoConfigureTestDatabase
@@ -43,8 +41,11 @@ class TransactionServiceTest {
     @Autowired
     private TransactionRepo transactionRepo;
 
+    @Autowired
+    private FeeRepo feeRepo;
+
     @Test
-    void saveDto_shouldSaveTransactionWithFeeAndAssetPosition() {
+    void save_shouldSaveTransactionWithFee() {
         Asset asset = randomAsset();
         assetRepo.save(asset);
 
@@ -59,12 +60,17 @@ class TransactionServiceTest {
         assertEquals(transaction.size(), 1);
         assertEquals(transaction.get(0).getQuantityChange(), new BigDecimal("2.0000"));
         assertEquals(transaction.get(0).getPrice(), new BigDecimal("3.0000"));
-        assertEquals(transaction.get(0).getFee(), new BigDecimal("1.00"));
+        assertEquals(transaction.get(0).getFee().getAmount(), new BigDecimal("1.0000"));
         assertEquals(transaction.get(0).getCurrency(), "GBP");
+
+        Optional<Fee> fee = feeRepo.findFeeByAssetId(asset.getId());
+        assertTrue(fee.isPresent());
+        assertEquals(fee.get().getAmount(), new BigDecimal("1.0000"));
+        assertEquals(fee.get().getCurrency(), "GBP");
     }
 
     @Test
-    void saveDto_shouldThrowException_whenAssetNotFound() {
+    void save_shouldThrowException_whenAssetNotFound() {
         assertThrows(ResponseStatusException.class, () -> {
             underTest.save(new TransactionDto(0, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, "EUR"));
         });
@@ -75,15 +81,15 @@ class TransactionServiceTest {
         Asset asset = randomAsset();
         assetRepo.save(asset);
 
-        Transaction transaction = randomTransaction(asset);
+        TransactionDto transaction = randomTransactionDto(asset);
         underTest.save(transaction);
 
         List<AssetPosition> positions = assetPositionRepo.findAllByAssetId(asset.getId());
-        BigDecimal expectedTotalPrice = transaction.getQuantityChange().multiply(transaction.getPrice()).setScale(4, RoundingMode.HALF_UP);
+        BigDecimal expectedTotalPrice = transaction.getQuantityChange().multiply(transaction.getUnitPrice()).setScale(4, RoundingMode.HALF_UP);
         assertThat(positions.size(), is(1));
         AssetPosition assetPosition = positions.get(0);
         assertThat(assetPosition.getAsset().getId(), is(asset.getId()));
-        assertThat(assetPosition.getPrice(), is(transaction.getPrice()));
+        assertThat(assetPosition.getPrice(), is(transaction.getUnitPrice()));
         assertThat(assetPosition.getQuantity(), is(transaction.getQuantityChange()));
         assertThat(assetPosition.getTotalPrice(), is(expectedTotalPrice));
     }
@@ -95,16 +101,16 @@ class TransactionServiceTest {
         AssetPosition previousPosition = randomAssetPosition(asset);
         assetPositionRepo.save(previousPosition);
 
-        Transaction transaction = randomTransaction(asset);
+        TransactionDto transaction = randomTransactionDto(asset);
         underTest.save(transaction);
 
         Optional<AssetPosition> latestPosition = assetPositionRepo.findFirstByAssetIdOrderByTimestampDesc(asset.getId());
         assertThat(latestPosition.isPresent(), is(true));
         AssetPosition assetPosition = latestPosition.get();
         BigDecimal expectedTotalQuantity = previousPosition.getQuantity().add(transaction.getQuantityChange());
-        BigDecimal expectedTotalPrice = expectedTotalQuantity.multiply(transaction.getPrice()).setScale(4, RoundingMode.HALF_UP);
+        BigDecimal expectedTotalPrice = expectedTotalQuantity.multiply(transaction.getUnitPrice()).setScale(4, RoundingMode.HALF_UP);
         assertThat(assetPosition.getAsset().getId(), is(asset.getId()));
-        assertThat(assetPosition.getPrice(), is(transaction.getPrice()));
+        assertThat(assetPosition.getPrice(), is(transaction.getUnitPrice()));
         assertThat(assetPosition.getQuantity(), is(expectedTotalQuantity));
         assertThat(assetPosition.getTotalPrice(), is(expectedTotalPrice));
     }
@@ -115,13 +121,13 @@ class TransactionServiceTest {
         assetRepo.save(asset);
         Transaction transaction_1 = randomTransaction(asset);
         transaction_1.setTimestamp(LocalDateTime.now().minusDays(2));
-        underTest.save(transaction_1);
+        transactionRepo.save(transaction_1);
 
         Transaction transaction_2 = randomTransaction(asset);
         transaction_2.setTimestamp(LocalDateTime.now().minusDays(1));
-        underTest.save(transaction_2);
+        transactionRepo.save(transaction_2);
 
-        Transaction latestTransaction = randomTransaction(asset);
+        TransactionDto latestTransaction = randomTransactionDto(asset);
         underTest.save(latestTransaction);
 
         Optional<AssetPosition> latestPosition = assetPositionRepo.findFirstByAssetIdOrderByTimestampDesc(asset.getId());
@@ -132,11 +138,11 @@ class TransactionServiceTest {
                 .add(transaction_2.getQuantityChange())
                 .add(latestTransaction.getQuantityChange());
         BigDecimal expectedTotalPrice = expectedTotalQuantity
-                .multiply(latestTransaction.getPrice())
+                .multiply(latestTransaction.getUnitPrice())
                 .setScale(4, RoundingMode.HALF_UP);
 
         assertThat(assetPosition.getAsset().getId(), is(asset.getId()));
-        assertThat(assetPosition.getPrice(), is(latestTransaction.getPrice()));
+        assertThat(assetPosition.getPrice(), is(latestTransaction.getUnitPrice()));
         assertThat(assetPosition.getQuantity(), is(expectedTotalQuantity));
         assertThat(assetPosition.getTotalPrice(), is(expectedTotalPrice));
     }
@@ -146,12 +152,10 @@ class TransactionServiceTest {
         Asset asset = randomAsset();
         assetRepo.save(asset);
         Transaction transaction_1 = randomTransaction(asset);
-        transaction_1.setTimestamp(LocalDateTime.now());
-        underTest.save(transaction_1);
+        transaction_1.setTimestamp(LocalDateTime.now().plusDays(1));
+        transactionRepo.save(transaction_1);
 
-        Transaction transaction_2 = randomTransaction(asset);
-        transaction_2.setTimestamp(LocalDateTime.now().minusDays(1));
-
+        TransactionDto transaction_2 = randomTransactionDto(asset);
         assertThrows(IllegalArgumentException.class, () -> underTest.save(transaction_2));
     }
 }

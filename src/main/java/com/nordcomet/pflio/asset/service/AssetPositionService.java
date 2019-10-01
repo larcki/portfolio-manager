@@ -18,6 +18,12 @@ public class AssetPositionService {
     @Autowired
     private TransactionRepo transactionRepo;
 
+    public AssetPosition createBasedOn(Transaction transaction) {
+        BigDecimal previousQuantity = resolveTotalQuantityForAsset(transaction.getAsset().getId());
+        AssetPosition assetPosition = toAssetPosition(transaction, previousQuantity);
+        return save(assetPosition);
+    }
+
     public BigDecimal resolveTotalQuantityForAsset(Integer assetId) {
         return assetPositionRepo.findFirstByAssetIdOrderByTimestampDesc(assetId)
                 .map(AssetPosition::getQuantity)
@@ -26,6 +32,12 @@ public class AssetPositionService {
 
     public AssetPosition save(AssetPosition assetPosition) {
         return assetPositionRepo.save(assetPosition);
+    }
+
+    private AssetPosition toAssetPosition(Transaction transaction, BigDecimal previousQuantity) {
+        BigDecimal newQuantity = previousQuantity.add(transaction.getQuantityChange());
+        BigDecimal newTotalPrice = newQuantity.multiply(transaction.getPrice());
+        return new AssetPosition(transaction.getAsset(), newQuantity, transaction.getPrice(), newTotalPrice, transaction.getTimestamp());
     }
 
     private BigDecimal calculateQuantityFromPreviousTransactions(Integer assetId) {

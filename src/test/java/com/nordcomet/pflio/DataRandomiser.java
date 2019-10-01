@@ -54,6 +54,10 @@ public class DataRandomiser {
         return transaction;
     }
 
+    public static TransactionDto randomTransactionDto(Asset asset) {
+        return new TransactionDto(asset.getId(), randomQuantity(), randomAmount(), randomAmount(), "GBP");
+    }
+
     private static BigDecimal randomPrice() {
         return adjust(new BigDecimal("10"), -1, 3).setScale(4, RoundingMode.HALF_UP);
     }
@@ -80,13 +84,20 @@ public class DataRandomiser {
         return transaction;
     }
 
-
     public static double random(double rangeMin, double rangeMax) {
         return rangeMin + (rangeMax - rangeMin) * new Random().nextDouble();
     }
 
     public static BigDecimal adjust(BigDecimal price, double from, double to) {
-        return price.add(BigDecimal.valueOf(random(from, to)));
+        return price.add(randomAmount(from, to));
+    }
+
+    private static BigDecimal randomAmount(double from, double to) {
+        return BigDecimal.valueOf(random(from, to)).setScale(4, RoundingMode.HALF_UP);
+    }
+
+    private static BigDecimal randomAmount() {
+        return BigDecimal.valueOf(random(0, 100)).setScale(4, RoundingMode.HALF_UP);
     }
 
     public static PriceUpdate priceUpdate(Asset asset, int daysOfData, int daysOffset) {
@@ -99,8 +110,8 @@ public class DataRandomiser {
         return new Account(randomString(), "EUR");
     }
 
-    public static Fee randomFee(Asset asset, Account account) {
-        return new Fee(new BigDecimal(randomInt(1, 3)), "EUR", asset, account, LocalDateTime.now());
+    public static Fee randomFee(Asset asset) {
+        return new Fee(randomAmount(0.1, 1), "EUR", asset, LocalDateTime.now());
     }
 
     static boolean probabilityOf(Double value) {

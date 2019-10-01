@@ -6,15 +6,14 @@ import java.util.Objects;
 public class TransactionDto {
 
     private final Integer assetId;
-    private final BigDecimal quantity;
+    private final BigDecimal quantityChange;
     private final BigDecimal unitPrice;
     private final BigDecimal totalPrice;
     private final String currency;
 
-
-    public TransactionDto(Integer assetId, BigDecimal quantity, BigDecimal unitPrice, BigDecimal totalPrice, String currency) {
+    public TransactionDto(Integer assetId, BigDecimal quantityChange, BigDecimal unitPrice, BigDecimal totalPrice, String currency) {
         this.assetId = assetId;
-        this.quantity = quantity;
+        this.quantityChange = quantityChange;
         this.unitPrice = unitPrice;
         this.totalPrice = totalPrice;
         this.currency = currency;
@@ -24,8 +23,8 @@ public class TransactionDto {
         return assetId;
     }
 
-    public BigDecimal getQuantity() {
-        return quantity;
+    public BigDecimal getQuantityChange() {
+        return quantityChange;
     }
 
     public BigDecimal getUnitPrice() {
@@ -46,7 +45,7 @@ public class TransactionDto {
         if (o == null || getClass() != o.getClass()) return false;
         TransactionDto that = (TransactionDto) o;
         return Objects.equals(assetId, that.assetId) &&
-                Objects.equals(quantity, that.quantity) &&
+                Objects.equals(quantityChange, that.quantityChange) &&
                 Objects.equals(unitPrice, that.unitPrice) &&
                 Objects.equals(totalPrice, that.totalPrice) &&
                 Objects.equals(currency, that.currency);
@@ -54,17 +53,18 @@ public class TransactionDto {
 
     @Override
     public int hashCode() {
-        return Objects.hash(assetId, quantity, unitPrice, totalPrice, currency);
+        return Objects.hash(assetId, quantityChange, unitPrice, totalPrice, currency);
     }
 
     @Override
     public String toString() {
         return "TransactionDto{" +
                 "assetId=" + assetId +
-                ", quantity=" + quantity +
+                ", quantityChange=" + quantityChange +
                 ", unitPrice=" + unitPrice +
                 ", totalPrice=" + totalPrice +
                 ", currency='" + currency + '\'' +
                 '}';
     }
+
 }
