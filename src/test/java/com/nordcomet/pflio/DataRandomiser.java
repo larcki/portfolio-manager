@@ -95,6 +95,14 @@ public class DataRandomiser {
         return priceUpdate;
     }
 
+    public static Account randomAccount() {
+        return new Account(randomString(), "EUR");
+    }
+
+    public static Fee randomFee(Asset asset, Account account) {
+        return new Fee(new BigDecimal(randomInt(1, 3)), "EUR", asset, account, LocalDateTime.now());
+    }
+
     static boolean probabilityOf(Double value) {
         return Math.random() <= value;
     }
