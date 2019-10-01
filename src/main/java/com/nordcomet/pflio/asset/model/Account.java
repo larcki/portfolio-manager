@@ -3,25 +3,24 @@ package com.nordcomet.pflio.asset.model;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import java.util.UUID;
 
 @Entity
 public class Account {
 
     @Id
     @GeneratedValue
-    private UUID id;
+    private Integer id;
 
-    private final String name;
+    private String name;
 
-    private final String defaultCurrency;
+    private String defaultCurrency;
 
     public Account(String name, String defaultCurrency) {
         this.name = name;
         this.defaultCurrency = defaultCurrency;
     }
 
-    public UUID getId() {
+    public Integer getId() {
         return id;
     }
 

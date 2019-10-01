@@ -147,15 +147,4 @@ class TransactionServiceTest {
         assertThat(assetPosition.getTotalPrice(), is(expectedTotalPrice));
     }
 
-    @Test
-    void save_shouldThrowException_whenNewerTransactionExists() {
-        Asset asset = randomAsset();
-        assetRepo.save(asset);
-        Transaction transaction_1 = randomTransaction(asset);
-        transaction_1.setTimestamp(LocalDateTime.now().plusDays(1));
-        transactionRepo.save(transaction_1);
-
-        TransactionDto transaction_2 = randomTransactionDto(asset);
-        assertThrows(IllegalArgumentException.class, () -> underTest.save(transaction_2));
-    }
 }

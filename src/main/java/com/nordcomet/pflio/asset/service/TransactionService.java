@@ -13,7 +13,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Optional;
 
 import static java.time.LocalDateTime.now;
 
@@ -33,7 +32,6 @@ public class TransactionService {
         Asset asset = assetRepo.findAssetsById(dto.getAssetId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         Fee fee = resolveFee(dto, asset);
         Transaction transaction = toTransaction(dto, asset, fee);
-        checkThatIsLatest(transaction);
         assetPositionService.createBasedOn(transaction);
         transactionRepo.save(transaction);
     }
@@ -51,15 +49,6 @@ public class TransactionService {
 
     private Transaction toTransaction(TransactionDto dto, Asset asset, Fee fee) {
         return new Transaction(asset, now(), dto.getUnitPrice(), dto.getQuantityChange(), dto.getCurrency(), fee);
-    }
-
-    private void checkThatIsLatest(Transaction transaction) {
-        Optional<Transaction> latestTransaction = transactionRepo.findFirstByAssetIdOrderByTimestampDesc(transaction.getAsset().getId());
-        if (latestTransaction.isPresent()) {
-            if (latestTransaction.get().getTimestamp().isAfter(transaction.getTimestamp())) {
-                throw new IllegalArgumentException("Can not store transaction when more recent exists");
-            }
-        }
     }
 
 }

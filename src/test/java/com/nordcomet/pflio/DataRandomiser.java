@@ -55,7 +55,10 @@ public class DataRandomiser {
     }
 
     public static TransactionDto randomTransactionDto(Asset asset) {
-        return new TransactionDto(asset.getId(), randomQuantity(), randomAmount(), randomAmount(), "GBP");
+        BigDecimal quantityChange = randomQuantity();
+        BigDecimal unitPrice = randomAmount();
+        BigDecimal totalPrice = quantityChange.multiply(unitPrice).add(randomAmount(0, 1)).setScale(4, RoundingMode.HALF_UP);
+        return new TransactionDto(asset.getId(), quantityChange, unitPrice, totalPrice, "GBP");
     }
 
     private static BigDecimal randomPrice() {
