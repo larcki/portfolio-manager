@@ -1,7 +1,7 @@
 package com.nordcomet.pflio.chart.service;
 
 import com.nordcomet.pflio.asset.model.Asset;
-import com.nordcomet.pflio.asset.model.Tags;
+import com.nordcomet.pflio.asset.model.AssetClassType;
 import com.nordcomet.pflio.asset.model.snapshot.AssetPosition;
 import com.nordcomet.pflio.asset.repo.AssetPositionRepo;
 import com.nordcomet.pflio.asset.repo.AssetRepo;
@@ -57,19 +57,19 @@ public class ChartService {
     }
 
     @Transactional
-    public ChartJSData getStackedValueChart(List<Tags> tags, int daysAgoExcluding) {
-        Map<Object, String> colourPalette = ColourPalette.createColourPalette(tags);
+    public ChartJSData getStackedValueChart(List<AssetClassType> assetClasses, int daysAgoExcluding) {
+        Map<Object, String> colourPalette = ColourPalette.createColourPalette(assetClasses);
         List<LocalDate> days = daysResolver.resolveDays(daysAgoExcluding);
-        Set<Asset> assets = assetRepo.findAssetsByTagsNameIn(tags);
+        Set<Asset> assets = assetRepo.findAssetsByAssetClassesNameIn(assetClasses);
 
-        List<ChartJSDataset> datasets = tags.stream().map(tag -> {
+        List<ChartJSDataset> datasets = assetClasses.stream().map(assetClass -> {
 
-            List<List<BigDecimal>> prices = findAssetsForTag(assets, tag).stream()
-                    .map(asset -> pricesForAsset(days, asset, asset.getProportionOfTag(tag)))
+            List<List<BigDecimal>> prices = findAssetsForTag(assets, assetClass).stream()
+                    .map(asset -> pricesForAsset(days, asset, asset.getProportionOfAssetClass(assetClass)))
                     .collect(toList());
             List<BigDecimal> tagsPrices = combinePrices(days, prices);
 
-            return new ChartJSDataset(tag.name(), colourPalette.get(tag), tagsPrices);
+            return new ChartJSDataset(assetClass.name(), colourPalette.get(assetClass), tagsPrices);
 
         }).collect(toList());
 
@@ -105,9 +105,9 @@ public class ChartService {
         return days.get(0).minusDays(10).atStartOfDay();
     }
 
-    private Set<Asset> findAssetsForTag(Set<Asset> assets, Tags tag) {
+    private Set<Asset> findAssetsForTag(Set<Asset> assets, AssetClassType classType) {
         return assets.stream()
-                .filter(asset -> asset.getTags().stream().anyMatch(assetTag -> assetTag.getName() == tag))
+                .filter(asset -> asset.getAssetClasses().stream().anyMatch(assetClass -> assetClass.getName() == classType))
                 .collect(toSet());
     }
 }

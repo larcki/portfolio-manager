@@ -1,6 +1,6 @@
 package com.nordcomet.pflio.chart;
 
-import com.nordcomet.pflio.asset.model.Tags;
+import com.nordcomet.pflio.asset.model.AssetClassType;
 import com.nordcomet.pflio.chart.model.ChartJS;
 import com.nordcomet.pflio.chart.model.ChartJSData;
 import com.nordcomet.pflio.chart.model.PortfolioChartType;
@@ -29,17 +29,17 @@ public class ChartController {
     @RequestMapping("/api/chart")
     public ChartJS chart(@RequestParam Integer period,
                          @RequestParam PortfolioChartType chartType,
-                         @RequestParam(required = false) List<Tags> tags,
+                         @RequestParam(required = false) List<AssetClassType> assetClasses,
                          @RequestParam(required = false) List<Integer> assets) {
 
-        logger.info("Incoming request, period {} chartType {} tags {} assets {}", period, chartType, tags, assets);
+        logger.info("Incoming request, period {} chartType {} assetClasses {} assets {}", period, chartType, assetClasses, assets);
 
-        if (tags == null && assets == null) {
+        if (assetClasses == null && assets == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
 
         if (chartType.equals(PortfolioChartType.STACKED_VALUE)) {
-            ChartJSData chartData = chartService.getStackedValueChart(tags, period);
+            ChartJSData chartData = chartService.getStackedValueChart(assetClasses, period);
             return createChartJS(
                     chartType,
                     "Allocation over time",

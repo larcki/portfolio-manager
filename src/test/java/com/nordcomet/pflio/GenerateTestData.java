@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static com.nordcomet.pflio.DataRandomiser.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @Disabled
@@ -29,9 +30,6 @@ class GenerateTestData {
 
     @Autowired
     private TransactionRepo transactionRepo;
-
-    @Autowired
-    private TagRepo tagRepo;
 
     @Autowired
     private PriceUpdateRepo priceUpdateRepo;
@@ -53,7 +51,6 @@ class GenerateTestData {
         transactionRepo.deleteAll();
         assetPositionRepo.deleteAll();
         assetRepo.deleteAll();
-        tagRepo.deleteAll();
         feeRepo.deleteAll();
     }
 
@@ -90,16 +87,16 @@ class GenerateTestData {
 
     @Test
     void tagSearchTest() {
-        List<Tags> tags = List.of(Tags.BOND);
-        Set<Asset> assets = assetRepo.findAssetsByTagsNameIn(tags);
-        System.out.println(assets);
+        List<AssetClassType> tags = List.of(AssetClassType.BOND);
+        Set<Asset> assets = assetRepo.findAssetsByAssetClassesNameIn(tags);
+        assertTrue(!assets.isEmpty());
     }
 
     private static List<Asset> createAssetsWithPriceParser() {
         Asset superFondetNorge = new Asset();
         superFondetNorge.setParserOptions(new ParserOptions(ParserType.MORNINGSTAR_FUND, "F00000TH8U", "NOK", "EUR"));
         superFondetNorge.setName("Nordnet Superfondet Norge");
-        superFondetNorge.setTags(List.of(new Tag(BigDecimal.ONE, Tags.TMP_ASSETS_WITH_PARSER)));
+        superFondetNorge.setAssetClasses(Set.of(new AssetClass(AssetClassType.STOCK, BigDecimal.ONE)));
         return List.of(superFondetNorge);
     }
 

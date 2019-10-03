@@ -6,25 +6,33 @@ import com.nordcomet.pflio.asset.model.snapshot.AssetPosition;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import java.util.UUID;
+
+import static com.nordcomet.pflio.asset.model.AssetClassType.*;
 
 public class DataRandomiser {
 
     public static Asset randomAsset() {
         Asset asset = new Asset();
         asset.setName(randomString());
-        asset.setTags(randomTags());
+        asset.setAssetClasses(randomAssetClasses());
+        asset.setRegion(randomRegion());
         return asset;
     }
 
-    private static List<Tag> randomTags() {
-        if (probabilityOf(0.5)) {
-            return List.of(new Tag(BigDecimal.ONE, Tags.STOCK));
-        } else {
-            return List.of(new Tag(BigDecimal.ONE, Tags.BOND));
-        }
+    private static Region randomRegion() {
+        return Region.values()[randomInt(0, Region.values().length - 1)];
+    }
+
+    private static Set<AssetClass> randomAssetClasses() {
+        return Set.of(
+                new AssetClass(BOND, new BigDecimal("0.4")),
+                new AssetClass(STOCK, new BigDecimal("0.1")),
+                new AssetClass(PROPERTY, new BigDecimal("0.3")),
+                new AssetClass(CASH_EUR, new BigDecimal("0.2"))
+        );
     }
 
     public static PriceUpdate randomPriceUpdate(Asset asset) {

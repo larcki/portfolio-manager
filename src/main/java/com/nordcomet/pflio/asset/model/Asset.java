@@ -2,8 +2,8 @@ package com.nordcomet.pflio.asset.model;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 public class Asset {
@@ -16,13 +16,16 @@ public class Asset {
 
     private ParserOptions parserOptions;
 
-    @ManyToMany(cascade = CascadeType.PERSIST)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
-            name = "asset_tags",
+            name = "asset_class_mapping",
             joinColumns = @JoinColumn(name = "asset_id"),
-            inverseJoinColumns = @JoinColumn(name = "tag_id")
+            inverseJoinColumns = @JoinColumn(name = "asset_class_id")
     )
-    private List<Tag> tags;
+    private Set<AssetClass> assetClasses;
+
+    @Enumerated(EnumType.STRING)
+    private Region region;
 
     public Integer getId() {
         return id;
@@ -40,20 +43,11 @@ public class Asset {
         this.name = name;
     }
 
-
-    public List<Tag> getTags() {
-        return tags;
-    }
-
-    public BigDecimal getProportionOfTag(Tags tag) {
-        return getTags().stream()
-                .filter(assetTag -> assetTag.getName() == tag)
-                .findFirst().map(Tag::getProportion)
+    public BigDecimal getProportionOfAssetClass(AssetClassType assetClassType) {
+        return getAssetClasses().stream()
+                .filter(assetClass -> assetClass.getName() == assetClassType)
+                .findFirst().map(AssetClass::getProportion)
                 .orElse(BigDecimal.ZERO);
-    }
-
-    public void setTags(List<Tag> tags) {
-        this.tags = tags;
     }
 
     public ParserOptions getParserOptions() {
@@ -64,6 +58,22 @@ public class Asset {
         this.parserOptions = parserOptions;
     }
 
+    public Set<AssetClass> getAssetClasses() {
+        return assetClasses;
+    }
+
+    public void setAssetClasses(Set<AssetClass> assetClasses) {
+        this.assetClasses = assetClasses;
+    }
+
+    public Region getRegion() {
+        return region;
+    }
+
+    public void setRegion(Region region) {
+        this.region = region;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -72,11 +82,12 @@ public class Asset {
         return Objects.equals(id, asset.id) &&
                 Objects.equals(name, asset.name) &&
                 Objects.equals(parserOptions, asset.parserOptions) &&
-                Objects.equals(tags, asset.tags);
+                Objects.equals(assetClasses, asset.assetClasses) &&
+                region == asset.region;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, parserOptions, tags);
+        return Objects.hash(id, name, parserOptions, assetClasses, region);
     }
 }
