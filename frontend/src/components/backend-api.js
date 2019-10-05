@@ -17,5 +17,9 @@ export default {
         return AXIOS.get('/chart/pie', {
             params: {'assetClasses': assetClasses}
         });
+    },
+
+    getAssets() {
+        return AXIOS.get('/assets');
     }
 }

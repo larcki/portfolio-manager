@@ -16,4 +16,6 @@ public interface AssetRepo extends CrudRepository<Asset, Integer> {
 
     Optional<Asset> findAssetsById(Integer assetId);
 
+    Set<Asset> findAll();
+
 }

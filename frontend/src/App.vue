@@ -3,9 +3,8 @@
 
         <v-app-bar color="primary" hide-on-scroll dark app>
             <v-toolbar-items>
-                <v-btn text>Dashboard</v-btn>
-                <v-btn text>Assets</v-btn>
-                <v-btn text>Transactions</v-btn>
+                <v-btn to="/" text>Dashboard</v-btn>
+                <v-btn to="/assets" text>Assets</v-btn>
             </v-toolbar-items>
             <v-spacer></v-spacer>
             <v-btn text
@@ -15,35 +14,14 @@
             </v-btn>
         </v-app-bar>
 
-        <v-content>
-            <v-container fluid>
-                <v-row>
-                    <v-col cols="12" md="8">
-                        <v-card :elevation="n - 1">
-                            <stacked-area-chart initial-period="180" initial-tags="BOND,STOCK"/>
-                        </v-card>
-                    </v-col>
-                    <v-col cols="4">
-                        <v-card :elevation="n - 1">
-                            <pie-chart asset-classes="BOND,STOCK"/>
-                        </v-card>
-                    </v-col>
-                </v-row>
-            </v-container>
-        </v-content>
+        <router-view></router-view>
 
     </v-app>
 </template>
 
 <script>
-    import StackedAreaChart from "./components/StackedAreaChart";
-    import PieChart from "./components/PieChart";
-
     export default {
         name: 'app',
-        components: {
-            StackedAreaChart,
-            PieChart
-        }
+        components: {}
     }
 </script>
