@@ -11,7 +11,7 @@
             <v-btn text
                    href="https://github.com/larcki/portfolio-manager"
                    target="_blank">
-                <span class="mr-2">GitHub</span>
+                <v-icon>mdi-github-circle</v-icon>
             </v-btn>
         </v-app-bar>
 

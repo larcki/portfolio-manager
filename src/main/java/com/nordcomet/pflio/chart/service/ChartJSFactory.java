@@ -17,13 +17,21 @@ public class ChartJSFactory {
             PortfolioChartType.VALUE_LINE, "line"
     );
 
-    public static ChartJS createChartJS(PortfolioChartType type, String titleText, ChartJSData chartJSData) {
-        return new ChartJS(chartTypes.get(type), chartJSData, createOptions(titleText));
+    public static ChartJS createChartJS(PortfolioChartType type, String timeUnit, ChartJSData chartJSData) {
+        return new ChartJS(chartTypes.get(type), chartJSData, createOptions(timeUnit));
     }
 
-    private static Map<Object, Object> createOptions(String titleText) {
+    public static Map<Object, Object> createOptions(String timeUnit) {
         return Map.of(
                 "responsive", true,
+                "layout", Map.of(
+                        "padding", Map.of(
+                                "right", 25,
+                                "left", 15,
+                                "bottom", 15,
+                                "top", 0
+                        )
+                ),
                 "elements", Map.of(
                         "point", Map.of(
                                 "radius", 0,
@@ -33,9 +41,13 @@ public class ChartJSFactory {
                         "position", "top"),
                 "title", Map.of(
                         "display", false,
-                        "text", titleText),
+                        "text", ""),
                 "scales", Map.of(
                         "xAxes", List.of(Map.of(
+                                "type", "time",
+                                "time", Map.of(
+                                        "unit", timeUnit
+                                ),
                                 "scaleLabel", Map.of(
                                         "display", false,
                                         "labelString", "Time"))),

@@ -5,6 +5,7 @@ import com.nordcomet.pflio.asset.model.AssetClassType;
 import com.nordcomet.pflio.asset.model.snapshot.AssetPosition;
 import com.nordcomet.pflio.asset.repo.AssetPositionRepo;
 import com.nordcomet.pflio.asset.repo.AssetRepo;
+import com.nordcomet.pflio.chart.model.ChartJS;
 import com.nordcomet.pflio.chart.model.ChartJSData;
 import com.nordcomet.pflio.chart.model.ChartJSDataset;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,19 +42,10 @@ public class ChartService {
         this.daysResolver = daysResolver;
     }
 
-    public ChartJSData lineChartFor(int sinceDays, List<Asset> assets) {
-        Map<Object, String> colourPalette = ColourPalette.createColourPalette(assets);
-        List<LocalDate> days = daysResolver.resolveDays(sinceDays);
-
-        List<ChartJSDataset> datasets = new ArrayList<>();
-        for (Asset asset : assets) {
-            String assetColor = colourPalette.get(asset);
-            List<BigDecimal> values = pricesForAsset(days, asset, BigDecimal.ONE);
-            ChartJSDataset chart = new ChartJSDataset(asset.getName(), assetColor, values);
-            datasets.add(chart);
-        }
-
-        return new ChartJSData(days, datasets);
+    public ChartJS getStackedValueChartFull(List<AssetClassType> assetClasses, int daysAgoExcluding) {
+        ChartJSData data = getStackedValueChart(assetClasses, daysAgoExcluding);
+        String timeUnit = resolveTimeUnit(daysAgoExcluding);
+        return new ChartJS("line", data, ChartJSFactory.createOptions(timeUnit));
     }
 
     @Transactional
@@ -109,5 +101,17 @@ public class ChartService {
         return assets.stream()
                 .filter(asset -> asset.getAssetClasses().stream().anyMatch(assetClass -> assetClass.getName() == classType))
                 .collect(toSet());
+    }
+
+    private String resolveTimeUnit(int daysAgoExcluding) {
+        if (daysAgoExcluding <= 32) {
+            return "day";
+        } else if (daysAgoExcluding <= 370) {
+            return "month";
+        } else if (daysAgoExcluding <= 1100) {
+            return "quarter";
+        } else {
+            return "year";
+        }
     }
 }

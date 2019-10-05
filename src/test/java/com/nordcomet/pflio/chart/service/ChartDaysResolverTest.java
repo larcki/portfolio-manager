@@ -1,6 +1,5 @@
 package com.nordcomet.pflio.chart.service;
 
-import com.nordcomet.pflio.chart.service.ChartDaysResolver;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;

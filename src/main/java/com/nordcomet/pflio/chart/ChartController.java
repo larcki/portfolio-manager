@@ -2,7 +2,6 @@ package com.nordcomet.pflio.chart;
 
 import com.nordcomet.pflio.asset.model.AssetClassType;
 import com.nordcomet.pflio.chart.model.ChartJS;
-import com.nordcomet.pflio.chart.model.ChartJSData;
 import com.nordcomet.pflio.chart.model.PortfolioChartType;
 import com.nordcomet.pflio.chart.service.ChartService;
 import org.slf4j.Logger;
@@ -15,8 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-
-import static com.nordcomet.pflio.chart.service.ChartJSFactory.createChartJS;
 
 @RestController
 public class ChartController {
@@ -39,11 +36,7 @@ public class ChartController {
         }
 
         if (chartType.equals(PortfolioChartType.STACKED_VALUE)) {
-            ChartJSData chartData = chartService.getStackedValueChart(assetClasses, period);
-            return createChartJS(
-                    chartType,
-                    "Allocation over time",
-                    chartData);
+            return chartService.getStackedValueChartFull(assetClasses, period);
         }
 
         throw new RuntimeException("Chart type not implemented");
