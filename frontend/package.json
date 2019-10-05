@@ -9,7 +9,6 @@
   },
   "dependencies": {
     "axios": "0.18.0",
-    "buefy": "^0.8.4",
     "chart.js": "^2.8.0",
     "core-js": "^2.6.5",
     "node-sass": "^4.12.0",

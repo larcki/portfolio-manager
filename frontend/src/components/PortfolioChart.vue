@@ -1,19 +1,5 @@
 <template>
     <div>
-        <div class="columns">
-            <div class="column">
-                Period
-                <b-input v-model="period" :placeholder="initialPeriod"></b-input>
-            </div>
-            <div class="column">
-                Tags
-                <b-input v-model="tags" :placeholder="initialTags"></b-input>
-            </div>
-            <div class="column">
-                <b-button  v-on:click=updateChart>Refresh</b-button>
-            </div>
-        </div>
-
         <canvas ref="chart"></canvas>
     </div>
 </template>
