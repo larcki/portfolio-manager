@@ -7,9 +7,15 @@ const AXIOS = axios.create({
 
 
 export default {
-    getChart(period, chartType, tags, assets) {
-        return AXIOS.get('/chart', {
-            params: {'period': period, 'chartType': chartType, 'assetClasses': tags, 'assets': assets}
+    getChart(period, tags) {
+        return AXIOS.get('/chart/stacked', {
+            params: {'period': period, 'assetClasses': tags}
+        });
+    },
+
+    getPieChart(assetClasses) {
+        return AXIOS.get('/chart/pie', {
+            params: {'assetClasses': assetClasses}
         });
     }
 }

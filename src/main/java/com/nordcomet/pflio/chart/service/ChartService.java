@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
@@ -40,6 +41,19 @@ public class ChartService {
         this.assetPositionRepo = assetPositionRepo;
         this.assetRepo = assetRepo;
         this.daysResolver = daysResolver;
+    }
+
+    public Object getPieChart(List<AssetClassType> assetClasses) {
+        Map<Object, String> colourPalette = ColourPalette.createColourPalette(assetClasses);
+        Set<Asset> assets = assetRepo.findAssetsByAssetClassesNameIn(assetClasses);
+        List<BigDecimal> data = assetClasses.stream()
+                .map(assetClass -> findAssetsForTag(assets, assetClass).stream()
+                        .map(asset -> assetPositionRepo.findFirstByAssetIdOrderByTimestampDesc(asset.getId())
+                                .map(AssetPosition::getTotalPrice)
+                                .orElse(BigDecimal.ZERO))
+                        .reduce(BigDecimal.ZERO, BigDecimal::add)).collect(Collectors.toList());
+        return ChartJSFactory.createPieChart(assetClasses, colourPalette, data);
+
     }
 
     public ChartJS getStackedValueChartFull(List<AssetClassType> assetClasses, int daysAgoExcluding) {

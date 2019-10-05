@@ -19,7 +19,7 @@
     import Chart from "chart.js";
 
     export default {
-        name: 'PortfolioChart',
+        name: 'StackedAreaChart',
         props: {
             initialPeriod: String,
             initialTags: String
@@ -33,7 +33,7 @@
         },
         methods: {
             getChartData(successAction) {
-                api.getChart(this.period, 'STACKED_VALUE', this.tags)
+                api.getChart(this.period, this.tags)
                     .then(successAction)
             },
             updateChart(period) {

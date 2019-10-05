@@ -1,25 +1,14 @@
 package com.nordcomet.pflio.chart.service;
 
-import com.nordcomet.pflio.chart.model.ChartJS;
-import com.nordcomet.pflio.chart.model.ChartJSData;
-import com.nordcomet.pflio.chart.model.PortfolioChartType;
+import com.nordcomet.pflio.asset.model.AssetClassType;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.stream.Collectors.toList;
+
 public class ChartJSFactory {
-
-    private static final Map<PortfolioChartType, String> chartTypes = Map.of(
-            PortfolioChartType.PERFORMANCE_LINE, "line",
-            PortfolioChartType.PIE, "pie",
-            PortfolioChartType.STACKED_RELATIVE, "line",
-            PortfolioChartType.STACKED_VALUE, "line",
-            PortfolioChartType.VALUE_LINE, "line"
-    );
-
-    public static ChartJS createChartJS(PortfolioChartType type, String timeUnit, ChartJSData chartJSData) {
-        return new ChartJS(chartTypes.get(type), chartJSData, createOptions(timeUnit));
-    }
 
     public static Map<Object, Object> createOptions(String timeUnit) {
         return Map.of(
@@ -56,6 +45,33 @@ public class ChartJSFactory {
                                 "scaleLabel", Map.of(
                                         "display", false,
                                         "labelString", "value")))
+                )
+        );
+    }
+
+    public static Map<String, Object> createPieChart(List<AssetClassType> assetClasses, Map<Object, String> colourPalette, List<BigDecimal> data) {
+        return Map.of(
+                "type", "pie",
+                "data", Map.of(
+                        "labels", assetClasses.stream().map(Enum::name).collect(toList()),
+                        "datasets", List.of(
+                                Map.of(
+                                        "backgroundColor", assetClasses.stream().map(colourPalette::get).collect(toList()),
+                                        "data", data
+                                )
+                        )
+                ),
+                "options", Map.of(
+                        "legend", Map.of(
+                                "position", "top"),
+                        "layout", Map.of(
+                                "padding", Map.of(
+                                        "right", 0,
+                                        "left", 0,
+                                        "bottom", 0,
+                                        "top", 0
+                                )
+                        )
                 )
         );
     }

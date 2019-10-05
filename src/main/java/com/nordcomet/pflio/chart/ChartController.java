@@ -1,17 +1,13 @@
 package com.nordcomet.pflio.chart;
 
 import com.nordcomet.pflio.asset.model.AssetClassType;
-import com.nordcomet.pflio.chart.model.ChartJS;
-import com.nordcomet.pflio.chart.model.PortfolioChartType;
 import com.nordcomet.pflio.chart.service.ChartService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -23,25 +19,16 @@ public class ChartController {
     @Autowired
     private ChartService chartService;
 
-    @RequestMapping("/api/chart")
-    public ChartJS chart(@RequestParam Integer period,
-                         @RequestParam PortfolioChartType chartType,
-                         @RequestParam(required = false) List<AssetClassType> assetClasses,
-                         @RequestParam(required = false) List<Integer> assets) {
-
-        logger.info("Incoming request, period {} chartType {} assetClasses {} assets {}", period, chartType, assetClasses, assets);
-
-        if (assetClasses == null && assets == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        }
-
-        if (chartType.equals(PortfolioChartType.STACKED_VALUE)) {
-            return chartService.getStackedValueChartFull(assetClasses, period);
-        }
-
-        throw new RuntimeException("Chart type not implemented");
+    @RequestMapping("/api/chart/pie")
+    public Object pieChart(@RequestParam List<AssetClassType> assetClasses) {
+        return chartService.getPieChart(assetClasses);
+    }
 
 
+    @RequestMapping("/api/chart/stacked")
+    public Object chart(@RequestParam Integer period,
+                        @RequestParam List<AssetClassType> assetClasses) {
+        return chartService.getStackedValueChartFull(assetClasses, period);
     }
 
 

@@ -1,7 +1,7 @@
 <template>
     <v-app>
 
-            <v-app-bar color="primary" hide-on-scroll dark app>
+        <v-app-bar color="primary" hide-on-scroll dark app>
             <v-toolbar-items>
                 <v-btn text>Dashboard</v-btn>
                 <v-btn text>Assets</v-btn>
@@ -20,12 +20,12 @@
                 <v-row>
                     <v-col cols="12" md="8">
                         <v-card :elevation="n - 1">
-                            <portfolio-chart initial-period="180" initial-tags="BOND,STOCK"/>
+                            <stacked-area-chart initial-period="180" initial-tags="BOND,STOCK"/>
                         </v-card>
                     </v-col>
                     <v-col cols="4">
                         <v-card :elevation="n - 1">
-                            <portfolio-chart initial-period="180" initial-tags="BOND,STOCK"/>
+                            <pie-chart asset-classes="BOND,STOCK"/>
                         </v-card>
                     </v-col>
                 </v-row>
@@ -36,12 +36,14 @@
 </template>
 
 <script>
-    import PortfolioChart from './components/PortfolioChart.vue'
+    import StackedAreaChart from "./components/StackedAreaChart";
+    import PieChart from "./components/PieChart";
 
     export default {
         name: 'app',
         components: {
-            PortfolioChart
+            StackedAreaChart,
+            PieChart
         }
     }
 </script>
