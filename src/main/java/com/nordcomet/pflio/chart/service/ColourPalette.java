@@ -7,11 +7,11 @@ import java.util.Map;
 public class ColourPalette {
 
     private static final List<String> colourScheme_5 = List.of(
-            "#638ccc",
-            "#c57c3c",
-            "#ab62c0",
-            "#72a555",
-            "#ca5670"
+            "rgb(212,221,185)",
+            "rgb(165,201,227)",
+            "rgb(218,187,214)",
+            "rgb(222,182,163)",
+            "rgb(164,209,197)"
     );
 
     private static final List<String> colourScheme_10 = List.of(

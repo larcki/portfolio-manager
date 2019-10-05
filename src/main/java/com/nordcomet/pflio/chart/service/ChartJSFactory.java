@@ -24,18 +24,25 @@ public class ChartJSFactory {
     private static Map<Object, Object> createOptions(String titleText) {
         return Map.of(
                 "responsive", true,
+                "elements", Map.of(
+                        "point", Map.of(
+                                "radius", 0,
+                                "hitRadius", 8)
+                ),
+                "legend", Map.of(
+                        "position", "top"),
                 "title", Map.of(
-                        "display", true,
+                        "display", false,
                         "text", titleText),
                 "scales", Map.of(
                         "xAxes", List.of(Map.of(
                                 "scaleLabel", Map.of(
-                                        "display", true,
+                                        "display", false,
                                         "labelString", "Time"))),
                         "yAxes", List.of(Map.of(
                                 "stacked", true,
                                 "scaleLabel", Map.of(
-                                        "display", true,
+                                        "display", false,
                                         "labelString", "value")))
                 )
         );

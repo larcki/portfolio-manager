@@ -1,10 +1,12 @@
 <template>
     <v-app>
 
-        <v-app-bar app>
-            <v-toolbar-title class="headline text-uppercase">
-                <span class="font-weight-light">Asset Portfolio</span>
-            </v-toolbar-title>
+            <v-app-bar color="primary" hide-on-scroll dark app>
+            <v-toolbar-items>
+                <v-btn text>Dashboard</v-btn>
+                <v-btn text>Assets</v-btn>
+                <v-btn text>Transactions</v-btn>
+            </v-toolbar-items>
             <v-spacer></v-spacer>
             <v-btn text
                    href="https://github.com/larcki/portfolio-manager"
@@ -16,12 +18,12 @@
         <v-content>
             <v-container fluid>
                 <v-row>
-                    <v-col>
+                    <v-col cols="12" md="8">
                         <v-card :elevation="n - 1">
                             <portfolio-chart initial-period="180" initial-tags="BOND,STOCK"/>
                         </v-card>
                     </v-col>
-                    <v-col>
+                    <v-col cols="4">
                         <v-card :elevation="n - 1">
                             <portfolio-chart initial-period="180" initial-tags="BOND,STOCK"/>
                         </v-card>
