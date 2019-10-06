@@ -49,9 +49,10 @@ public class ChartService {
         List<BigDecimal> data = assetClasses.stream()
                 .map(assetClass -> findAssetsForTag(assets, assetClass).stream()
                         .map(asset -> assetPositionRepo.findFirstByAssetIdOrderByTimestampDesc(asset.getId())
-                                .map(AssetPosition::getTotalPrice)
+                                .map(assetPosition -> priceForAsset(asset.getProportionOfAssetClass(assetClass), assetPosition))
                                 .orElse(BigDecimal.ZERO))
-                        .reduce(BigDecimal.ZERO, BigDecimal::add)).collect(Collectors.toList());
+                        .reduce(BigDecimal.ZERO, BigDecimal::add))
+                .collect(Collectors.toList());
         return ChartJSFactory.createPieChart(assetClasses, colourPalette, data);
 
     }
@@ -99,8 +100,12 @@ public class ChartService {
         return days.stream().map(day -> assetPositions.stream()
                 .filter(beforeEndOfDay(day))
                 .max(comparing(AssetPosition::getTimestamp))
-                .map(assetPosition -> assetPosition.getTotalPrice().multiply(proportion).setScale(4, RoundingMode.HALF_UP))
+                .map(assetPosition -> priceForAsset(proportion, assetPosition))
                 .orElse(BigDecimal.ZERO)).collect(toList());
+    }
+
+    private BigDecimal priceForAsset(BigDecimal proportion, AssetPosition assetPosition) {
+        return assetPosition.getTotalPrice().multiply(proportion).setScale(4, RoundingMode.HALF_UP);
     }
 
     private Predicate<AssetPosition> beforeEndOfDay(LocalDate day) {
