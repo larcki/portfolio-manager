@@ -2,6 +2,7 @@ import Vue from "vue";
 import Router from "vue-router";
 import Dashboard from './views/Dashboard'
 import Assets from './views/Assets'
+import Asset from './views/Asset'
 
 Vue.use(Router);
 
@@ -18,6 +19,11 @@ const router = new Router({
             path: "/assets",
             name: 'Assets',
             component: Assets
+        },
+        {
+            path: "/assets/*",
+            name: 'Asset',
+            component: Asset
         },
         {path: "*", redirect: "/404"}
     ]

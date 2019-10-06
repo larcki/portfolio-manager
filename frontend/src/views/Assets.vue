@@ -19,7 +19,8 @@
                                 :headers="headers"
                                 :items="assets"
                                 :search="search"
-                        ></v-data-table>
+                                @click:row="showAssetDetails(item.name)">
+                        </v-data-table>
                     </v-card>
                 </v-col>
             </v-row>
@@ -56,6 +57,11 @@
                     this.assets = response.data
                 })
         },
+        methods: {
+            showAssetDetails() {
+
+            }
+        }
 
     }
 
