@@ -42,9 +42,10 @@
                         sortable: false,
                         value: 'name',
                     },
-                    {text: 'Value', value: 'value'},
-                    {text: 'Profit', value: 'profit'},
-                    {text: 'Profit (%)', value: 'profitPercent'},
+                    {text: 'Account', value: 'account'},
+                    {text: 'Value', value: 'totalValue'},
+                    {text: 'Performance', value: 'performance'},
+                    {text: 'Performance (%)', value: 'performancePercentage'},
                 ],
                 assets: [],
             }
@@ -52,7 +53,6 @@
         mounted() {
             Api.getAssets()
                 .then(response => {
-                    console.log(response.data)
                     this.assets = response.data
                 })
         },

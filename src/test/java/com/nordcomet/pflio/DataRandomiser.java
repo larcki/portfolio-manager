@@ -49,7 +49,7 @@ public class DataRandomiser {
                 randomQuantity(),
                 randomPrice(),
                 randomPrice(),
-                LocalDateTime.now()
+                randomPrice(), LocalDateTime.now()
         );
     }
 
@@ -73,7 +73,7 @@ public class DataRandomiser {
         return randomTransactionDto(asset, LocalDateTime.now());
     }
 
-    private static BigDecimal randomPrice() {
+    public static BigDecimal randomPrice() {
         return adjust(new BigDecimal("10"), -1, 3).setScale(4, RoundingMode.HALF_UP);
     }
 

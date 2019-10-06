@@ -27,16 +27,19 @@ public class AssetPosition {
     @Column(precision = 12, scale = 4)
     private BigDecimal totalPrice;
 
+    @Column(precision = 12, scale = 4)
+    private BigDecimal totalPurchaseAmount;
+
     private LocalDateTime timestamp;
 
-    public AssetPosition(Asset asset, BigDecimal quantity, BigDecimal price, BigDecimal totalPrice, LocalDateTime timestamp) {
+    public AssetPosition(Asset asset, BigDecimal quantity, BigDecimal price, BigDecimal totalPrice, BigDecimal totalPurchaseAmount, LocalDateTime timestamp) {
         this.asset = asset;
         this.quantity = quantity;
         this.price = price;
         this.totalPrice = totalPrice;
+        this.totalPurchaseAmount = totalPurchaseAmount;
         this.timestamp = timestamp;
     }
-
 
     public AssetPosition() {
     }
@@ -63,6 +66,10 @@ public class AssetPosition {
 
     public LocalDateTime getTimestamp() {
         return timestamp;
+    }
+
+    public BigDecimal getTotalPurchaseAmount() {
+        return totalPurchaseAmount;
     }
 
     @Override

@@ -1,12 +1,10 @@
 package com.nordcomet.pflio.asset.service;
 
-import com.nordcomet.pflio.asset.model.Asset;
-import com.nordcomet.pflio.asset.model.ParserOptions;
-import com.nordcomet.pflio.asset.model.ParserType;
-import com.nordcomet.pflio.asset.model.Transaction;
+import com.nordcomet.pflio.asset.model.*;
 import com.nordcomet.pflio.asset.model.snapshot.AssetPosition;
 import com.nordcomet.pflio.asset.repo.AssetPositionRepo;
 import com.nordcomet.pflio.asset.repo.AssetRepo;
+import com.nordcomet.pflio.asset.repo.PriceUpdateRepo;
 import com.nordcomet.pflio.asset.repo.TransactionRepo;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +14,7 @@ import org.springframework.test.annotation.DirtiesContext;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static com.nordcomet.pflio.DataRandomiser.randomAsset;
 import static com.nordcomet.pflio.DataRandomiser.randomTransaction;
@@ -31,7 +30,7 @@ class AssetPriceUpdateJobTest {
     private AssetRepo assetRepo;
 
     @Autowired
-    private AssetPositionRepo assetPositionRepo;
+    private PriceUpdateRepo priceUpdateRepo;
 
     @Autowired
     private AssetPriceUpdateJob assetPriceUpdateJob;
@@ -40,7 +39,7 @@ class AssetPriceUpdateJobTest {
     private TransactionRepo transactionRepo;
 
     @Test
-    void shouldUpdateAssetPricePosition() {
+    void shouldCreatePriceUpdate() {
         Asset asset = randomAsset();
         ParserOptions parserOptions = new ParserOptions();
         parserOptions.setParserType(ParserType.MORNINGSTAR_FUND);
@@ -54,7 +53,7 @@ class AssetPriceUpdateJobTest {
 
         assetPriceUpdateJob.updateAssetPrices();
 
-        List<AssetPosition> assetPosition = assetPositionRepo.findAllByAssetId(asset.getId());
+        List<PriceUpdate> assetPosition = priceUpdateRepo.findAllByAssetId(asset.getId());
         assertThat(assetPosition.size(), is(1));
         System.out.println(assetPosition.get(0));
     }

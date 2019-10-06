@@ -92,6 +92,7 @@ class TransactionServiceTest {
         assertThat(assetPosition.getPrice(), is(transaction.getUnitPrice()));
         assertThat(assetPosition.getQuantity(), is(transaction.getQuantityChange()));
         assertThat(assetPosition.getTotalPrice(), is(expectedTotalPrice));
+        assertThat(assetPosition.getTotalPurchaseAmount(), is(expectedTotalPrice));
     }
 
     @Test
@@ -113,38 +114,8 @@ class TransactionServiceTest {
         assertThat(assetPosition.getPrice(), is(transaction.getUnitPrice()));
         assertThat(assetPosition.getQuantity(), is(expectedTotalQuantity));
         assertThat(assetPosition.getTotalPrice(), is(expectedTotalPrice));
-    }
-
-    @Test
-    void save_shouldCreateAssetPositionWithQuantityCalculatedFromPreviousTransactions_whenNoPreviousAssetPositions() {
-        Asset asset = randomAsset();
-        assetRepo.save(asset);
-        Transaction transaction_1 = randomTransaction(asset);
-        transaction_1.setTimestamp(LocalDateTime.now().minusDays(2));
-        transactionRepo.save(transaction_1);
-
-        Transaction transaction_2 = randomTransaction(asset);
-        transaction_2.setTimestamp(LocalDateTime.now().minusDays(1));
-        transactionRepo.save(transaction_2);
-
-        TransactionDto latestTransaction = randomTransactionDto(asset);
-        underTest.save(latestTransaction);
-
-        Optional<AssetPosition> latestPosition = assetPositionRepo.findFirstByAssetIdOrderByTimestampDesc(asset.getId());
-        assertThat(latestPosition.isPresent(), is(true));
-        AssetPosition assetPosition = latestPosition.get();
-
-        BigDecimal expectedTotalQuantity = transaction_1.getQuantityChange()
-                .add(transaction_2.getQuantityChange())
-                .add(latestTransaction.getQuantityChange());
-        BigDecimal expectedTotalPrice = expectedTotalQuantity
-                .multiply(latestTransaction.getUnitPrice())
-                .setScale(4, RoundingMode.HALF_UP);
-
-        assertThat(assetPosition.getAsset().getId(), is(asset.getId()));
-        assertThat(assetPosition.getPrice(), is(latestTransaction.getUnitPrice()));
-        assertThat(assetPosition.getQuantity(), is(expectedTotalQuantity));
-        assertThat(assetPosition.getTotalPrice(), is(expectedTotalPrice));
+        BigDecimal expectedTotalPurchaseAmount = previousPosition.getTotalPurchaseAmount().add(transaction.getUnitPrice().multiply(transaction.getQuantityChange())).setScale(4, RoundingMode.HALF_UP);
+        assertThat(assetPosition.getTotalPurchaseAmount(), is(expectedTotalPurchaseAmount));
     }
 
 }

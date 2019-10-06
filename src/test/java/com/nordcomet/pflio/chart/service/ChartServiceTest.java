@@ -16,6 +16,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import static com.nordcomet.pflio.DataRandomiser.randomInt;
+import static com.nordcomet.pflio.DataRandomiser.randomPrice;
 import static com.nordcomet.pflio.DataRandomiser.randomString;
 import static com.nordcomet.pflio.asset.model.AssetClassType.BOND;
 import static com.nordcomet.pflio.asset.model.AssetClassType.STOCK;
@@ -133,7 +134,7 @@ class ChartServiceTest {
     }
 
     private AssetPosition createAssetPosition(Asset asset, BigDecimal quantity, BigDecimal totalPrice, LocalDateTime timestamp) {
-        return new AssetPosition(asset, quantity, BigDecimal.ZERO, totalPrice, timestamp);
+        return new AssetPosition(asset, quantity, BigDecimal.ZERO, totalPrice, randomPrice(), timestamp);
     }
 
 }

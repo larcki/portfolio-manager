@@ -39,7 +39,7 @@ class PriceUpdateServiceTest {
     private PriceUpdateRepo priceUpdateRepo;
 
     @Test
-    void save_shouldCreatePriceUpdateAndNoAssetPosition_whenNoPreviousAssetPositionsAndTransactions() {
+    void save_shouldCreatePriceUpdateAndNoAssetPosition_whenNoPreviousAssetPositions() {
         Asset asset = randomAsset();
         assetRepo.save(asset);
 
@@ -74,5 +74,6 @@ class PriceUpdateServiceTest {
         assertThat(assetPosition.getPrice(), is(priceUpdate.getPrice()));
         assertThat(assetPosition.getQuantity(), is(previousAssetPosition.getQuantity()));
         assertThat(assetPosition.getTotalPrice(), is(expectedTotalPrice));
+        assertThat(assetPosition.getTotalPurchaseAmount(), is(previousAssetPosition.getTotalPurchaseAmount()));
     }
 }
