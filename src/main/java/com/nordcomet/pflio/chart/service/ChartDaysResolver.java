@@ -47,4 +47,15 @@ public class ChartDaysResolver {
 
     }
 
+    public String resolveTimeUnit(int daysAgoExcluding) {
+        if (daysAgoExcluding <= 32) {
+            return "day";
+        } else if (daysAgoExcluding <= 370) {
+            return "month";
+        } else if (daysAgoExcluding <= 1100) {
+            return "quarter";
+        } else {
+            return "year";
+        }
+    }
 }

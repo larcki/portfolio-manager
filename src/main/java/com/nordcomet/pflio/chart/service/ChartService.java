@@ -54,13 +54,12 @@ public class ChartService {
                         .reduce(BigDecimal.ZERO, BigDecimal::add))
                 .collect(Collectors.toList());
         return ChartJSFactory.createPieChart(assetClasses, colourPalette, data);
-
     }
 
     public ChartJS getStackedValueChartFull(List<AssetClassType> assetClasses, int daysAgoExcluding) {
         ChartJSData data = getStackedValueChart(assetClasses, daysAgoExcluding);
-        String timeUnit = resolveTimeUnit(daysAgoExcluding);
-        return new ChartJS("line", data, ChartJSFactory.createOptions(timeUnit));
+        String timeUnit = daysResolver.resolveTimeUnit(daysAgoExcluding);
+        return new ChartJS("line", data, ChartJSFactory.createLineChartOptions(timeUnit, true));
     }
 
     @Transactional
@@ -122,15 +121,4 @@ public class ChartService {
                 .collect(toSet());
     }
 
-    private String resolveTimeUnit(int daysAgoExcluding) {
-        if (daysAgoExcluding <= 32) {
-            return "day";
-        } else if (daysAgoExcluding <= 370) {
-            return "month";
-        } else if (daysAgoExcluding <= 1100) {
-            return "quarter";
-        } else {
-            return "year";
-        }
-    }
 }

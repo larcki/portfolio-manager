@@ -3,6 +3,7 @@ package com.nordcomet.pflio.chart.service;
 import com.nordcomet.pflio.asset.model.AssetClassType;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -10,7 +11,26 @@ import static java.util.stream.Collectors.toList;
 
 public class ChartJSFactory {
 
-    public static Map<Object, Object> createOptions(String timeUnit) {
+    public static Map<Object, Object> createPerformanceLineChart(String timeUnit, List<LocalDate> labels, List<BigDecimal> data) {
+        return Map.of(
+                "type", "line",
+                "data", Map.of(
+                        "labels", labels,
+                        "datasets", List.of(
+                                Map.of(
+                                        "borderColor", ColourPalette.getOne(),
+                                        "backgroundColor", "rgb(0,0,0,0)",
+                                        "label", "Total",
+                                        "data", data
+                                )
+                        )
+                ),
+                "options", createLineChartOptions(timeUnit, false)
+        );
+    }
+
+
+    public static Map<Object, Object> createLineChartOptions(String timeUnit, boolean stacked) {
         return Map.of(
                 "responsive", true,
                 "layout", Map.of(
@@ -41,7 +61,7 @@ public class ChartJSFactory {
                                         "display", false,
                                         "labelString", "Time"))),
                         "yAxes", List.of(Map.of(
-                                "stacked", true,
+                                "stacked", stacked,
                                 "scaleLabel", Map.of(
                                         "display", false,
                                         "labelString", "value")))

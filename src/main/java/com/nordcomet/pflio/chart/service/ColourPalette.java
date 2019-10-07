@@ -27,6 +27,9 @@ public class ColourPalette {
             "rgb(180,191,218)"
     );
 
+    public static String getOne() {
+        return colourScheme_5.get(0);
+    }
 
     public static Map<Object, String> createColourPalette(List<?> assets) {
         if (assets.size() <= 5) {

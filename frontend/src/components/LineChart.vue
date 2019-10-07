@@ -32,7 +32,7 @@
         },
         methods: {
             getChartData(successAction) {
-                api.getLineChart(this.period, this.assetId)
+                api.getLineChart(this.period)
                     .then(successAction)
             },
             updateChart(period) {
@@ -52,5 +52,8 @@
 </script>
 
 <style scoped>
-
+    .period-selector {
+        padding-top: 10px;
+        padding-left: 30px;
+    }
 </style>

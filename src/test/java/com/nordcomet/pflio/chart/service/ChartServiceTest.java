@@ -1,6 +1,8 @@
 package com.nordcomet.pflio.chart.service;
 
-import com.nordcomet.pflio.asset.model.*;
+import com.nordcomet.pflio.asset.model.Asset;
+import com.nordcomet.pflio.asset.model.AssetClass;
+import com.nordcomet.pflio.asset.model.AssetClassType;
 import com.nordcomet.pflio.asset.model.snapshot.AssetPosition;
 import com.nordcomet.pflio.asset.repo.AssetPositionRepo;
 import com.nordcomet.pflio.asset.repo.AssetRepo;
@@ -15,9 +17,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import static com.nordcomet.pflio.DataRandomiser.randomInt;
-import static com.nordcomet.pflio.DataRandomiser.randomPrice;
-import static com.nordcomet.pflio.DataRandomiser.randomString;
+import static com.nordcomet.pflio.DataRandomiser.*;
 import static com.nordcomet.pflio.asset.model.AssetClassType.BOND;
 import static com.nordcomet.pflio.asset.model.AssetClassType.STOCK;
 import static org.hamcrest.MatcherAssert.assertThat;
