@@ -18,8 +18,11 @@
                                 hide-default-footer="true"
                                 :headers="headers"
                                 :items="assets"
-                                :search="search"
-                                @click:row="showAssetDetails(item.name)">
+                                :search="search">
+                            <template v-slot:item.name="{item}">
+                                <!--<v-btn to="/assets/123" color="primary" small text>{{item.name}}</v-btn>-->
+                                <router-link :to="{path: '/assets/' + item.id}">{{item.name}}</router-link>
+                            </template>
                         </v-data-table>
                     </v-card>
                 </v-col>

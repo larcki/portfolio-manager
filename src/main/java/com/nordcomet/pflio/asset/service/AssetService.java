@@ -48,7 +48,8 @@ public class AssetService {
                 "Account",
                 toDisplay(currentValue),
                 toDisplay(performance),
-                toDisplayPercentage(performancePercentage)
+                toDisplayPercentage(performancePercentage),
+                asset.getId()
         );
     }
 

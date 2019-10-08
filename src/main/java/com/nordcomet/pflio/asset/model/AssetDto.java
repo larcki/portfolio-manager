@@ -10,5 +10,6 @@ public class AssetDto {
     private final String totalValue;
     private final String performance;
     private final String performancePercentage;
+    private final Integer id;
 
 }
