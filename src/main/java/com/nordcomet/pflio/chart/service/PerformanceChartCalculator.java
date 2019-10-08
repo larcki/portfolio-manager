@@ -16,9 +16,9 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.*;
 
 @Service
 public class PerformanceChartCalculator {
@@ -41,57 +41,62 @@ public class PerformanceChartCalculator {
     }
 
     public List<BigDecimal> getPerformanceData(List<LocalDate> days) {
-        Set<Asset> allAssets = assetRepo.findAll();
+        TreeMap<LocalDate, PerformanceCalculationItem> items = getCalculationItems(days, assetRepo.findAll());
+        return calculatePerformance(items);
+    }
 
-        Map<Integer, List<AssetPosition>> relevantAssetPositionsByAssetId = new HashMap<>();
-        for (Asset asset : allAssets) {
-            relevantAssetPositionsByAssetId.put(asset.getId(), assetPositionRepo.findAllByAssetIdAndTimestampAfter(asset.getId(), tenDaysBeforeFirstDate(days)));
-        }
+    private TreeMap<LocalDate, PerformanceCalculationItem> getCalculationItems(List<LocalDate> days, Set<Asset> allAssets) {
+        Map<Integer, List<AssetPosition>> assetPositions = findRelevantAssetPositions(days, allAssets);
 
         TreeMap<LocalDate, PerformanceCalculationItem> calculationItemsByDay = new TreeMap<>();
         for (LocalDate day : days) {
             PerformanceCalculationItem accumulated = allAssets.stream()
-                    .map(asset -> createCalculationItemFor(day, relevantAssetPositionsByAssetId.get(asset.getId())))
+                    .map(asset -> findAssetPositionFor(day, assetPositions.get(asset.getId())))
+                    .map(this::toPerformanceCalculationItem)
                     .reduce(new PerformanceCalculationItem(BigDecimal.ZERO, BigDecimal.ZERO), PerformanceCalculationItem::accumulate);
             calculationItemsByDay.put(day, accumulated);
         }
 
-        return getPerformancePercentages(calculationItemsByDay);
-
+        return calculationItemsByDay;
     }
 
-    private List<BigDecimal> getPerformancePercentages(TreeMap<LocalDate, PerformanceCalculationItem> calculationItemsByDay) {
+    private List<BigDecimal> calculatePerformance(TreeMap<LocalDate, PerformanceCalculationItem> calculationItemsByDay) {
         PerformanceCalculationItem firstDayPosition = calculationItemsByDay.firstEntry().getValue();
         BigDecimal firstDaysTotalValue = firstDayPosition.getTotalValue();
         BigDecimal firstDayPerformance = firstDaysTotalValue.subtract(firstDayPosition.getTotalPurchaseAmount());
 
         List<BigDecimal> percentagesForDays = calculationItemsByDay.values().stream()
                 .skip(1)
-                .map(item -> {
-                    BigDecimal currentDaysPerformance = item.getTotalValue().subtract(item.getTotalPurchaseAmount());
-                    BigDecimal performanceDifference = currentDaysPerformance.subtract(firstDayPerformance);
-                    return performanceDifference
-                            .divide(firstDaysTotalValue, 4, RoundingMode.HALF_UP)
-                            .multiply(new BigDecimal("100")).setScale(2, RoundingMode.HALF_UP);
-                })
-                .collect(Collectors.toList());
+                .map(item -> calculatePerformancePercentage(item, firstDaysTotalValue, firstDayPerformance))
+                .collect(toList());
 
         percentagesForDays.add(0, new BigDecimal("0.00"));
-
         return percentagesForDays;
     }
 
+    private BigDecimal calculatePerformancePercentage(PerformanceCalculationItem item,
+                                                      BigDecimal firstDaysTotalValue,
+                                                      BigDecimal firstDayPerformance) {
 
-    private PerformanceCalculationItem createCalculationItemFor(LocalDate day, List<AssetPosition> relevantPositions) {
+        BigDecimal currentDaysPerformance = item.getTotalValue().subtract(item.getTotalPurchaseAmount());
+        BigDecimal performanceDifference = currentDaysPerformance.subtract(firstDayPerformance);
+        return performanceDifference
+                .divide(firstDaysTotalValue, 4, RoundingMode.HALF_UP)
+                .multiply(new BigDecimal("100")).setScale(2, RoundingMode.HALF_UP);
+    }
+
+    private Map<Integer, List<AssetPosition>> findRelevantAssetPositions(List<LocalDate> days, Set<Asset> allAssets) {
+        return allAssets.stream().collect(
+                toMap(Asset::getId,
+                        asset -> assetPositionRepo
+                                .findAllByAssetIdAndTimestampAfter(asset.getId(), tenDaysBeforeFirstDate(days))));
+    }
+
+    private AssetPosition findAssetPositionFor(LocalDate day, List<AssetPosition> relevantPositions) {
         return relevantPositions.stream()
                 .filter(beforeEndOfDay(day))
                 .max(comparing(AssetPosition::getTimestamp))
-                .map(this::toPerformanceCalculationItem)
-                .orElseGet(() -> toPerformanceCalculationItem(relevantPositions.get(0)));
-    }
-
-    private PerformanceCalculationItem toPerformanceCalculationItem(AssetPosition assetPosition) {
-        return new PerformanceCalculationItem(assetPosition.getTotalPrice(), assetPosition.getTotalPurchaseAmount());
+                .orElseGet(() -> relevantPositions.get(0));
     }
 
     private LocalDateTime tenDaysBeforeFirstDate(List<LocalDate> days) {
@@ -100,6 +105,10 @@ public class PerformanceChartCalculator {
 
     private Predicate<AssetPosition> beforeEndOfDay(LocalDate day) {
         return it -> it.getTimestamp().isBefore(day.plus(1, ChronoUnit.DAYS).atStartOfDay());
+    }
+
+    private PerformanceCalculationItem toPerformanceCalculationItem(AssetPosition assetPosition) {
+        return new PerformanceCalculationItem(assetPosition.getTotalPrice(), assetPosition.getTotalPurchaseAmount());
     }
 
     @Data
