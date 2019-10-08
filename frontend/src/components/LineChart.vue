@@ -32,7 +32,7 @@
         },
         methods: {
             getChartData(successAction) {
-                api.getLineChart(this.period)
+                api.getLineChart(this.period, this.assetId)
                     .then(successAction)
             },
             updateChart(period) {

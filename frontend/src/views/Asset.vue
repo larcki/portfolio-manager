@@ -2,9 +2,9 @@
     <v-content>
         <v-container fluid>
             <v-row>
-                <v-col>
-                    <v-card>
-                        {{assetData}}
+                <v-col cols="12" md="8">
+                    <v-card :elevation="n - 1">
+                        <line-chart initial-period="180" :asset-id="$route.params.assetId"/>
                     </v-card>
                 </v-col>
             </v-row>
@@ -14,23 +14,12 @@
 </template>
 
 <script>
-    import Api from "../components/backend-api";
+    import LineChart from "../components/LineChart";
 
     export default {
-
-        name: "Asset",
-        props: {
-            assetId: String
-        },
-        data() {
-            return {
-                assetData: {}
-            }
-        },
-        mounted() {
-            Api.getAsset(this.assetId).then(response => {
-                this.assetData = response.data
-            })
+        name: 'Asset',
+        components: {
+            LineChart
         }
     }
 </script>

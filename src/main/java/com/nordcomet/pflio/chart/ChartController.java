@@ -31,7 +31,11 @@ public class ChartController {
     }
 
     @RequestMapping("/api/chart/performance")
-    public Object getPerformanceLineChart(@RequestParam Integer period) {
+    public Object getPerformanceLineChart(@RequestParam Integer period,
+                                          @RequestParam(required = false) Integer assetId) {
+        if (assetId != null) {
+            return performanceChartCalculator.getPerformanceChart(period, assetId);
+        }
         return performanceChartCalculator.getPerformanceChart(period);
     }
 

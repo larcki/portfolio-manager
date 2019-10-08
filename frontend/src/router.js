@@ -21,9 +21,9 @@ const router = new Router({
             component: Assets
         },
         {
-            path: "/assets/*",
+            path: "/assets/:assetId",
             name: 'Asset',
-            component: Asset
+            component: Asset,
         },
         {path: "*", redirect: "/404"}
     ]

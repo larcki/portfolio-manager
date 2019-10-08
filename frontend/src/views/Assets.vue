@@ -20,8 +20,7 @@
                                 :items="assets"
                                 :search="search">
                             <template v-slot:item.name="{item}">
-                                <!--<v-btn to="/assets/123" color="primary" small text>{{item.name}}</v-btn>-->
-                                <router-link :to="{path: '/assets/' + item.id}">{{item.name}}</router-link>
+                                <router-link :to="{path: '/assets/' + item.id }">{{item.name}}</router-link>
                             </template>
                         </v-data-table>
                     </v-card>
@@ -59,13 +58,7 @@
                 .then(response => {
                     this.assets = response.data
                 })
-        },
-        methods: {
-            showAssetDetails() {
-
-            }
         }
-
     }
 
 </script>

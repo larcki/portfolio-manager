@@ -7,7 +7,9 @@ import com.nordcomet.pflio.asset.repo.AssetRepo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -33,6 +35,15 @@ public class PerformanceChartCalculator {
         this.assetRepo = assetRepo;
         this.assetPositionRepo = assetPositionRepo;
     }
+
+    public Object getPerformanceChart(int daysAgoExcluding, Integer assetId) {
+        List<LocalDate> days = daysResolver.resolveDays(daysAgoExcluding);
+        Set<Asset> assets = assetRepo.findAssetsById(assetId).map(Set::of).orElseThrow(() -> new HttpClientErrorException(HttpStatus.NOT_FOUND));
+        TreeMap<LocalDate, PerformanceCalculationItem> items = getCalculationItems(days, assets);
+        List<BigDecimal> data = calculatePerformance(items);
+        return ChartJSFactory.createPerformanceLineChart(daysResolver.resolveTimeUnit(daysAgoExcluding), days, data);
+    }
+
 
     public Object getPerformanceChart(int daysAgoExcluding) {
         List<LocalDate> days = daysResolver.resolveDays(daysAgoExcluding);

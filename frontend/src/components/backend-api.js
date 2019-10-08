@@ -14,9 +14,9 @@ export default {
         });
     },
 
-    getLineChart(period) {
+    getLineChart(period, assetId) {
         return AXIOS.get('/chart/performance', {
-            params: {'period': period}
+            params: {'period': period, 'assetId': assetId}
         });
     },
 
