@@ -8,6 +8,12 @@ const AXIOS = axios.create({
 
 export default {
 
+    getGeneric(period, chartType) {
+        return AXIOS.get('/chart/line', {
+            params: {'period': period, 'chartType': chartType}
+        });
+    },
+
     getChart(period, tags) {
         return AXIOS.get('/chart/stacked', {
             params: {'period': period, 'assetClasses': tags}

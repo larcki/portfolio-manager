@@ -1,6 +1,7 @@
 package com.nordcomet.pflio.chart;
 
 import com.nordcomet.pflio.asset.model.AssetClassType;
+import com.nordcomet.pflio.chart.model.PortfolioChartType;
 import com.nordcomet.pflio.chart.service.ChartService;
 import com.nordcomet.pflio.chart.service.PerformanceChartCalculator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,21 @@ public class ChartController {
     public Object getStackedChart(@RequestParam Integer period,
                                   @RequestParam List<AssetClassType> assetClasses) {
         return chartService.getStackedValueChartFull(assetClasses, period);
+    }
+
+    @RequestMapping("/api/chart/line")
+    public Object getLineChart(@RequestParam Integer period,
+                               @RequestParam PortfolioChartType chartType) {
+
+        if (chartType == PortfolioChartType.STACKED_ASSET_CLASS_ALLOCATION) {
+            return chartService.getStackedValueChartFull(List.of(AssetClassType.values()), period);
+        }
+        if (chartType == PortfolioChartType.LINE_PORTFOLIO_PERFORMANCE) {
+            return performanceChartCalculator.getPerformanceChart(period);
+        }
+
+        return null;
+
     }
 
     @RequestMapping("/api/chart/performance")
