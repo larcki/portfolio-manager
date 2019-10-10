@@ -38,8 +38,11 @@ public class ChartController {
         if (chartType == PortfolioChartType.STACKED_ASSET_CLASS_ALLOCATION) {
             return chartService.getStackedValueChartFull(List.of(AssetClassType.values()), period);
         }
-        if (chartType == PortfolioChartType.LINE_PORTFOLIO_PERFORMANCE) {
-            return performanceChartCalculator.getPerformanceChart(period);
+        if (chartType == PortfolioChartType.LINE_TOTAL_PERFORMANCE_PERCENTAGE) {
+            return performanceChartCalculator.getPerformancePercentageChart(period);
+        }
+        if (chartType == PortfolioChartType.LINE_TOTAL_PERFORMANCE) {
+            return performanceChartCalculator.getPerformanceValueChart(period);
         }
 
         return null;
@@ -50,9 +53,9 @@ public class ChartController {
     public Object getPerformanceLineChart(@RequestParam Integer period,
                                           @RequestParam(required = false) Integer assetId) {
         if (assetId != null) {
-            return performanceChartCalculator.getPerformanceChart(period, assetId);
+            return performanceChartCalculator.getPerformancePercentageChart(period, assetId);
         }
-        return performanceChartCalculator.getPerformanceChart(period);
+        return performanceChartCalculator.getPerformancePercentageChart(period);
     }
 
 }

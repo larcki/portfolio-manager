@@ -4,6 +4,9 @@ import com.nordcomet.pflio.asset.model.Asset;
 import com.nordcomet.pflio.asset.model.snapshot.AssetPosition;
 import com.nordcomet.pflio.asset.repo.AssetPositionRepo;
 import com.nordcomet.pflio.asset.repo.AssetRepo;
+import com.nordcomet.pflio.chart.model.ChartJS;
+import com.nordcomet.pflio.chart.model.ChartJSData;
+import com.nordcomet.pflio.chart.model.ChartJSDatasetBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +21,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.*;
@@ -36,7 +40,7 @@ public class PerformanceChartCalculator {
         this.assetPositionRepo = assetPositionRepo;
     }
 
-    public Object getPerformanceChart(int daysAgoExcluding, Integer assetId) {
+    public Object getPerformancePercentageChart(int daysAgoExcluding, Integer assetId) {
         List<LocalDate> days = daysResolver.resolveDays(daysAgoExcluding);
         Set<Asset> assets = assetRepo.findAssetsById(assetId).map(Set::of).orElseThrow(() -> new HttpClientErrorException(HttpStatus.NOT_FOUND));
         TreeMap<LocalDate, PerformanceCalculationItem> items = getCalculationItems(days, assets);
@@ -44,8 +48,39 @@ public class PerformanceChartCalculator {
         return ChartJSFactory.createPerformanceLineChart(daysResolver.resolveTimeUnit(daysAgoExcluding), days, data);
     }
 
+    public Object getPerformanceValueChart(int daysAgoExcluding) {
+        List<LocalDate> days = daysResolver.resolveDays(daysAgoExcluding);
+        Map<LocalDate, PerformanceCalculationItem> items = getCalculationItems(days, assetRepo.findAll());
 
-    public Object getPerformanceChart(int daysAgoExcluding) {
+        List<BigDecimal> purchaseAmounts = items.entrySet().stream()
+                .map(entry -> entry.getValue().getTotalPurchaseAmount())
+                .collect(Collectors.toList());
+
+        List<BigDecimal> totalAmounts = items.entrySet().stream()
+                .map(entry -> entry.getValue().getTotalValue())
+                .collect(Collectors.toList());
+
+        ChartJSData data = new ChartJSData(days, List.of(
+                new ChartJSDatasetBuilder()
+                        .setLabel("Total purchase")
+                        .setColor(ColourPalette.getOne())
+                        .setBackgroundColor(ColourPalette.getTransparent())
+                        .setData(purchaseAmounts)
+                        .build(),
+
+                new ChartJSDatasetBuilder()
+                        .setLabel("Total value")
+                        .setColor(ColourPalette.getSecond())
+                        .setBackgroundColor(ColourPalette.getTransparent())
+                        .setData(totalAmounts)
+                        .build()
+        ));
+        String timeUnit = daysResolver.resolveTimeUnit(daysAgoExcluding);
+        return new ChartJS("line", data, ChartJSFactory.createLineChartOptions(timeUnit, true));
+    }
+
+
+    public Object getPerformancePercentageChart(int daysAgoExcluding) {
         List<LocalDate> days = daysResolver.resolveDays(daysAgoExcluding);
         List<BigDecimal> data = getPerformanceData(days);
         return ChartJSFactory.createPerformanceLineChart(daysResolver.resolveTimeUnit(daysAgoExcluding), days, data);

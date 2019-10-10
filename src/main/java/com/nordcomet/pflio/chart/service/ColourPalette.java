@@ -31,6 +31,14 @@ public class ColourPalette {
         return colourScheme_5.get(0);
     }
 
+    public static String getSecond() {
+        return colourScheme_5.get(1);
+    }
+
+    public static String getTransparent() {
+        return "rgba(220,220,220,0)";
+    }
+
     public static Map<Object, String> createColourPalette(List<?> assets) {
         if (assets.size() <= 5) {
             return createPalette(colourScheme_5, assets);

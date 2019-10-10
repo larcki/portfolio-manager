@@ -8,6 +8,7 @@ import com.nordcomet.pflio.asset.repo.AssetRepo;
 import com.nordcomet.pflio.chart.model.ChartJS;
 import com.nordcomet.pflio.chart.model.ChartJSData;
 import com.nordcomet.pflio.chart.model.ChartJSDataset;
+import com.nordcomet.pflio.chart.model.ChartJSDatasetBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -75,7 +76,12 @@ public class ChartService {
                     .collect(toList());
             List<BigDecimal> tagsPrices = combinePrices(days, prices);
 
-            return new ChartJSDataset(assetClass.name(), colourPalette.get(assetClass), tagsPrices);
+            return new ChartJSDatasetBuilder()
+                    .setLabel(assetClass.name())
+                    .setBackgroundColor(colourPalette.get(assetClass))
+                    .setData(tagsPrices)
+                    .setFill(true)
+                    .build();
 
         }).collect(toList());
 
