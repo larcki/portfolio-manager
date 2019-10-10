@@ -1,12 +1,15 @@
 package com.nordcomet.pflio.asset.service;
 
+import com.nordcomet.pflio.asset.AssetInfoDto;
 import com.nordcomet.pflio.asset.model.Asset;
 import com.nordcomet.pflio.asset.model.AssetDto;
 import com.nordcomet.pflio.asset.model.snapshot.AssetPosition;
 import com.nordcomet.pflio.asset.repo.AssetPositionRepo;
 import com.nordcomet.pflio.asset.repo.AssetRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -61,4 +64,15 @@ public class AssetService {
         return value.subtract(ONE).multiply(new BigDecimal("100")).setScale(1, HALF_UP).toString();
     }
 
+    public AssetInfoDto getInfo(Integer assetId) {
+        Asset asset = assetRepo.findAssetsById(assetId)
+                .orElseThrow(() -> new HttpClientErrorException(HttpStatus.NOT_FOUND));
+
+        BigDecimal value = assetPositionRepo.findFirstByAssetIdOrderByTimestampDesc(asset.getId())
+                .map(AssetPosition::getTotalPrice)
+                .orElse(BigDecimal.ZERO);
+
+        return new AssetInfoDto(asset.getName(), "https://www.google.com", "Account", value);
+
+    }
 }
