@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 @RestController
@@ -47,6 +49,11 @@ public class ChartController {
 
         return null;
 
+    }
+
+    @RequestMapping("/api/total-amount")
+    public BigDecimal getTotalAmountInfo() {
+        return performanceChartCalculator.getTotalValue().setScale(2, RoundingMode.HALF_UP);
     }
 
     @RequestMapping("/api/chart/performance")
