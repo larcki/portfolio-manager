@@ -101,6 +101,7 @@ class GenerateTestData {
         superFondetNorge.setParserOptions(new ParserOptions(ParserType.MORNINGSTAR_FUND, "F00000TH8U", "NOK", "EUR"));
         superFondetNorge.setName("Nordnet Superfondet Norge");
         superFondetNorge.setAssetClasses(Set.of(new AssetClass(AssetClassType.STOCK, BigDecimal.ONE)));
+        superFondetNorge.setAccount(randomAccount());
         return List.of(superFondetNorge);
     }
 

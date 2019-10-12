@@ -1,14 +1,12 @@
 package com.nordcomet.pflio.asset;
 
 import com.nordcomet.pflio.asset.model.AssetDto;
-import com.nordcomet.pflio.asset.model.TransactionDto;
+import com.nordcomet.pflio.asset.model.AssetSelectionDto;
+import com.nordcomet.pflio.asset.model.TransactionSaveRequest;
 import com.nordcomet.pflio.asset.service.AssetService;
 import com.nordcomet.pflio.asset.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,13 +20,23 @@ public class AssetController {
     private AssetService assetService;
 
     @PostMapping("/api/transaction")
-    public void saveTransaction(TransactionDto transactionDto) {
-        transactionService.save(transactionDto);
+    public void saveTransaction(@RequestBody TransactionSaveRequest saveRequest) {
+        transactionService.save(saveRequest);
+    }
+
+    @RequestMapping("/api/transaction")
+    public List<TransactionResponse> getTransactions() {
+        return transactionService.getTransactions();
     }
 
     @RequestMapping("/api/assets")
     public List<AssetDto> getAssets() {
         return assetService.getAssetList();
+    }
+
+    @RequestMapping("/api/assets-min")
+    public List<AssetSelectionDto> getAssetsForSelection() {
+        return assetService.getAssetForSelection();
     }
 
     @RequestMapping("/api/assets/{assetId}")

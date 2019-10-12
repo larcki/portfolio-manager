@@ -11,4 +11,7 @@ public interface TransactionRepo extends CrudRepository<Transaction, Integer> {
     Optional<Transaction> findFirstByAssetIdOrderByTimestampDesc(Integer assetId);
 
     List<Transaction> findAllByAssetId(Integer assetId);
+
+    List<Transaction> findTop10ByOrderByTimestampDesc();
+
 }

@@ -71,8 +71,8 @@
     a {
         color: #42b983;
     }
-    .period-selector {
-        padding-top: 10px;
-        padding-left: 30px;
-    }
+        .period-selector {
+            padding-top: 10px;
+            padding-left: 30px;
+        }
 </style>

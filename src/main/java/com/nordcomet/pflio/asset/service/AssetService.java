@@ -3,6 +3,7 @@ package com.nordcomet.pflio.asset.service;
 import com.nordcomet.pflio.asset.AssetInfoDto;
 import com.nordcomet.pflio.asset.model.Asset;
 import com.nordcomet.pflio.asset.model.AssetDto;
+import com.nordcomet.pflio.asset.model.AssetSelectionDto;
 import com.nordcomet.pflio.asset.model.snapshot.AssetPosition;
 import com.nordcomet.pflio.asset.repo.AssetPositionRepo;
 import com.nordcomet.pflio.asset.repo.AssetRepo;
@@ -48,7 +49,7 @@ public class AssetService {
 
     private AssetDto assetDto(Asset asset, BigDecimal currentValue, BigDecimal performance, BigDecimal performancePercentage) {
         return new AssetDto(asset.getName(),
-                "Account",
+                asset.getAccount().getName(),
                 toDisplay(currentValue),
                 toDisplay(performance),
                 toDisplayPercentage(performancePercentage),
@@ -72,7 +73,13 @@ public class AssetService {
                 .map(AssetPosition::getTotalPrice)
                 .orElse(BigDecimal.ZERO);
 
-        return new AssetInfoDto(asset.getName(), "https://www.google.com", "Account", value);
+        return new AssetInfoDto(asset.getName(), "https://www.google.com", asset.getAccount().getName(), value);
 
+    }
+
+    public List<AssetSelectionDto> getAssetForSelection() {
+        return assetRepo.findAll().stream()
+                .map(asset -> new AssetSelectionDto(asset.getId(), asset.getName(), asset.getAccount().getName(), asset.getAccount().getDefaultCurrency()))
+                .collect(Collectors.toList());
     }
 }

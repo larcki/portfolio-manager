@@ -36,7 +36,20 @@ export default {
         return AXIOS.get('/assets');
     },
 
+    getAssetsForSelection() {
+        return AXIOS.get('/assets-min');
+    },
+
     getAsset(assetId) {
         return AXIOS.get('/assets/' + assetId);
+    },
+
+    getTransactions() {
+        return AXIOS.get('/transaction');
+    },
+
+    saveTransaction(transaction) {
+        return AXIOS.post('/transaction', transaction);
     }
+
 }

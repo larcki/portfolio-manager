@@ -67,14 +67,14 @@ public class DataRandomiser {
         return transaction;
     }
 
-    public static TransactionDto randomTransactionDto(Asset asset, LocalDateTime timestamp) {
+    public static TransactionSaveRequest randomTransactionDto(Asset asset, LocalDateTime timestamp) {
         BigDecimal quantityChange = randomQuantity();
         BigDecimal unitPrice = randomAmount();
         BigDecimal totalPrice = quantityChange.multiply(unitPrice).add(randomAmount(0, 1)).setScale(4, RoundingMode.HALF_UP);
-        return new TransactionDto(asset.getId(), quantityChange, unitPrice, totalPrice, "GBP", timestamp);
+        return new TransactionSaveRequest(asset.getId(), quantityChange, unitPrice, totalPrice, "GBP", timestamp);
     }
 
-    public static TransactionDto randomTransactionDto(Asset asset) {
+    public static TransactionSaveRequest randomTransactionDto(Asset asset) {
         return randomTransactionDto(asset, LocalDateTime.now());
     }
 

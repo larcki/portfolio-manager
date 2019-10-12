@@ -3,7 +3,7 @@ package com.nordcomet.pflio.asset.service;
 import com.nordcomet.pflio.asset.model.Asset;
 import com.nordcomet.pflio.asset.model.Fee;
 import com.nordcomet.pflio.asset.model.Transaction;
-import com.nordcomet.pflio.asset.model.TransactionDto;
+import com.nordcomet.pflio.asset.model.TransactionSaveRequest;
 import com.nordcomet.pflio.asset.model.snapshot.AssetPosition;
 import com.nordcomet.pflio.asset.repo.*;
 import org.junit.jupiter.api.Test;
@@ -52,7 +52,7 @@ class TransactionServiceTest {
         BigDecimal quantity = new BigDecimal("2");
         BigDecimal unitPrice = new BigDecimal("3");
         BigDecimal totalPrice = new BigDecimal("7");
-        TransactionDto dto = new TransactionDto(asset.getId(), quantity, unitPrice, totalPrice, "GBP", LocalDateTime.now());
+        TransactionSaveRequest dto = new TransactionSaveRequest(asset.getId(), quantity, unitPrice, totalPrice, "GBP", LocalDateTime.now());
 
         underTest.save(dto);
 
@@ -72,7 +72,7 @@ class TransactionServiceTest {
     @Test
     void save_shouldThrowException_whenAssetNotFound() {
         assertThrows(ResponseStatusException.class, () -> {
-            underTest.save(new TransactionDto(0, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, "EUR", LocalDateTime.now()));
+            underTest.save(new TransactionSaveRequest(0, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, "EUR", LocalDateTime.now()));
         });
     }
 
@@ -81,7 +81,7 @@ class TransactionServiceTest {
         Asset asset = randomAsset();
         assetRepo.save(asset);
 
-        TransactionDto transaction = randomTransactionDto(asset);
+        TransactionSaveRequest transaction = randomTransactionDto(asset);
         underTest.save(transaction);
 
         List<AssetPosition> positions = assetPositionRepo.findAllByAssetId(asset.getId());
@@ -102,7 +102,7 @@ class TransactionServiceTest {
         AssetPosition previousPosition = randomAssetPosition(asset);
         assetPositionRepo.save(previousPosition);
 
-        TransactionDto transaction = randomTransactionDto(asset);
+        TransactionSaveRequest transaction = randomTransactionDto(asset);
         underTest.save(transaction);
 
         Optional<AssetPosition> latestPosition = assetPositionRepo.findFirstByAssetIdOrderByTimestampDesc(asset.getId());

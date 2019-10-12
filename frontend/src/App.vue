@@ -5,6 +5,7 @@
             <v-toolbar-items>
                 <v-btn to="/" text>Dashboard</v-btn>
                 <v-btn to="/assets" text>Assets</v-btn>
+                <v-btn to="/transactions" text>Transactions</v-btn>
             </v-toolbar-items>
             <v-spacer></v-spacer>
             <v-btn text
