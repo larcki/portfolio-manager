@@ -23,6 +23,7 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import static java.math.BigDecimal.*;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.*;
 
@@ -44,7 +45,7 @@ public class PerformanceChartCalculator {
         List<LocalDate> days = daysResolver.resolveDays(daysAgoExcluding);
         Set<Asset> assets = assetRepo.findAssetsById(assetId).map(Set::of).orElseThrow(() -> new HttpClientErrorException(HttpStatus.NOT_FOUND));
         TreeMap<LocalDate, PerformanceCalculationItem> items = getCalculationItems(days, assets);
-        List<BigDecimal> data = calculatePerformance(items);
+        List<BigDecimal> data = calculatePerformancePercentage(items);
         return ChartJSFactory.createPerformanceLineChart(daysResolver.resolveTimeUnit(daysAgoExcluding), days, data);
     }
 
@@ -88,7 +89,7 @@ public class PerformanceChartCalculator {
 
     public List<BigDecimal> getPerformanceData(List<LocalDate> days) {
         TreeMap<LocalDate, PerformanceCalculationItem> items = getCalculationItems(days, assetRepo.findAll());
-        return calculatePerformance(items);
+        return calculatePerformancePercentage(items);
     }
 
     private TreeMap<LocalDate, PerformanceCalculationItem> getCalculationItems(List<LocalDate> days, Set<Asset> allAssets) {
@@ -98,15 +99,22 @@ public class PerformanceChartCalculator {
         for (LocalDate day : days) {
             PerformanceCalculationItem accumulated = allAssets.stream()
                     .map(asset -> findAssetPositionFor(day, assetPositions.get(asset.getId())))
-                    .map(this::toPerformanceCalculationItem)
-                    .reduce(new PerformanceCalculationItem(BigDecimal.ZERO, BigDecimal.ZERO), PerformanceCalculationItem::accumulate);
+                    .map(assetPosition -> assetPosition
+                            .map(this::toPerformanceCalculationItem)
+                            .orElse(zeroItem()))
+                    .reduce(zeroItem(), PerformanceCalculationItem::accumulate);
             calculationItemsByDay.put(day, accumulated);
         }
 
         return calculationItemsByDay;
     }
 
-    private List<BigDecimal> calculatePerformance(TreeMap<LocalDate, PerformanceCalculationItem> calculationItemsByDay) {
+    private PerformanceCalculationItem zeroItem() {
+        return new PerformanceCalculationItem(ZERO, ZERO);
+    }
+
+    private List<BigDecimal> calculatePerformancePercentage(TreeMap<LocalDate, PerformanceCalculationItem> calculationItemsByDay) {
+        ensureNonZeroItems(calculationItemsByDay);
         PerformanceCalculationItem firstDayPosition = calculationItemsByDay.firstEntry().getValue();
         BigDecimal firstDaysTotalValue = firstDayPosition.getTotalValue();
         BigDecimal firstDayPerformance = firstDaysTotalValue.subtract(firstDayPosition.getTotalPurchaseAmount());
@@ -118,6 +126,24 @@ public class PerformanceChartCalculator {
 
         percentagesForDays.add(0, new BigDecimal("0.00"));
         return percentagesForDays;
+    }
+
+    private void ensureNonZeroItems(TreeMap<LocalDate, PerformanceCalculationItem> calculationItemsByDay) {
+        PerformanceCalculationItem firstItem = calculationItemsByDay.firstEntry().getValue();
+        if (firstItem.getTotalPurchaseAmount().compareTo(ZERO) == 0 && firstItem.getTotalValue().compareTo(ZERO) == 0) {
+            PerformanceCalculationItem firstNonZeroItem = null;
+            for (Map.Entry<LocalDate, PerformanceCalculationItem> itemEntry : calculationItemsByDay.entrySet()) {
+                if (!itemEntry.getValue().isZero()) {
+                    firstNonZeroItem = itemEntry.getValue();
+                }
+            }
+            for (Map.Entry<LocalDate, PerformanceCalculationItem> itemEntry : calculationItemsByDay.entrySet()) {
+                if (!itemEntry.getValue().isZero()) {
+                    return;
+                }
+                calculationItemsByDay.replace(itemEntry.getKey(), firstNonZeroItem);
+            }
+        }
     }
 
     private BigDecimal calculatePerformancePercentage(PerformanceCalculationItem item,
@@ -138,11 +164,10 @@ public class PerformanceChartCalculator {
                                 .findAllByAssetIdAndTimestampAfter(asset.getId(), tenDaysBeforeFirstDate(days))));
     }
 
-    private AssetPosition findAssetPositionFor(LocalDate day, List<AssetPosition> relevantPositions) {
+    private Optional<AssetPosition> findAssetPositionFor(LocalDate day, List<AssetPosition> relevantPositions) {
         return relevantPositions.stream()
                 .filter(beforeEndOfDay(day))
-                .max(comparing(AssetPosition::getTimestamp))
-                .orElseGet(() -> relevantPositions.get(0));
+                .max(comparing(AssetPosition::getTimestamp));
     }
 
     private LocalDateTime tenDaysBeforeFirstDate(List<LocalDate> days) {
@@ -161,8 +186,8 @@ public class PerformanceChartCalculator {
         return assetRepo.findAll().stream()
                 .map(asset -> assetPositionRepo.findFirstByAssetIdOrderByTimestampDesc(asset.getId())
                         .map(AssetPosition::getTotalPrice)
-                        .orElse(BigDecimal.ZERO))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+                        .orElse(ZERO))
+                .reduce(ZERO, BigDecimal::add);
     }
 
     @Data
@@ -170,6 +195,10 @@ public class PerformanceChartCalculator {
     class PerformanceCalculationItem {
         private BigDecimal totalValue;
         private BigDecimal totalPurchaseAmount;
+
+        boolean isZero() {
+            return this.totalValue.compareTo(BigDecimal.ZERO) == 0 && this.totalPurchaseAmount.compareTo(BigDecimal.ZERO) == 0;
+        }
 
         PerformanceCalculationItem accumulate(PerformanceCalculationItem other) {
             return new PerformanceCalculationItem(this.totalValue.add(other.totalValue), this.totalPurchaseAmount.add(other.totalPurchaseAmount));

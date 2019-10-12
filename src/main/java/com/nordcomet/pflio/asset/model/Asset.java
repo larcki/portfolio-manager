@@ -27,6 +27,9 @@ public class Asset {
     @Enumerated(EnumType.STRING)
     private Region region;
 
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    private Account account;
+
     public Integer getId() {
         return id;
     }
@@ -72,6 +75,14 @@ public class Asset {
 
     public void setRegion(Region region) {
         this.region = region;
+    }
+
+    public Account getAccount() {
+        return account;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
     }
 
     @Override

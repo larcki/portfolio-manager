@@ -46,12 +46,16 @@ class GenerateTestData {
     @Autowired
     private ChartService chartService;
 
+    @Autowired
+    private AccountRepo accountRepo;
+
     void clearDB() {
         priceUpdateRepo.deleteAll();
         transactionRepo.deleteAll();
         assetPositionRepo.deleteAll();
         assetRepo.deleteAll();
         feeRepo.deleteAll();
+        accountRepo.deleteAll();
     }
 
     @Test

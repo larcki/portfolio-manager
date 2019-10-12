@@ -1,11 +1,13 @@
 package com.nordcomet.pflio.asset.repo;
 
+import com.nordcomet.pflio.asset.model.Account;
 import com.nordcomet.pflio.asset.model.Asset;
 import com.nordcomet.pflio.asset.model.Fee;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import static com.nordcomet.pflio.DataRandomiser.randomAccount;
 import static com.nordcomet.pflio.DataRandomiser.randomAsset;
 import static com.nordcomet.pflio.DataRandomiser.randomFee;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -32,4 +34,14 @@ class EntityRelationshipTest {
 
         assertEquals(feeRepo.count(), 1);
     }
+
+    @Test
+    void shouldSaveAccount() {
+        Account account = randomAccount();
+        accountRepo.save(account);
+
+        Asset asset = randomAsset(account);
+        assetRepo.save(asset);
+    }
+
 }

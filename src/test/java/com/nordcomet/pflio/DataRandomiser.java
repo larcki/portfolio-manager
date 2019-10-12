@@ -14,12 +14,17 @@ import static com.nordcomet.pflio.asset.model.AssetClassType.*;
 
 public class DataRandomiser {
 
-    public static Asset randomAsset() {
+    public static Asset randomAsset(Account account) {
         Asset asset = new Asset();
         asset.setName(randomString());
         asset.setAssetClasses(randomAssetClasses());
         asset.setRegion(randomRegion());
+        asset.setAccount(account);
         return asset;
+    }
+
+    public static Asset randomAsset() {
+        return randomAsset(randomAccount());
     }
 
     private static Region randomRegion() {
@@ -122,7 +127,10 @@ public class DataRandomiser {
     }
 
     public static Account randomAccount() {
-        return new Account(randomString(), "EUR");
+        return Account.builder()
+                .name(randomString())
+                .defaultCurrency("EUR")
+                .build();
     }
 
     public static Fee randomFee(Asset asset) {
