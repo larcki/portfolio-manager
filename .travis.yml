@@ -11,6 +11,7 @@ before_script:
 - yarn global add @vue/cli
 - export PATH=$PATH:frontend/node_modules/.bin
 - pwd
+- ln -s frontend/node_modules/.bin/vue-cli-service /bin/sh/vue-cli-service
 jdk:
 - oraclejdk11
 script:
