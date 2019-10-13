@@ -12,7 +12,6 @@ before_script:
 - echo $PATH
 - export PATH="$(yarn global bin):$PATH"
 - echo $PATH
-- ls -ltra frontend/node_modules/.bin
 - ls -ltra /home/travis/.yarn/bin
 - pwd
 jdk:
