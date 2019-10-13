@@ -7,7 +7,7 @@ before_install:
 before_script:
 - npm install
 - yarn global add @vue/cli
-- PATH=$PATH:./node_modules/.bin
+- export PATH=$PATH:./node_modules/.bin
 
 jdk:
 - oraclejdk11
