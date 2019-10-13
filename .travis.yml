@@ -1,5 +1,7 @@
 language: java
 
+sudo: enabled
+
 install: true
 
 before_install:
@@ -7,7 +9,8 @@ before_install:
 before_script:
 - npm install
 - yarn global add @vue/cli
-- export PATH=$PATH:frontend/node_modules/.bin
+- export PATH=$PATH:~./frontend/node_modules/.bin
+- cp ./frontend/node_modules/.bin/vue-cli-service /bin/sh
 jdk:
 - oraclejdk11
 script:
