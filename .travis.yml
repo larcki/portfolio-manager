@@ -1,7 +1,5 @@
 language: java
 
-sudo: enabled
-
 install: true
 
 before_install:
