@@ -10,7 +10,7 @@ before_script:
 - npm install
 - yarn global add @vue/cli
 - echo $PATH
-- export PATH=$PATH:frontend/node_modules/.bin
+- export PATH="$(yarn global bin):$PATH"
 - echo $PATH
 - pwd
 jdk:
