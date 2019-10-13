@@ -39,3 +39,7 @@ if (project.hasProperty('frontend')) {
 
     processResources.dependsOn('frontend:yarn_build')
 }
+
+test {
+    useJUnitPlatform()
+}
