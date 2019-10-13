@@ -10,13 +10,7 @@ before_script:
 - cd frontend
 - npm install
 - npm install -g @vue/cli
-- echo $PATH
-- export PATH="$(yarn global bin):$PATH"
-- echo $PATH
-- ls -ltra /home/travis/.yarn/bin
-- pwd
 - cd ..
-- pwd
 jdk:
 - oraclejdk11
 script:
