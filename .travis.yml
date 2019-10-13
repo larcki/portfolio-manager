@@ -2,7 +2,15 @@ language: java
 
 install: true
 
+env:
+- NODE_VERSION=11 CC=clang CXX=clang++
+
+before_install:
+- nvm install $NODE_VERSION
+before_script:
+- npm install
+
 jdk:
 - oraclejdk11
 script:
-- ./gradlew test build -Pfrontend
+- ./gradlew clean test build -Pfrontend
