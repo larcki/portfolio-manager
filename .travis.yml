@@ -9,6 +9,7 @@ before_install:
 - nvm install $NODE_VERSION
 before_script:
 - npm install
+- yarn global add @vue/cli
 
 jdk:
 - oraclejdk11
