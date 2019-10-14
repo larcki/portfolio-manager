@@ -28,6 +28,6 @@ deploy:
     secure: "$AWS_SECRET_KEY"
   bucket-name: "$BUCKET_NAME"
   on:
-    branch: ci-test
+    branch: master
   zip_file: "build/distributions/portfolio-manager-1.0-SNAPSHOT.zip"
   skip_cleanup: true
