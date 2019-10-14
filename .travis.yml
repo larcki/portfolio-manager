@@ -29,5 +29,5 @@ deploy:
   bucket-name: "$BUCKET_NAME"
   on:
     branch: ci-test
-  zip_file: "build/libs/distributions/*.zip"
+  zip_file: "build/libs/distributions/portfolio-manager-1.0-SNAPSHOT.zip"
   skip_cleanup: true
