@@ -2,9 +2,6 @@ language: java
 
 install: true
 
-services:
-- docker
-
 before_install:
 - nvm install 12
 
@@ -19,7 +16,6 @@ jdk:
 
 script:
 - ./gradlew clean test build -Pfrontend
-- docker build -t portfolio-manager .
 
 deploy:
   provider: elasticbeanstalk
@@ -31,7 +27,7 @@ deploy:
   secret_access_key:
     secure: "$AWS_SECRET_KEY"
   bucket-name: "$BUCKET_NAME"
-  path: "portfolio-manager"
   on:
     branch: ci-test
+  zip_file: "build/libs/distributions/*.zip"
   skip_cleanup: true

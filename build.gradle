@@ -43,3 +43,15 @@ if (project.hasProperty('frontend')) {
 test {
     useJUnitPlatform()
 }
+
+task buildZip(type: Zip) {
+    from('build/libs') {
+        include '*.jar'
+    }
+    from('.ebextensions') {
+        include '*/**'
+        into '.ebextensions'
+    }
+}
+
+build.dependsOn buildZip
