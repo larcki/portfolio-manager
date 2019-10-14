@@ -4,12 +4,30 @@ install: true
 
 before_install:
 - nvm install 12
+
 before_script:
 - cd frontend
 - npm install
 - npm install -g @vue/cli
 - cd ..
+
 jdk:
 - oraclejdk11
+
 script:
 - ./gradlew clean test build -Pfrontend
+
+deploy:
+  provider: elasticbeanstalk
+  region: "eu-west-1"
+  app: "portfolio-manager"
+  env: "preview"
+  access_key_id:
+    secure: "$AWS_ACCESS_KEY"
+  secret_access_key:
+    secure: "$AWS_SECRET_KEY"
+  bucket-name: "$BUCKET_NAME"
+  on:
+    branch: ci-test
+  zip_file: "build/distributions/portfolio-manager-1.0-SNAPSHOT.zip"
+  skip_cleanup: true
