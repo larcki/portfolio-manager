@@ -109,7 +109,7 @@
         </v-container>
         <v-snackbar
                 v-model="snackbar"
-                color="info"
+                color="success"
                 :timeout=5000>
             Transaction saved
             <v-btn
