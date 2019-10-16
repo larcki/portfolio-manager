@@ -11,6 +11,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
+        if (Boolean.valueOf(System.getenv("SECURITY_DISABLED"))) {
+            return;
+        }
+
         httpSecurity.csrf().disable()
                 .authorizeRequests().anyRequest().authenticated()
                 .and().httpBasic();
