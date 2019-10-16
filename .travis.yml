@@ -19,9 +19,9 @@ script:
 
 deploy:
   provider: elasticbeanstalk
-  region: "eu-west-1"
+  region: "eu-north-1"
   app: "portfolio-manager"
-  env: "preview"
+  env: "production"
   access_key_id:
     secure: "$AWS_ACCESS_KEY"
   secret_access_key:
