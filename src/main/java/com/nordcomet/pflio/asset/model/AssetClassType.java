@@ -5,7 +5,7 @@ public enum AssetClassType {
     STOCK,
     BOND,
     PROPERTY,
-    RAW_MATERIALS,
+    COMMODITY,
     CASH_EUR,
     CASH_GBP,
     CRYPTO

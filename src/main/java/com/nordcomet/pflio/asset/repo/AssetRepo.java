@@ -18,4 +18,6 @@ public interface AssetRepo extends CrudRepository<Asset, Integer> {
 
     Set<Asset> findAll();
 
+    Optional<Asset> findAssetByIsin(String isin);
+
 }

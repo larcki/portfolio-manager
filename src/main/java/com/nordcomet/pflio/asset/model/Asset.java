@@ -1,10 +1,17 @@
 package com.nordcomet.pflio.asset.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.Set;
 
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 public class Asset {
 
@@ -29,6 +36,8 @@ public class Asset {
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     private Account account;
+
+    private String isin;
 
     public Integer getId() {
         return id;
@@ -83,6 +92,14 @@ public class Asset {
 
     public void setAccount(Account account) {
         this.account = account;
+    }
+
+    public String getIsin() {
+        return isin;
+    }
+
+    public void setIsin(String isin) {
+        this.isin = isin;
     }
 
     @Override
