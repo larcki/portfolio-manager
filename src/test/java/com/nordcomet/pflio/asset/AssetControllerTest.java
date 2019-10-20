@@ -2,6 +2,7 @@ package com.nordcomet.pflio.asset;
 
 import com.nordcomet.pflio.DataRandomiser;
 import com.nordcomet.pflio.asset.repo.AssetRepo;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -25,6 +26,7 @@ class AssetControllerTest {
     private MockMvc mockMvc;
 
     @Test
+    @Disabled
     void shouldAcceptRequest() throws Exception {
         Integer asset = assetRepo.save(DataRandomiser.randomAsset()).getId();
 
