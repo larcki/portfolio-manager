@@ -34,7 +34,7 @@ public class TransactionService {
         Asset asset = assetRepo.findAssetsById(dto.getAssetId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         Fee fee = Fee.builder()
-                .amount(new Money(calculateFeeAmount(dto), dto.getTotalAmount().getCurrency()))
+                .amount(calculateFee(dto))
                 .asset(asset)
                 .timestamp(dto.getTimestamp())
                 .build();
@@ -52,10 +52,12 @@ public class TransactionService {
         transactionRepo.save(transaction);
     }
 
-    private BigDecimal calculateFeeAmount(TransactionSaveRequest dto) {
-        return dto.getTotalAmount().getAmount().subtract(
-                dto.getUnitPrice().getAmount().multiply(dto.getQuantityChange()))
-                .setScale(4, RoundingMode.HALF_UP);
+    private Money calculateFee(TransactionSaveRequest dto) {
+        BigDecimal totalPrice = dto.getUnitPrice().getAmount()
+                .multiply(dto.getQuantityChange())
+                .multiply(dto.getExchangeRate());
+        BigDecimal feeAmount = dto.getTotalAmount().getAmount().subtract(totalPrice);
+        return Money.of(feeAmount, dto.getTotalAmount().getCurrency());
     }
 
     @Transactional

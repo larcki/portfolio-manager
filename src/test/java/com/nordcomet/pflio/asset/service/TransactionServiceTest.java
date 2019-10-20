@@ -42,7 +42,7 @@ class TransactionServiceTest {
     private FeeRepo feeRepo;
 
     @Test
-    void save_shouldSaveTransactionWithFee() {
+    void save_shouldResolveFeeWhenSameCurrency() {
         Asset asset = randomAsset();
         assetRepo.save(asset);
 
@@ -71,6 +71,40 @@ class TransactionServiceTest {
         assertTrue(fee.isPresent());
         assertEquals(fee.get().getAmount().getAmount(), new BigDecimal("1.0000"));
         assertEquals(fee.get().getAmount().getCurrency(), Currency.GBP);
+    }
+
+    @Test
+    void save_shouldResolveFeeFromMultiCurrencyTransaction() {
+        Asset asset = randomAsset();
+        assetRepo.save(asset);
+
+        BigDecimal quantity = new BigDecimal("2");
+        Money unitPrice = Money.of(new BigDecimal("10"), Currency.SEK);
+        BigDecimal exchangeRate = new BigDecimal("0.093");
+        Money totalAmount = Money.of(new BigDecimal("2"), Currency.EUR);
+
+        TransactionSaveRequest dto = TransactionSaveRequest.builder()
+                .assetId(asset.getId())
+                .quantityChange(quantity)
+                .unitPrice(unitPrice)
+                .totalAmount(totalAmount)
+                .timestamp(LocalDateTime.now())
+                .exchangeRate(exchangeRate)
+                .build();
+
+        underTest.save(dto);
+
+        List<Transaction> transaction = transactionRepo.findAllByAssetId(asset.getId());
+        assertEquals(transaction.size(), 1);
+        assertEquals(transaction.get(0).getQuantityChange(), new BigDecimal("2.0000"));
+        assertEquals(transaction.get(0).getUnitPrice().getAmount(), new BigDecimal("10.0000"));
+        assertEquals(transaction.get(0).getFee().getAmount().getAmount(), new BigDecimal("0.1400"));
+        assertEquals(transaction.get(0).getTotalAmount().getCurrency(), Currency.EUR);
+
+        Optional<Fee> fee = feeRepo.findFeeByAssetId(asset.getId());
+        assertTrue(fee.isPresent());
+        assertEquals(fee.get().getAmount().getAmount(), new BigDecimal("0.1400"));
+        assertEquals(fee.get().getAmount().getCurrency(), Currency.EUR);
     }
 
     @Test
