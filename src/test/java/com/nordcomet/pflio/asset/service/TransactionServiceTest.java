@@ -1,9 +1,6 @@
 package com.nordcomet.pflio.asset.service;
 
-import com.nordcomet.pflio.asset.model.Asset;
-import com.nordcomet.pflio.asset.model.Fee;
-import com.nordcomet.pflio.asset.model.Transaction;
-import com.nordcomet.pflio.asset.model.TransactionSaveRequest;
+import com.nordcomet.pflio.asset.model.*;
 import com.nordcomet.pflio.asset.model.snapshot.AssetPosition;
 import com.nordcomet.pflio.asset.repo.*;
 import org.junit.jupiter.api.Test;
@@ -52,27 +49,35 @@ class TransactionServiceTest {
         BigDecimal quantity = new BigDecimal("2");
         BigDecimal unitPrice = new BigDecimal("3");
         BigDecimal totalPrice = new BigDecimal("7");
-        TransactionSaveRequest dto = new TransactionSaveRequest(asset.getId(), quantity, unitPrice, totalPrice, "GBP", LocalDateTime.now());
+        TransactionSaveRequest dto = TransactionSaveRequest.builder()
+                .assetId(asset.getId())
+                .quantityChange(quantity)
+                .unitPrice(Money.of(unitPrice, Currency.GBP))
+                .totalAmount(Money.of(totalPrice, Currency.GBP))
+                .timestamp(LocalDateTime.now())
+                .exchangeRate(BigDecimal.ONE)
+                .build();
 
         underTest.save(dto);
 
         List<Transaction> transaction = transactionRepo.findAllByAssetId(asset.getId());
         assertEquals(transaction.size(), 1);
         assertEquals(transaction.get(0).getQuantityChange(), new BigDecimal("2.0000"));
-        assertEquals(transaction.get(0).getPrice(), new BigDecimal("3.0000"));
-        assertEquals(transaction.get(0).getFee().getAmount(), new BigDecimal("1.0000"));
-        assertEquals(transaction.get(0).getCurrency(), "GBP");
+        assertEquals(transaction.get(0).getUnitPrice().getAmount(), new BigDecimal("3.0000"));
+        assertEquals(transaction.get(0).getFee().getAmount().getAmount(), new BigDecimal("1.0000"));
+        assertEquals(transaction.get(0).getTotalAmount().getCurrency(), Currency.GBP);
 
         Optional<Fee> fee = feeRepo.findFeeByAssetId(asset.getId());
         assertTrue(fee.isPresent());
-        assertEquals(fee.get().getAmount(), new BigDecimal("1.0000"));
-        assertEquals(fee.get().getCurrency(), "GBP");
+        assertEquals(fee.get().getAmount().getAmount(), new BigDecimal("1.0000"));
+        assertEquals(fee.get().getAmount().getCurrency(), Currency.GBP);
     }
 
     @Test
     void save_shouldThrowException_whenAssetNotFound() {
         assertThrows(ResponseStatusException.class, () -> {
-            underTest.save(new TransactionSaveRequest(0, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, "EUR", LocalDateTime.now()));
+            TransactionSaveRequest request = TransactionSaveRequest.builder().build();
+            underTest.save(request);
         });
     }
 
@@ -85,11 +90,11 @@ class TransactionServiceTest {
         underTest.save(transaction);
 
         List<AssetPosition> positions = assetPositionRepo.findAllByAssetId(asset.getId());
-        BigDecimal expectedTotalPrice = transaction.getQuantityChange().multiply(transaction.getUnitPrice()).setScale(4, RoundingMode.HALF_UP);
+        BigDecimal expectedTotalPrice = transaction.getQuantityChange().multiply(transaction.getUnitPrice().getAmount()).setScale(4, RoundingMode.HALF_UP);
         assertThat(positions.size(), is(1));
         AssetPosition assetPosition = positions.get(0);
         assertThat(assetPosition.getAsset().getId(), is(asset.getId()));
-        assertThat(assetPosition.getPrice(), is(transaction.getUnitPrice()));
+        assertThat(assetPosition.getPrice(), is(transaction.getUnitPrice().getAmount()));
         assertThat(assetPosition.getQuantity(), is(transaction.getQuantityChange()));
         assertThat(assetPosition.getTotalPrice(), is(expectedTotalPrice));
         assertThat(assetPosition.getTotalPurchaseAmount(), is(expectedTotalPrice));
@@ -109,12 +114,12 @@ class TransactionServiceTest {
         assertThat(latestPosition.isPresent(), is(true));
         AssetPosition assetPosition = latestPosition.get();
         BigDecimal expectedTotalQuantity = previousPosition.getQuantity().add(transaction.getQuantityChange());
-        BigDecimal expectedTotalPrice = expectedTotalQuantity.multiply(transaction.getUnitPrice()).setScale(4, RoundingMode.HALF_UP);
+        BigDecimal expectedTotalPrice = expectedTotalQuantity.multiply(transaction.getUnitPrice().getAmount()).setScale(4, RoundingMode.HALF_UP);
         assertThat(assetPosition.getAsset().getId(), is(asset.getId()));
-        assertThat(assetPosition.getPrice(), is(transaction.getUnitPrice()));
+        assertThat(assetPosition.getPrice(), is(transaction.getUnitPrice().getAmount()));
         assertThat(assetPosition.getQuantity(), is(expectedTotalQuantity));
         assertThat(assetPosition.getTotalPrice(), is(expectedTotalPrice));
-        BigDecimal expectedTotalPurchaseAmount = previousPosition.getTotalPurchaseAmount().add(transaction.getUnitPrice().multiply(transaction.getQuantityChange())).setScale(4, RoundingMode.HALF_UP);
+        BigDecimal expectedTotalPurchaseAmount = previousPosition.getTotalPurchaseAmount().add(transaction.getUnitPrice().getAmount().multiply(transaction.getQuantityChange())).setScale(4, RoundingMode.HALF_UP);
         assertThat(assetPosition.getTotalPurchaseAmount(), is(expectedTotalPurchaseAmount));
     }
 

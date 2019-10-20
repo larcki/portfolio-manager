@@ -59,19 +59,32 @@ public class DataRandomiser {
     }
 
     public static Transaction randomTransaction(Asset asset) {
-        Transaction transaction = new Transaction();
-        transaction.setAsset(asset);
-        transaction.setTimestamp(LocalDateTime.now());
-        transaction.setPrice(randomPrice());
-        transaction.setQuantityChange(randomQuantity());
-        return transaction;
+        return randomBaseTransaction(asset).build();
+    }
+
+    public static Transaction.TransactionBuilder randomBaseTransaction(Asset asset) {
+        Money unitPrice = Money.of(randomPrice(), Currency.EUR);
+        BigDecimal quantityChange = randomQuantity();
+        return Transaction.builder()
+                .asset(asset)
+                .unitPrice(unitPrice)
+                .quantityChange(quantityChange)
+                .totalAmount(Money.of(unitPrice.getAmount().multiply(quantityChange), Currency.EUR))
+                .timestamp(LocalDateTime.now());
     }
 
     public static TransactionSaveRequest randomTransactionDto(Asset asset, LocalDateTime timestamp) {
         BigDecimal quantityChange = randomQuantity();
         BigDecimal unitPrice = randomAmount();
         BigDecimal totalPrice = quantityChange.multiply(unitPrice).add(randomAmount(0, 1)).setScale(4, RoundingMode.HALF_UP);
-        return new TransactionSaveRequest(asset.getId(), quantityChange, unitPrice, totalPrice, "GBP", timestamp);
+        return TransactionSaveRequest.builder()
+                .assetId(asset.getId())
+                .quantityChange(quantityChange)
+                .unitPrice(Money.of(unitPrice, Currency.GBP))
+                .totalAmount(Money.of(totalPrice, Currency.GBP))
+                .exchangeRate(BigDecimal.ONE)
+                .timestamp(timestamp)
+                .build();
     }
 
     public static TransactionSaveRequest randomTransactionDto(Asset asset) {
@@ -99,9 +112,9 @@ public class DataRandomiser {
     }
 
     public static Transaction transaction(Asset asset, int daysOfData, int daysOffset) {
-        Transaction transaction = randomTransaction(asset);
-        transaction.setTimestamp(LocalDateTime.now().minusDays(daysOfData).plusDays(daysOffset));
-        return transaction;
+        return randomBaseTransaction(asset)
+                .timestamp(LocalDateTime.now().minusDays(daysOfData).plusDays(daysOffset))
+                .build();
     }
 
     public static double random(double rangeMin, double rangeMax) {
@@ -134,7 +147,11 @@ public class DataRandomiser {
     }
 
     public static Fee randomFee(Asset asset) {
-        return new Fee(randomAmount(0.1, 1), "EUR", asset, LocalDateTime.now());
+        return Fee.builder()
+                .amount(Money.of(randomAmount(0.1, 1), Currency.EUR))
+                .asset(asset)
+                .timestamp(LocalDateTime.now())
+                .build();
     }
 
     static boolean probabilityOf(Double value) {

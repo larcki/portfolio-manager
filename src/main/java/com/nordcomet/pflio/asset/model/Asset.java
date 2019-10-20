@@ -39,6 +39,15 @@ public class Asset {
 
     private String isin;
 
+    public Asset(String name, ParserOptions parserOptions, Set<AssetClass> assetClasses, Region region, Account account, String isin) {
+        this.name = name;
+        this.parserOptions = parserOptions;
+        this.assetClasses = assetClasses;
+        this.region = region;
+        this.account = account;
+        this.isin = isin;
+    }
+
     public Integer getId() {
         return id;
     }

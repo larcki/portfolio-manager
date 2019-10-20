@@ -1,10 +1,7 @@
 package com.nordcomet.pflio.asset.service;
 
 import com.nordcomet.pflio.asset.TransactionResponse;
-import com.nordcomet.pflio.asset.model.Asset;
-import com.nordcomet.pflio.asset.model.Fee;
-import com.nordcomet.pflio.asset.model.Transaction;
-import com.nordcomet.pflio.asset.model.TransactionSaveRequest;
+import com.nordcomet.pflio.asset.model.*;
 import com.nordcomet.pflio.asset.repo.AssetRepo;
 import com.nordcomet.pflio.asset.repo.TransactionRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,25 +32,30 @@ public class TransactionService {
 
     public void save(TransactionSaveRequest dto) {
         Asset asset = assetRepo.findAssetsById(dto.getAssetId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        Fee fee = resolveFee(dto, asset);
-        Transaction transaction = toTransaction(dto, asset, fee);
+
+        Fee fee = Fee.builder()
+                .amount(new Money(calculateFeeAmount(dto), dto.getTotalAmount().getCurrency()))
+                .asset(asset)
+                .timestamp(dto.getTimestamp())
+                .build();
+
+        Transaction transaction = Transaction.builder()
+                .asset(asset)
+                .unitPrice(dto.getUnitPrice())
+                .quantityChange(dto.getQuantityChange())
+                .fee(fee)
+                .totalAmount(dto.getTotalAmount())
+                .timestamp(dto.getTimestamp())
+                .build();
+
         assetPositionService.createBasedOn(transaction);
         transactionRepo.save(transaction);
     }
 
-    private Fee resolveFee(TransactionSaveRequest dto, Asset asset) {
-        BigDecimal feeAmount = calculateFeeAmount(dto);
-        return new Fee(feeAmount, dto.getCurrency(), asset, now());
-    }
-
     private BigDecimal calculateFeeAmount(TransactionSaveRequest dto) {
-        return dto.getTotalPrice().subtract(
-                dto.getUnitPrice().multiply(dto.getQuantityChange()))
+        return dto.getTotalAmount().getAmount().subtract(
+                dto.getUnitPrice().getAmount().multiply(dto.getQuantityChange()))
                 .setScale(4, RoundingMode.HALF_UP);
-    }
-
-    private Transaction toTransaction(TransactionSaveRequest dto, Asset asset, Fee fee) {
-        return new Transaction(asset, dto.getTimestamp(), dto.getUnitPrice(), dto.getQuantityChange(), dto.getCurrency(), fee);
     }
 
     @Transactional
@@ -63,9 +65,9 @@ public class TransactionService {
                         t.getTimestamp(),
                         t.getAsset().getName(),
                         t.getAsset().getAccount().getName(),
-                        toDisplay(t.getPrice().multiply(t.getQuantityChange())),
-                        toDisplay(t.getFee().getAmount()),
-                        t.getCurrency()
+                        toDisplay(t.getUnitPrice().getAmount().multiply(t.getQuantityChange())),
+                        toDisplay(t.getFee().getAmount().getAmount()),
+                        t.getTotalAmount().getCurrency().toString()
                 )).collect(Collectors.toList());
     }
 

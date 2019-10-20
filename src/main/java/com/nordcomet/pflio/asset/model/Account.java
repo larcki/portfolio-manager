@@ -22,4 +22,8 @@ public class Account {
 
     private String defaultCurrency;
 
+    public Account(String name, String defaultCurrency) {
+        this.name = name;
+        this.defaultCurrency = defaultCurrency;
+    }
 }

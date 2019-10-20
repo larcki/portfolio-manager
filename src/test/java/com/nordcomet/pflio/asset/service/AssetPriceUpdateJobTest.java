@@ -1,8 +1,9 @@
 package com.nordcomet.pflio.asset.service;
 
-import com.nordcomet.pflio.asset.model.*;
-import com.nordcomet.pflio.asset.model.snapshot.AssetPosition;
-import com.nordcomet.pflio.asset.repo.AssetPositionRepo;
+import com.nordcomet.pflio.asset.model.Asset;
+import com.nordcomet.pflio.asset.model.ParserOptions;
+import com.nordcomet.pflio.asset.model.ParserType;
+import com.nordcomet.pflio.asset.model.PriceUpdate;
 import com.nordcomet.pflio.asset.repo.AssetRepo;
 import com.nordcomet.pflio.asset.repo.PriceUpdateRepo;
 import com.nordcomet.pflio.asset.repo.TransactionRepo;
@@ -14,10 +15,9 @@ import org.springframework.test.annotation.DirtiesContext;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 import static com.nordcomet.pflio.DataRandomiser.randomAsset;
-import static com.nordcomet.pflio.DataRandomiser.randomTransaction;
+import static com.nordcomet.pflio.DataRandomiser.randomBaseTransaction;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -59,8 +59,8 @@ class AssetPriceUpdateJobTest {
     }
 
     private void createTransaction(Asset asset_1) {
-        Transaction transaction_1 = randomTransaction(asset_1);
-        transaction_1.setTimestamp(LocalDateTime.now().minusDays(10));
-        transactionRepo.save(transaction_1);
+        transactionRepo.save(randomBaseTransaction(asset_1)
+                .timestamp(LocalDateTime.now().minusDays(10))
+                .build());
     }
 }
