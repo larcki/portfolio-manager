@@ -31,31 +31,42 @@
                                     </v-row>
 
                                     <v-row>
-
-
                                         <v-text-field
-                                                v-model="newTransaction.totalPrice"
-                                                label="Total amount"
-                                        ></v-text-field>
-                                    </v-row>
-
-                                    <v-row>
-
-                                        <v-text-field
-                                                v-model="newTransaction.unitPrice"
+                                                v-model="newTransaction.unitPrice.amount"
                                                 label="Unit price"
                                         ></v-text-field>
                                     </v-row>
 
                                     <v-row>
-
                                         <v-select
                                                 :items="currencies"
-                                                v-model="newTransaction.currency"
-                                                label="Currency"
+                                                v-model="newTransaction.unitPrice.currency"
+                                                label="Unit price currency"
 
                                         ></v-select>
+                                    </v-row>
 
+                                    <v-row>
+                                        <v-text-field
+                                                v-model="newTransaction.totalAmount.amount"
+                                                label="Total amount"
+                                        ></v-text-field>
+                                    </v-row>
+
+
+                                    <v-row>
+                                        <v-select
+                                                :items="currencies"
+                                                v-model="newTransaction.totalAmount.currency"
+                                                label="Total amount currency"
+                                        ></v-select>
+                                    </v-row>
+
+                                    <v-row>
+                                        <v-text-field
+                                                v-model="newTransaction.exchangeRate"
+                                                label="Exchange rate"
+                                        ></v-text-field>
                                     </v-row>
 
                                 </v-col>
@@ -131,7 +142,10 @@
             return {
                 snackbar: false,
                 transactions: [],
-                newTransaction: {},
+                newTransaction: {
+                    totalAmount: {amount: '', currency: ''},
+                    unitPrice: {amount: '', currency: ''}
+                },
                 assets: [],
                 selectedAsset: {},
                 currencies: ['EUR', 'GBP']

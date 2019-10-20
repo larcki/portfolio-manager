@@ -1,7 +1,5 @@
 package com.nordcomet.pflio.asset.model;
 
-import javax.persistence.Embeddable;
-
 public enum Currency {
 
     EUR,
@@ -13,10 +11,5 @@ public enum Currency {
     USD,
     BTC,
     ETH;
-
-    @Override
-    public String toString() {
-        return this.name();
-    }
 
 }

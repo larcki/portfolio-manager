@@ -13,11 +13,15 @@ import java.util.List;
 @RestController()
 public class AssetController {
 
-    @Autowired
-    private TransactionService transactionService;
+    private final TransactionService transactionService;
+
+    private final AssetService assetService;
 
     @Autowired
-    private AssetService assetService;
+    public AssetController(TransactionService transactionService, AssetService assetService) {
+        this.transactionService = transactionService;
+        this.assetService = assetService;
+    }
 
     @PostMapping("/api/transaction")
     public void saveTransaction(@RequestBody TransactionSaveRequest saveRequest) {
