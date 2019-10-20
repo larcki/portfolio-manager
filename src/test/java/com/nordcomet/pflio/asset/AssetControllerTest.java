@@ -17,6 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @DirtiesContext
 @AutoConfigureMockMvc
+@Disabled
 class AssetControllerTest {
 
     @Autowired
@@ -26,7 +27,6 @@ class AssetControllerTest {
     private MockMvc mockMvc;
 
     @Test
-    @Disabled
     void shouldAcceptRequest() throws Exception {
         Integer asset = assetRepo.save(DataRandomiser.randomAsset()).getId();
 
