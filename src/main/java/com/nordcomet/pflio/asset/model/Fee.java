@@ -27,9 +27,4 @@ public class Fee {
 
     private LocalDateTime timestamp;
 
-    public Fee(Money amount, Asset asset, LocalDateTime timestamp) {
-        this.amount = amount;
-        this.asset = asset;
-        this.timestamp = timestamp;
-    }
 }

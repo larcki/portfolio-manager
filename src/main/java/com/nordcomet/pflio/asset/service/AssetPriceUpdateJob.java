@@ -1,7 +1,7 @@
 package com.nordcomet.pflio.asset.service;
 
 import com.nordcomet.pflio.asset.model.Asset;
-import com.nordcomet.pflio.asset.model.AssetPrice;
+import com.nordcomet.pflio.asset.model.Money;
 import com.nordcomet.pflio.asset.model.PriceUpdate;
 import com.nordcomet.pflio.asset.parser.PriceParserService;
 import com.nordcomet.pflio.asset.repo.AssetRepo;
@@ -41,10 +41,10 @@ public class AssetPriceUpdateJob {
 
     }
 
-    private void savePriceUpdate(Asset asset, AssetPrice assetPrice) {
+    private void savePriceUpdate(Asset asset, Money assetPrice) {
         PriceUpdate priceUpdate = new PriceUpdate();
         priceUpdate.setAsset(asset);
-        priceUpdate.setPrice(assetPrice.getPrice());
+        priceUpdate.setPrice(assetPrice.getAmount());
         priceUpdate.setTimestamp(LocalDateTime.now());
         priceUpdateService.save(priceUpdate);
     }

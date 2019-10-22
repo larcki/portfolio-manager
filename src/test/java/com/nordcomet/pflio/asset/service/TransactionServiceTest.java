@@ -1,7 +1,7 @@
 package com.nordcomet.pflio.asset.service;
 
 import com.nordcomet.pflio.asset.model.*;
-import com.nordcomet.pflio.asset.model.snapshot.AssetPosition;
+import com.nordcomet.pflio.asset.model.AssetPosition;
 import com.nordcomet.pflio.asset.repo.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

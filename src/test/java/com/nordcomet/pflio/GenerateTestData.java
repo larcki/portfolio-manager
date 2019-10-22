@@ -69,12 +69,6 @@ class GenerateTestData {
                 .mapToObj(value -> assetRepo.save(randomAsset()))
                 .collect(Collectors.toList());
 
-        List<Asset> assetsWithPriceParser = createAssetsWithPriceParser().stream()
-                .map(asset -> assetRepo.save(asset))
-                .collect(Collectors.toList());
-
-        assets.addAll(assetsWithPriceParser);
-
         IntStream.range(1, daysOfData - 5).forEach(value -> {
             logger.info("Creating data... {}/{}", value, (daysOfData - 5));
             assets.forEach(asset -> {
@@ -86,15 +80,6 @@ class GenerateTestData {
                 }
             });
         });
-    }
-
-    private static List<Asset> createAssetsWithPriceParser() {
-        Asset superFondetNorge = new Asset();
-        superFondetNorge.setParserOptions(new ParserOptions(ParserType.MORNINGSTAR_FUND, "F00000TH8U", "NOK", "EUR"));
-        superFondetNorge.setName("Nordnet Superfondet Norge");
-        superFondetNorge.setAssetClasses(Set.of(new AssetClass(AssetClassType.STOCK, BigDecimal.ONE)));
-        superFondetNorge.setAccount(randomAccount());
-        return List.of(superFondetNorge);
     }
 
 }

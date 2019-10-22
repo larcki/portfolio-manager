@@ -1,6 +1,6 @@
 package com.nordcomet.pflio.asset.repo;
 
-import com.nordcomet.pflio.asset.model.snapshot.AssetPosition;
+import com.nordcomet.pflio.asset.model.AssetPosition;
 import org.springframework.data.repository.CrudRepository;
 
 import java.time.LocalDateTime;

@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class TransactionSaveRequest {
 
     private Integer assetId;

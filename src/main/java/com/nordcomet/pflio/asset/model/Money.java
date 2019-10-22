@@ -1,9 +1,6 @@
 package com.nordcomet.pflio.asset.model;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -16,6 +13,7 @@ import java.math.BigDecimal;
 @EqualsAndHashCode
 @Getter
 @Embeddable
+@ToString
 public class Money {
 
     @Column(precision = 12, scale = 4)

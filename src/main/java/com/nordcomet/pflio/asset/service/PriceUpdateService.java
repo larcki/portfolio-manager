@@ -1,7 +1,7 @@
 package com.nordcomet.pflio.asset.service;
 
 import com.nordcomet.pflio.asset.model.PriceUpdate;
-import com.nordcomet.pflio.asset.model.snapshot.AssetPosition;
+import com.nordcomet.pflio.asset.model.AssetPosition;
 import com.nordcomet.pflio.asset.repo.AssetPositionRepo;
 import com.nordcomet.pflio.asset.repo.PriceUpdateRepo;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -3,7 +3,7 @@ package com.nordcomet.pflio.chart.service;
 import com.nordcomet.pflio.asset.model.Asset;
 import com.nordcomet.pflio.asset.model.AssetClass;
 import com.nordcomet.pflio.asset.model.AssetClassType;
-import com.nordcomet.pflio.asset.model.snapshot.AssetPosition;
+import com.nordcomet.pflio.asset.model.AssetPosition;
 import com.nordcomet.pflio.asset.repo.AssetPositionRepo;
 import com.nordcomet.pflio.asset.repo.AssetRepo;
 import com.nordcomet.pflio.chart.model.ChartJSData;
@@ -114,11 +114,11 @@ class ChartServiceTest {
     }
 
     private Asset createAsset(Set<AssetClass> assetClasses) {
-        Asset asset = new Asset();
-        asset.setAssetClasses(assetClasses);
-        asset.setId(randomInt());
-        asset.setName(randomString());
-        return asset;
+        return Asset.builder()
+                .assetClasses(assetClasses)
+                .id(randomInt())
+                .name(randomString())
+                .build();
     }
 
     private Asset createAsset(AssetClassType classType) {

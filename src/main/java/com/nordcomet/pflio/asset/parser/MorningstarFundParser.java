@@ -1,6 +1,7 @@
 package com.nordcomet.pflio.asset.parser;
 
-import com.nordcomet.pflio.asset.model.AssetPrice;
+import com.nordcomet.pflio.asset.model.Currency;
+import com.nordcomet.pflio.asset.model.Money;
 import com.nordcomet.pflio.asset.model.ParserOptions;
 import com.nordcomet.pflio.asset.service.ExchangeRateService;
 import org.jsoup.Jsoup;
@@ -22,12 +23,12 @@ public class MorningstarFundParser {
         this.exchangeRateService = exchangeRateService;
     }
 
-    public Optional<AssetPrice> parsePrice(ParserOptions parserOptions) {
+    public Optional<Money> parsePrice(ParserOptions parserOptions) {
         return getPage(parserOptions.getCode())
                 .flatMap(document -> parsePriceText(document)
                 .flatMap(priceText -> parsePrice(priceText)
                 .flatMap(price -> convertCurrency(price, parserOptions)
-                .map(eurPrice -> new AssetPrice(eurPrice, parserOptions.getTargetCurrency())))));
+                .map(eurPrice -> Money.of(eurPrice, Currency.toCurrency(parserOptions.getTargetCurrency()))))));
     }
 
     private Optional<BigDecimal> convertCurrency(BigDecimal price, ParserOptions parserOptions) {

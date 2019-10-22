@@ -1,6 +1,6 @@
 package com.nordcomet.pflio.asset.parser;
 
-import com.nordcomet.pflio.asset.model.AssetPrice;
+import com.nordcomet.pflio.asset.model.Money;
 import com.nordcomet.pflio.asset.model.ParserOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,9 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-import static com.nordcomet.pflio.asset.model.ParserType.MORNINGSTAR_FUND;
-import static com.nordcomet.pflio.asset.model.ParserType.MORNINGSTAR_FUND_UK;
-import static com.nordcomet.pflio.asset.model.ParserType.MORNINGSTAR_STOCK;
+import static com.nordcomet.pflio.asset.model.ParserType.*;
 
 @Service
 public class PriceParserService {
@@ -29,7 +27,7 @@ public class PriceParserService {
         this.morningstarFundUkParser = morningstarFundUkParser;
     }
 
-    public Optional<AssetPrice> getPrice(ParserOptions parserOptions) {
+    public Optional<Money> getPrice(ParserOptions parserOptions) {
         logger.info("Price parser invoked for {}", parserOptions);
 
         if (MORNINGSTAR_FUND.equals(parserOptions.getParserType())) {

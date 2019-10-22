@@ -16,7 +16,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.nordcomet.pflio.DataRandomiser.randomAsset;
+import static com.nordcomet.pflio.DataRandomiser.randomAssetBuilder;
 import static com.nordcomet.pflio.DataRandomiser.randomBaseTransaction;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -40,13 +40,14 @@ class AssetPriceUpdateJobTest {
 
     @Test
     void shouldCreatePriceUpdate() {
-        Asset asset = randomAsset();
         ParserOptions parserOptions = new ParserOptions();
         parserOptions.setParserType(ParserType.MORNINGSTAR_FUND);
         parserOptions.setCode("F00000TH8U");
         parserOptions.setTargetCurrency("EUR");
         parserOptions.setSourceCurrency("NOK");
-        asset.setParserOptions(parserOptions);
+        Asset asset = randomAssetBuilder()
+                .parserOptions(parserOptions)
+                .build();
         assetRepo.save(asset);
 
         createTransaction(asset);

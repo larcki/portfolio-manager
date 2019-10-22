@@ -1,7 +1,7 @@
 package com.nordcomet.pflio;
 
 import com.nordcomet.pflio.asset.model.*;
-import com.nordcomet.pflio.asset.model.snapshot.AssetPosition;
+import com.nordcomet.pflio.asset.model.AssetPosition;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -15,16 +15,22 @@ import static com.nordcomet.pflio.asset.model.AssetClassType.*;
 public class DataRandomiser {
 
     public static Asset randomAsset(Account account) {
-        Asset asset = new Asset();
-        asset.setName(randomString());
-        asset.setAssetClasses(randomAssetClasses());
-        asset.setRegion(randomRegion());
-        asset.setAccount(account);
-        return asset;
+        return randomAssetBuilder()
+                .account(account)
+                .build();
+    }
+
+    public static Asset.AssetBuilder randomAssetBuilder() {
+        return Asset.builder()
+                .account(randomAccount())
+                .name(randomString())
+                .assetClasses(randomAssetClasses())
+                .region(randomRegion())
+                .isin(randomString());
     }
 
     public static Asset randomAsset() {
-        return randomAsset(randomAccount());
+        return randomAssetBuilder().build();
     }
 
     private static Region randomRegion() {

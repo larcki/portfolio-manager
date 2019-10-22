@@ -1,6 +1,6 @@
 package com.nordcomet.pflio.asset.parser;
 
-import com.nordcomet.pflio.asset.model.AssetPrice;
+import com.nordcomet.pflio.asset.model.Money;
 import com.nordcomet.pflio.asset.model.ParserOptions;
 import com.nordcomet.pflio.asset.service.ExchangeRateService;
 import org.junit.jupiter.api.Test;
@@ -29,7 +29,7 @@ class PriceParserServiceTest {
     }
 
     private void assertParserFor(ParserOptions options) {
-        Optional<AssetPrice> price = priceParserService.getPrice(options);
+        Optional<Money> price = priceParserService.getPrice(options);
         assertTrue(price.isPresent());
         System.out.println(price.get());
     }

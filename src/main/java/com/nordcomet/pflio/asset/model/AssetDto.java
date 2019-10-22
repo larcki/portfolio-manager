@@ -1,8 +1,12 @@
 package com.nordcomet.pflio.asset.model;
 
-import lombok.Data;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
-@Data
+@Builder
+@EqualsAndHashCode
+@Getter
 public class AssetDto {
 
     private final String name;

@@ -1,10 +1,12 @@
 package com.nordcomet.pflio.asset.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
-@AllArgsConstructor
-@Data
+@Builder
+@EqualsAndHashCode
+@Getter
 public class AssetSelectionDto {
 
     private final Integer id;

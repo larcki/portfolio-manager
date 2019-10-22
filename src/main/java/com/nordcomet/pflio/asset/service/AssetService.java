@@ -3,8 +3,8 @@ package com.nordcomet.pflio.asset.service;
 import com.nordcomet.pflio.asset.AssetInfoDto;
 import com.nordcomet.pflio.asset.model.Asset;
 import com.nordcomet.pflio.asset.model.AssetDto;
+import com.nordcomet.pflio.asset.model.AssetPosition;
 import com.nordcomet.pflio.asset.model.AssetSelectionDto;
-import com.nordcomet.pflio.asset.model.snapshot.AssetPosition;
 import com.nordcomet.pflio.asset.repo.AssetPositionRepo;
 import com.nordcomet.pflio.asset.repo.AssetRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,13 +48,14 @@ public class AssetService {
     }
 
     private AssetDto assetDto(Asset asset, BigDecimal currentValue, BigDecimal performance, BigDecimal performancePercentage) {
-        return new AssetDto(asset.getName(),
-                asset.getAccount().getName(),
-                toDisplay(currentValue),
-                toDisplay(performance),
-                toDisplayPercentage(performancePercentage),
-                asset.getId()
-        );
+        return AssetDto.builder()
+                .name(asset.getName())
+                .account(asset.getAccount().getName())
+                .totalValue(toDisplay(currentValue))
+                .performance(toDisplay(performance))
+                .performancePercentage(toDisplayPercentage(performancePercentage))
+                .id(asset.getId())
+                .build();
     }
 
     private String toDisplay(BigDecimal value) {
@@ -79,7 +80,12 @@ public class AssetService {
 
     public List<AssetSelectionDto> getAssetForSelection() {
         return assetRepo.findAll().stream()
-                .map(asset -> new AssetSelectionDto(asset.getId(), asset.getName(), asset.getAccount().getName(), asset.getAccount().getDefaultCurrency()))
+                .map(asset -> AssetSelectionDto.builder()
+                        .id(asset.getId())
+                        .name(asset.getName())
+                        .account(asset.getAccount().getName())
+                        .currency(asset.getAccount().getDefaultCurrency())
+                        .build())
                 .collect(Collectors.toList());
     }
 }

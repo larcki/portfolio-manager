@@ -3,7 +3,7 @@ package com.nordcomet.pflio.chart.service;
 import com.nordcomet.pflio.asset.model.Asset;
 import com.nordcomet.pflio.asset.model.AssetClass;
 import com.nordcomet.pflio.asset.model.AssetClassType;
-import com.nordcomet.pflio.asset.model.snapshot.AssetPosition;
+import com.nordcomet.pflio.asset.model.AssetPosition;
 import com.nordcomet.pflio.asset.repo.AssetPositionRepo;
 import com.nordcomet.pflio.asset.repo.AssetRepo;
 import org.junit.jupiter.api.Test;
@@ -81,11 +81,11 @@ class PerformanceChartCalculatorTest {
     }
 
     private Asset createAsset() {
-        Asset asset = new Asset();
-        asset.setAssetClasses(Set.of(new AssetClass(AssetClassType.STOCK, BigDecimal.ONE)));
-        asset.setId(randomInt());
-        asset.setName(randomString());
-        return asset;
+        return Asset.builder()
+                .assetClasses(Set.of(new AssetClass(AssetClassType.STOCK, BigDecimal.ONE)))
+                .id(randomInt())
+                .name(randomString())
+                .build();
     }
 
     private AssetPosition createAssetPositionWithTotalPurchase(Asset asset, BigDecimal totalValue, BigDecimal totalPurchaseAmount, LocalDateTime dateTime) {
