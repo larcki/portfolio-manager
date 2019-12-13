@@ -11,12 +11,11 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.math.RoundingMode.HALF_UP;
-import static java.time.LocalDateTime.now;
 
 @Service
 public class TransactionService {
@@ -48,6 +47,8 @@ public class TransactionService {
                 .timestamp(dto.getTimestamp())
                 .build();
 
+        checkThatIsLatest(transaction);
+
         assetPositionService.createBasedOn(transaction);
         transactionRepo.save(transaction);
     }
@@ -75,5 +76,14 @@ public class TransactionService {
 
     private BigDecimal toDisplay(BigDecimal value) {
         return value.setScale(2, HALF_UP);
+    }
+
+    private void checkThatIsLatest(Transaction transaction) {
+        Optional<Transaction> latestTransaction = transactionRepo.findFirstByAssetIdOrderByTimestampDesc(transaction.getAsset().getId());
+        if (latestTransaction.isPresent()) {
+            if (latestTransaction.get().getTimestamp().isAfter(transaction.getTimestamp())) {
+                throw new IllegalArgumentException("Can not store transaction when more recent exists");
+            }
+        }
     }
 }

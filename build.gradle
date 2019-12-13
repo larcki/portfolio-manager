@@ -21,6 +21,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-devtools'
     implementation 'org.projectlombok:lombok:1.18.10'
     implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.apache.poi:poi-ooxml:4.1.1'
     compile group: 'org.jsoup', name: 'jsoup', version: '1.12.1'
     compile group: 'com.konghq', name: 'unirest-java', version: '3.0.01'
     runtimeOnly 'mysql:mysql-connector-java'

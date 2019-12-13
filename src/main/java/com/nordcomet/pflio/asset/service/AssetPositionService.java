@@ -1,8 +1,10 @@
 package com.nordcomet.pflio.asset.service;
 
-import com.nordcomet.pflio.asset.model.Transaction;
 import com.nordcomet.pflio.asset.model.AssetPosition;
+import com.nordcomet.pflio.asset.model.Transaction;
 import com.nordcomet.pflio.asset.repo.AssetPositionRepo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +13,9 @@ import java.time.LocalDateTime;
 
 @Service
 public class AssetPositionService {
+
+    private static final Logger logger = LoggerFactory.getLogger(AssetPositionService.class);
+
 
     @Autowired
     private AssetPositionRepo assetPositionRepo;
@@ -29,6 +34,7 @@ public class AssetPositionService {
     }
 
     public AssetPosition save(AssetPosition assetPosition) {
+        logger.info("Saved asset position for {} - {}", assetPosition.getAsset().getName(), assetPosition);
         return assetPositionRepo.save(assetPosition);
     }
 
