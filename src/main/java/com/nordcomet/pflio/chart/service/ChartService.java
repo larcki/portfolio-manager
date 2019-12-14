@@ -110,7 +110,7 @@ public class ChartService {
     }
 
     private BigDecimal priceForAsset(BigDecimal proportion, AssetPosition assetPosition) {
-        return assetPosition.getTotalPrice().multiply(proportion).setScale(4, RoundingMode.HALF_UP);
+        return assetPosition.getTotalValue().multiply(proportion).setScale(4, RoundingMode.HALF_UP);
     }
 
     private Predicate<AssetPosition> beforeEndOfDay(LocalDate day) {

@@ -28,21 +28,21 @@ public class AssetPosition {
     private BigDecimal quantity;
 
     @Column(precision = 12, scale = 4)
-    private BigDecimal price;
+    private BigDecimal unitPrice;
 
     @Column(precision = 12, scale = 4)
-    private BigDecimal totalPrice;
+    private BigDecimal totalValue;
 
     @Column(precision = 12, scale = 4)
     private BigDecimal totalPurchaseAmount;
 
     private LocalDateTime timestamp;
 
-    public AssetPosition(Asset asset, BigDecimal quantity, BigDecimal price, BigDecimal totalPrice, BigDecimal totalPurchaseAmount, LocalDateTime timestamp) {
+    public AssetPosition(Asset asset, BigDecimal quantity, BigDecimal unitPrice, BigDecimal totalValue, BigDecimal totalPurchaseAmount, LocalDateTime timestamp) {
         this.asset = asset;
         this.quantity = quantity;
-        this.price = price;
-        this.totalPrice = totalPrice;
+        this.unitPrice = unitPrice;
+        this.totalValue = totalValue;
         this.totalPurchaseAmount = totalPurchaseAmount;
         this.timestamp = timestamp;
     }

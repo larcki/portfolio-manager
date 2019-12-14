@@ -41,9 +41,9 @@ public class AssetService {
     }
 
     private AssetDto calculateAssetDto(Asset asset, AssetPosition position) {
-        BigDecimal currentValue = position.getTotalPrice();
-        BigDecimal performance = position.getTotalPrice().subtract(position.getTotalPurchaseAmount());
-        BigDecimal performancePercentage = position.getTotalPrice().divide(position.getTotalPurchaseAmount(), 4, HALF_UP);
+        BigDecimal currentValue = position.getTotalValue();
+        BigDecimal performance = position.getTotalValue().subtract(position.getTotalPurchaseAmount());
+        BigDecimal performancePercentage = position.getTotalValue().divide(position.getTotalPurchaseAmount(), 4, HALF_UP);
         return assetDto(asset, currentValue, performance, performancePercentage);
     }
 
@@ -71,7 +71,7 @@ public class AssetService {
                 .orElseThrow(() -> new HttpClientErrorException(HttpStatus.NOT_FOUND));
 
         BigDecimal value = assetPositionRepo.findFirstByAssetIdOrderByTimestampDesc(asset.getId())
-                .map(AssetPosition::getTotalPrice)
+                .map(AssetPosition::getTotalValue)
                 .orElse(BigDecimal.ZERO);
 
         return new AssetInfoDto(asset.getName(), "https://www.google.com", asset.getAccount().getName(), value);

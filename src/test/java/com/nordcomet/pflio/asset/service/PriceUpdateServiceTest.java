@@ -71,9 +71,9 @@ class PriceUpdateServiceTest {
         AssetPosition assetPosition = result.get();
         BigDecimal expectedTotalPrice = previousAssetPosition.getQuantity().multiply(priceUpdate.getPrice()).setScale(4, RoundingMode.HALF_UP);
         assertThat(assetPosition.getAsset().getId(), is(asset.getId()));
-        assertThat(assetPosition.getPrice(), is(priceUpdate.getPrice()));
+        assertThat(assetPosition.getUnitPrice(), is(priceUpdate.getPrice()));
         assertThat(assetPosition.getQuantity(), is(previousAssetPosition.getQuantity()));
-        assertThat(assetPosition.getTotalPrice(), is(expectedTotalPrice));
+        assertThat(assetPosition.getTotalValue(), is(expectedTotalPrice));
         assertThat(assetPosition.getTotalPurchaseAmount(), is(previousAssetPosition.getTotalPurchaseAmount()));
     }
 }

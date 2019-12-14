@@ -128,9 +128,9 @@ class TransactionServiceTest {
         assertThat(positions.size(), is(1));
         AssetPosition assetPosition = positions.get(0);
         assertThat(assetPosition.getAsset().getId(), is(asset.getId()));
-        assertThat(assetPosition.getPrice(), is(transaction.getUnitPrice().getAmount()));
+        assertThat(assetPosition.getUnitPrice(), is(transaction.getUnitPrice().getAmount()));
         assertThat(assetPosition.getQuantity(), is(transaction.getQuantityChange()));
-        assertThat(assetPosition.getTotalPrice(), is(expectedTotalPrice));
+        assertThat(assetPosition.getTotalValue(), is(expectedTotalPrice));
         assertThat(assetPosition.getTotalPurchaseAmount(), is(expectedTotalPrice));
     }
 
@@ -150,9 +150,9 @@ class TransactionServiceTest {
         BigDecimal expectedTotalQuantity = previousPosition.getQuantity().add(transaction.getQuantityChange());
         BigDecimal expectedTotalPrice = expectedTotalQuantity.multiply(transaction.getUnitPrice().getAmount()).setScale(4, RoundingMode.HALF_UP);
         assertThat(assetPosition.getAsset().getId(), is(asset.getId()));
-        assertThat(assetPosition.getPrice(), is(transaction.getUnitPrice().getAmount()));
+        assertThat(assetPosition.getUnitPrice(), is(transaction.getUnitPrice().getAmount()));
         assertThat(assetPosition.getQuantity(), is(expectedTotalQuantity));
-        assertThat(assetPosition.getTotalPrice(), is(expectedTotalPrice));
+        assertThat(assetPosition.getTotalValue(), is(expectedTotalPrice));
         BigDecimal expectedTotalPurchaseAmount = previousPosition.getTotalPurchaseAmount().add(transaction.getUnitPrice().getAmount().multiply(transaction.getQuantityChange())).setScale(4, RoundingMode.HALF_UP);
         assertThat(assetPosition.getTotalPurchaseAmount(), is(expectedTotalPurchaseAmount));
     }
