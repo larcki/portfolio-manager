@@ -35,12 +35,16 @@ public class Transaction {
 
     private LocalDateTime timestamp;
 
-    public Transaction(Asset asset, Money unitPrice, Money totalAmount, BigDecimal quantityChange, Fee fee, LocalDateTime timestamp) {
+    private BigDecimal exchangeRate;
+
+    public Transaction(Asset asset, Money unitPrice, Money totalAmount, BigDecimal quantityChange, Fee fee, LocalDateTime timestamp, BigDecimal exchangeRate) {
         this.asset = asset;
         this.unitPrice = unitPrice;
         this.totalAmount = totalAmount;
         this.quantityChange = quantityChange;
         this.fee = fee;
         this.timestamp = timestamp;
+        this.exchangeRate = exchangeRate;
     }
+
 }

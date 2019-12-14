@@ -78,7 +78,8 @@ public class DataRandomiser {
                 .unitPrice(unitPrice)
                 .quantityChange(quantityChange)
                 .totalAmount(Money.of(unitPrice.getAmount().multiply(quantityChange), Currency.EUR))
-                .timestamp(LocalDateTime.now());
+                .timestamp(LocalDateTime.now())
+                .exchangeRate(BigDecimal.ONE);
     }
 
     public static TransactionSaveRequest randomTransactionDto(Asset asset, LocalDateTime timestamp) {

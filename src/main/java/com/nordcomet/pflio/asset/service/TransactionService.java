@@ -45,6 +45,7 @@ public class TransactionService {
                 .fee(fee)
                 .totalAmount(dto.getTotalAmount())
                 .timestamp(dto.getTimestamp())
+                .exchangeRate(dto.getExchangeRate())
                 .build();
 
         checkThatIsLatest(transaction);

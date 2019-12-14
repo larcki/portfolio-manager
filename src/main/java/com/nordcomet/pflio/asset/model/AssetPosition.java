@@ -24,6 +24,8 @@ public class AssetPosition {
     @JoinColumn(name = "asset_id")
     private Asset asset;
 
+    // Amounts in asset's base currency
+
     @Column(precision = 12, scale = 4)
     private BigDecimal quantity;
 
