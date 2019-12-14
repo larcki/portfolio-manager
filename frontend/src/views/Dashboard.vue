@@ -10,7 +10,7 @@
                 </v-col>
                 <v-col cols="4">
                     <v-card :elevation="n - 1">
-                        <pie-chart asset-classes="BOND,STOCK,PROPERTY,CASH_EUR"/>
+                        <pie-chart asset-classes="BOND,STOCK,PROPERTY"/>
                     </v-card>
                 </v-col>
             </v-row>

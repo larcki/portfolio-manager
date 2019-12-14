@@ -13,9 +13,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class PriceParserServiceTest {
 
     private final ExchangeRateService exchangeRateService = new ExchangeRateService();
-    private final MorningstarStockParser morningstarStockParser = new MorningstarStockParser(exchangeRateService);
-    private final MorningstarFundParser morningstarFundParser = new MorningstarFundParser(exchangeRateService);
-    private final MorningstarFundUkParser morningstarFundUkParser = new MorningstarFundUkParser(exchangeRateService);
+    private final PageDocumentProvider pageDocumentProvider = new PageDocumentProvider();
+    private final MorningstarStockParser morningstarStockParser = new MorningstarStockParser(exchangeRateService, pageDocumentProvider);
+    private final MorningstarFundParser morningstarFundParser = new MorningstarFundParser(exchangeRateService, pageDocumentProvider);
+    private final MorningstarFundUkParser morningstarFundUkParser = new MorningstarFundUkParser(exchangeRateService, pageDocumentProvider);
 
     private final PriceParserService priceParserService = new PriceParserService(morningstarStockParser, morningstarFundParser, morningstarFundUkParser);
 

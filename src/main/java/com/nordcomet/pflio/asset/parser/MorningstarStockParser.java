@@ -4,25 +4,25 @@ import com.nordcomet.pflio.asset.model.Currency;
 import com.nordcomet.pflio.asset.model.Money;
 import com.nordcomet.pflio.asset.model.ParserOptions;
 import com.nordcomet.pflio.asset.service.ExchangeRateService;
-import org.jsoup.Jsoup;
+import lombok.extern.slf4j.Slf4j;
 import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Optional;
 
-import static java.util.Optional.of;
-
 @Service
+@Slf4j
 public class MorningstarStockParser {
 
     private final ExchangeRateService exchangeRateService;
+    private final PageDocumentProvider pageDocumentProvider;
 
     @Autowired
-    public MorningstarStockParser(ExchangeRateService exchangeRateService) {
+    public MorningstarStockParser(ExchangeRateService exchangeRateService, PageDocumentProvider pageDocumentProvider) {
         this.exchangeRateService = exchangeRateService;
+        this.pageDocumentProvider = pageDocumentProvider;
     }
 
     public Optional<Money> parsePrice(ParserOptions parserOptions) {
@@ -45,19 +45,13 @@ public class MorningstarStockParser {
         try {
             return Optional.ofNullable(page.select("#Col0Price").text());
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Could not parse price text", e);
             return Optional.empty();
         }
     }
 
     private Optional<Document> getPage(String code) {
-        try {
-            return of(Jsoup.connect("http://tools.morningstar.fi/fi/stockreport/default.aspx?Site=fi&id=" + code).get());
-        } catch (IOException e) {
-            e.printStackTrace();
-            return Optional.empty();
-        }
+        return pageDocumentProvider.getPage("http://tools.morningstar.fi/fi/stockreport/default.aspx?Site=fi&id=" + code);
     }
-
 
 }

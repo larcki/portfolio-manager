@@ -18,7 +18,8 @@
                                 hide-default-footer="true"
                                 :headers="headers"
                                 :items="assets"
-                                :search="search">
+                                :search="search"
+                                :items-per-page="100">
                             <template v-slot:item.name="{item}">
                                 <router-link :to="{path: '/assets/' + item.id }">{{item.name}}</router-link>
                             </template>
