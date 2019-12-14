@@ -1,14 +1,19 @@
 package com.nordcomet.pflio.asset.classification;
 
+import com.nordcomet.pflio.asset.model.Asset;
 import com.nordcomet.pflio.asset.model.AssetClassType;
 import com.nordcomet.pflio.asset.model.Region;
 import com.nordcomet.pflio.asset.repo.AssetRepo;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.Map;
 
+import static com.nordcomet.pflio.DataRandomiser.randomAsset;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.collection.IsMapContaining.hasEntry;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 class AssetClassificationServiceTest {
 
@@ -22,8 +27,18 @@ class AssetClassificationServiceTest {
                 new AssetClassification(Region.DEVELOPED, AssetClassType.BOND)
         );
 
-        underTest.findAssets(assetClassifications);
+        List<Asset> firstAssets = List.of(randomAsset(), randomAsset());
+        when(assetRepo.findAssetsByRegionAndAssetClassesName(Region.DEVELOPED, AssetClassType.STOCK))
+                .thenReturn(firstAssets);
 
-        verify(assetRepo).findAssetsByRegionInAndAssetClassesNameIn(List.of(Region.DEVELOPED), List.of(AssetClassType.STOCK, AssetClassType.BOND));
+        List<Asset> secondAssets = List.of(randomAsset());
+        when(assetRepo.findAssetsByRegionAndAssetClassesName(Region.DEVELOPED, AssetClassType.BOND))
+                .thenReturn(secondAssets);
+
+        Map<AssetClassification, List<Asset>> result = underTest.findAssets(assetClassifications);
+
+        assertThat(result, hasEntry(new AssetClassification(Region.DEVELOPED, AssetClassType.STOCK), firstAssets));
+        assertThat(result, hasEntry(new AssetClassification(Region.DEVELOPED, AssetClassType.BOND), secondAssets));
+
     }
 }

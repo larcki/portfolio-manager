@@ -1,15 +1,13 @@
 package com.nordcomet.pflio.asset.classification;
 
 import com.nordcomet.pflio.asset.model.Asset;
-import com.nordcomet.pflio.asset.model.AssetClassType;
-import com.nordcomet.pflio.asset.model.Region;
 import com.nordcomet.pflio.asset.repo.AssetRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedHashMap;
 import java.util.List;
-
-import static java.util.stream.Collectors.toList;
+import java.util.Map;
 
 @Service
 public class AssetClassificationService {
@@ -21,18 +19,14 @@ public class AssetClassificationService {
         this.assetRepo = assetRepo;
     }
 
-    public List<Asset> findAssets(List<AssetClassification> assetClassifications) {
-        List<Region> regions = assetClassifications.stream()
-                .map(AssetClassification::getRegion)
-                .distinct()
-                .collect(toList());
+    public Map<AssetClassification, List<Asset>> findAssets(List<AssetClassification> assetClassifications) {
+        Map<AssetClassification, List<Asset>> result = new LinkedHashMap<>();
 
-        List<AssetClassType> assetClassTypes = assetClassifications.stream()
-                .map(AssetClassification::getClassType)
-                .distinct()
-                .collect(toList());
+        for (AssetClassification classification : assetClassifications) {
+            result.put(classification, assetRepo.findAssetsByRegionAndAssetClassesName(classification.getRegion(), classification.getClassType()));
+        }
 
-        return assetRepo.findAssetsByRegionInAndAssetClassesNameIn(regions, assetClassTypes);
+        return result;
     }
 
 }
