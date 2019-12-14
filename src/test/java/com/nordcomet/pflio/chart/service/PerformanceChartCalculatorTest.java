@@ -1,9 +1,6 @@
 package com.nordcomet.pflio.chart.service;
 
-import com.nordcomet.pflio.asset.model.Asset;
-import com.nordcomet.pflio.asset.model.AssetClass;
-import com.nordcomet.pflio.asset.model.AssetClassType;
-import com.nordcomet.pflio.asset.model.AssetPosition;
+import com.nordcomet.pflio.asset.model.*;
 import com.nordcomet.pflio.asset.repo.AssetPositionRepo;
 import com.nordcomet.pflio.asset.repo.AssetRepo;
 import org.junit.jupiter.api.Test;
@@ -85,6 +82,8 @@ class PerformanceChartCalculatorTest {
                 .assetClasses(Set.of(new AssetClass(AssetClassType.STOCK, BigDecimal.ONE)))
                 .id(randomInt())
                 .name(randomString())
+                .baseCurrency(Currency.EUR)
+                .quoteCurrency(Currency.EUR)
                 .build();
     }
 

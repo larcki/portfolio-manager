@@ -38,6 +38,12 @@ public class Asset {
 
     private String isin;
 
+    @Enumerated(EnumType.STRING)
+    private Currency baseCurrency;
+
+    @Enumerated(EnumType.STRING)
+    private Currency quoteCurrency;
+
     public BigDecimal getProportionOfAssetClass(AssetClassType assetClassType) {
         return getAssetClasses().stream()
                 .filter(assetClass -> assetClass.getName() == assetClassType)

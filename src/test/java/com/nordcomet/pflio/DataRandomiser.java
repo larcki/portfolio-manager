@@ -26,7 +26,9 @@ public class DataRandomiser {
                 .name(randomString())
                 .assetClasses(randomAssetClasses())
                 .region(randomRegion())
-                .isin(randomString());
+                .isin(randomString())
+                .quoteCurrency(Currency.EUR)
+                .baseCurrency(Currency.EUR);
     }
 
     public static Asset randomAsset() {
