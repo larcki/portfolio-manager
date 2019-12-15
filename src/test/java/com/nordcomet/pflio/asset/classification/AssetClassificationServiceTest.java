@@ -5,40 +5,59 @@ import com.nordcomet.pflio.asset.model.AssetClassType;
 import com.nordcomet.pflio.asset.model.Region;
 import com.nordcomet.pflio.asset.repo.AssetRepo;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import java.util.List;
-import java.util.Map;
+import java.math.BigDecimal;
+import java.util.Set;
 
-import static com.nordcomet.pflio.DataRandomiser.randomAsset;
+import static com.nordcomet.pflio.DataRandomiser.randomAssetBuilder;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.collection.IsMapContaining.hasEntry;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
+@DataJpaTest
 class AssetClassificationServiceTest {
 
-    private final AssetRepo assetRepo = mock(AssetRepo.class);
-    private final AssetClassificationService underTest = new AssetClassificationService(assetRepo);
+    @Autowired
+    private AssetRepo assetRepo;
 
     @Test
     void shouldFindAssetsMatchingClassification() {
-        List<AssetClassification> assetClassifications = List.of(
-                new AssetClassification(Region.DEVELOPED, AssetClassType.STOCK),
-                new AssetClassification(Region.DEVELOPED, AssetClassType.BOND)
-        );
+        AssetClassificationService underTest = new AssetClassificationService(assetRepo);
 
-        List<Asset> firstAssets = List.of(randomAsset(), randomAsset());
-        when(assetRepo.findAssetsByRegionAndAssetClassesName(Region.DEVELOPED, AssetClassType.STOCK))
-                .thenReturn(firstAssets);
-
-        List<Asset> secondAssets = List.of(randomAsset());
-        when(assetRepo.findAssetsByRegionAndAssetClassesName(Region.DEVELOPED, AssetClassType.BOND))
-                .thenReturn(secondAssets);
-
-        Map<AssetClassification, List<Asset>> result = underTest.findAssets(assetClassifications);
-
-        assertThat(result, hasEntry(new AssetClassification(Region.DEVELOPED, AssetClassType.STOCK), firstAssets));
-        assertThat(result, hasEntry(new AssetClassification(Region.DEVELOPED, AssetClassType.BOND), secondAssets));
-
+        Asset asset = assetRepo.save(randomAssetBuilder()
+                .assetClasses2(Set.of(new AssetClass2(Region.DEVELOPED, AssetClassType.STOCK, BigDecimal.ONE)))
+                .build());
+        assertThat(underTest.findAssets(AssetClassification.DEVELOPED_STOCK).get(0), is(asset));
+        assertThat(underTest.findAssets(AssetClassification.DEVELOPED).get(0), is(asset));
+        assertThat(underTest.findAssets(AssetClassification.BOND).isEmpty(), is(true));
     }
+
+    @Test
+    void shouldFindAssetsMatchingClassificationWhenMultipleClasses() {
+        AssetClassificationService underTest = new AssetClassificationService(assetRepo);
+
+        Asset asset = assetRepo.save(randomAssetBuilder()
+                .assetClasses2(Set.of(
+                        new AssetClass2(Region.DEVELOPED, AssetClassType.STOCK, new BigDecimal("0.5")),
+                        new AssetClass2(Region.EMERGING, AssetClassType.STOCK, new BigDecimal("0.5"))
+                ))
+                .build());
+        assertThat(underTest.findAssets(AssetClassification.DEVELOPED_STOCK).get(0), is(asset));
+        assertThat(underTest.findAssets(AssetClassification.EMERGING).get(0), is(asset));
+    }
+
+    @Test
+    void shouldFindAssetsMatchingClassificationWhenPartialClasses() {
+        AssetClassificationService underTest = new AssetClassificationService(assetRepo);
+
+        Asset asset = assetRepo.save(randomAssetBuilder()
+                .assetClasses2(Set.of(
+                        new AssetClass2(null, AssetClassType.PROPERTY, BigDecimal.ONE)
+                ))
+                .build());
+        assertThat(underTest.findAssets(AssetClassification.PROPERTY).get(0), is(asset));
+        assertThat(underTest.findAssets(AssetClassification.DEVELOPED).isEmpty(), is(true));
+    }
+
 }

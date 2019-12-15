@@ -21,6 +21,10 @@ public interface AssetRepo extends CrudRepository<Asset, Integer> {
 
     Optional<Asset> findAssetByIsin(String isin);
 
-    List<Asset> findAssetsByRegionAndAssetClassesName(Region regions, AssetClassType assetClassTypes);
+    List<Asset> findAssetsByAssetClasses2AssetClassTypeInAndAssetClasses2RegionIn(List<AssetClassType> assetClassTypes, List<Region> regions);
+
+    List<Asset> findAssetsByAssetClasses2AssetClassTypeIn(List<AssetClassType> assetClassTypes);
+
+    List<Asset> findAssetsByAssetClasses2RegionIn(List<Region> regions);
 
 }

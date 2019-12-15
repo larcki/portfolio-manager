@@ -16,7 +16,6 @@ public enum Region {
     ASIA,
     CHINA,
     JAPAN,
-    AUSTRALASIA,
-    WORLD
+    AUSTRALASIA
 
 }

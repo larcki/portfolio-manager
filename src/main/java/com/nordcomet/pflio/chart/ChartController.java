@@ -1,6 +1,8 @@
 package com.nordcomet.pflio.chart;
 
 import com.nordcomet.pflio.asset.model.AssetClassType;
+import com.nordcomet.pflio.chart.classification.ClassificationProvider;
+import com.nordcomet.pflio.chart.classification.ClassifiedChartService;
 import com.nordcomet.pflio.chart.model.PortfolioChartType;
 import com.nordcomet.pflio.chart.service.ChartService;
 import com.nordcomet.pflio.chart.service.PerformanceChartCalculator;
@@ -22,6 +24,9 @@ public class ChartController {
     @Autowired
     private PerformanceChartCalculator performanceChartCalculator;
 
+    @Autowired
+    private ClassifiedChartService classifiedChartService;
+
     @RequestMapping("/api/chart/pie")
     public Object getPieChart(@RequestParam List<AssetClassType> assetClasses) {
         return chartService.getPieChart(assetClasses);
@@ -38,7 +43,7 @@ public class ChartController {
                                @RequestParam PortfolioChartType chartType) {
 
         if (chartType == PortfolioChartType.STACKED_ASSET_CLASS_ALLOCATION) {
-            return chartService.getStackedValueChartFull(List.of(AssetClassType.values()), period);
+            return classifiedChartService.getStackedValueChartFull(ClassificationProvider.defaultClassification(), period);
         }
         if (chartType == PortfolioChartType.LINE_TOTAL_PERFORMANCE_PERCENTAGE) {
             return performanceChartCalculator.getPerformancePercentageChart(period);

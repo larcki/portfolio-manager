@@ -5,9 +5,8 @@ import com.nordcomet.pflio.asset.repo.AssetRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedHashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class AssetClassificationService {
@@ -19,14 +18,21 @@ public class AssetClassificationService {
         this.assetRepo = assetRepo;
     }
 
-    public Map<AssetClassification, List<Asset>> findAssets(List<AssetClassification> assetClassifications) {
-        Map<AssetClassification, List<Asset>> result = new LinkedHashMap<>();
+    public List<Asset> findAssets(AssetClassification assetClassification) {
 
-        for (AssetClassification classification : assetClassifications) {
-            result.put(classification, assetRepo.findAssetsByRegionAndAssetClassesName(classification.getRegion(), classification.getClassType()));
+        if (assetClassification.getAssetClassTypes().isEmpty() && assetClassification.getRegions().isEmpty()) {
+            return new ArrayList<>(assetRepo.findAll());
+        }
+        if (assetClassification.getAssetClassTypes().isEmpty()) {
+            return assetRepo.findAssetsByAssetClasses2RegionIn(assetClassification.getRegions());
+        }
+        if (assetClassification.getRegions().isEmpty()) {
+            return assetRepo.findAssetsByAssetClasses2AssetClassTypeIn(assetClassification.getAssetClassTypes());
         }
 
-        return result;
+        return assetRepo.findAssetsByAssetClasses2AssetClassTypeInAndAssetClasses2RegionIn(
+                assetClassification.getAssetClassTypes(),
+                assetClassification.getRegions());
     }
 
 }
