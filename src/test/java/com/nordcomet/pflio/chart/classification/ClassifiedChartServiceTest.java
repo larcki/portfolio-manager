@@ -42,7 +42,7 @@ class ClassifiedChartServiceTest {
     private ClassifiedChartService underTest;
 
     @Test
-    void name() {
+    void chartShouldContainClassifications() {
         createAssetWithTransaction("Asset A", "500", Set.of(
                 new AssetClass2(DEVELOPED, STOCK, new BigDecimal("0.8")),
                 new AssetClass2(EMERGING, STOCK, new BigDecimal("0.2"))));
@@ -57,27 +57,65 @@ class ClassifiedChartServiceTest {
         createAssetWithTransaction("Asset D", "300", Set.of(
                 new AssetClass2(NORDIC, STOCK, new BigDecimal("1"))));
 
+        // case 1
         ChartJSData result = underTest.getStackedValueChart(List.of(
                 AssetClassification.DEVELOPED_STOCK,
                 AssetClassification.EMERGING_STOCK,
-                AssetClassification.BOND
+                AssetClassification.BOND,
+                AssetClassification.OTHER
+        ), 1);
+
+        assertEquals(4, result.getDatasets().size());
+        assertChartContains(AssetClassification.DEVELOPED_STOCK, new BigDecimal("800.0000"), result);
+        assertChartContains(AssetClassification.EMERGING_STOCK, new BigDecimal("100.0000"), result);
+        assertChartContains(AssetClassification.BOND, new BigDecimal("100.0000"), result);
+        assertChartContains(AssetClassification.OTHER, new BigDecimal("700.0000"), result);
+        assertTotalAmount(new BigDecimal("1700.0000"), result);
+
+        // case 2
+        result = underTest.getStackedValueChart(List.of(
+                AssetClassification.STOCK,
+                AssetClassification.BOND,
+                AssetClassification.PROPERTY,
+                AssetClassification.OTHER
+        ), 1);
+
+        assertEquals(4, result.getDatasets().size());
+        assertChartContains(AssetClassification.STOCK, new BigDecimal("900.0000"), result);
+        assertChartContains(AssetClassification.BOND, new BigDecimal("100.0000"), result);
+        assertChartContains(AssetClassification.PROPERTY, new BigDecimal("700.0000"), result);
+        assertChartContains(AssetClassification.OTHER, new BigDecimal("0.0000"), result);
+        assertTotalAmount(new BigDecimal("1700.0000"), result);
+
+        // case 3
+        result = underTest.getStackedValueChart(List.of(
+                AssetClassification.DEVELOPED,
+                AssetClassification.EMERGING,
+                AssetClassification.OTHER
         ), 1);
 
         assertEquals(3, result.getDatasets().size());
-        assertClassificationValue(AssetClassification.DEVELOPED_STOCK, new BigDecimal("800.0000"), result);
-        assertClassificationValue(AssetClassification.EMERGING_STOCK, new BigDecimal("100.0000"), result);
-        assertClassificationValue(AssetClassification.BOND, new BigDecimal("100.0000"), result);
+        assertChartContains(AssetClassification.DEVELOPED, new BigDecimal("800.0000"), result);
+        assertChartContains(AssetClassification.EMERGING, new BigDecimal("100.0000"), result);
+        assertChartContains(AssetClassification.OTHER, new BigDecimal("800.0000"), result);
+        assertTotalAmount(new BigDecimal("1700.0000"), result);
+
     }
 
-    private void assertClassificationValue(AssetClassification classification, BigDecimal expectedAmount, ChartJSData result) {
-        Optional<ChartJSDataset> developedStock = result.getDatasets().stream()
+    private void assertTotalAmount(BigDecimal expected, ChartJSData result) {
+        BigDecimal total = result.getDatasets().stream().map(chartJSDataset -> chartJSDataset.getData().get(0)).reduce(ZERO, BigDecimal::add);
+        assertEquals(expected, total);
+    }
+
+    private void assertChartContains(AssetClassification classification, BigDecimal expectedAmount, ChartJSData chart) {
+        Optional<ChartJSDataset> developedStock = chart.getDatasets().stream()
                 .filter(chartJSDataset -> chartJSDataset.getLabel().equals(classification.getName()))
                 .findFirst();
         assertTrue(developedStock.isPresent());
         assertEquals(expectedAmount, developedStock.get().getData().get(0));
     }
 
-    private Asset createAssetWithTransaction(String name, String value, Set<AssetClass2> assetClasses2) {
+    private void createAssetWithTransaction(String name, String value, Set<AssetClass2> assetClasses2) {
         Asset asset = assetRepo.save(randomAssetBuilder()
                 .name(name)
                 .assetClasses2(assetClasses2)
@@ -92,7 +130,6 @@ class ClassifiedChartServiceTest {
                 .unitPrice(Money.of(new BigDecimal(value), Currency.EUR))
                 .build());
 
-        return asset;
     }
 
 }

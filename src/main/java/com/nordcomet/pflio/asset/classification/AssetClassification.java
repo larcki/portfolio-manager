@@ -16,6 +16,7 @@ public enum AssetClassification {
     DEVELOPED_STOCK("Developed stock", developed(), List.of(AssetClassType.STOCK)),
     EMERGING_STOCK("Emerging stock", emerging(), List.of(AssetClassType.STOCK)),
     BOND("Bond", List.of(), List.of(AssetClassType.BOND)),
+    STOCK("Stock", List.of(), List.of(AssetClassType.STOCK)),
     PROPERTY("Property", List.of(), List.of(AssetClassType.PROPERTY)),
     DEVELOPED("Developed", developed(), List.of()),
     EMERGING("Emerging", emerging(), List.of()),
