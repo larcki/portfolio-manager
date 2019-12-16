@@ -10,8 +10,8 @@ import java.util.Optional;
 public interface AssetPositionRepo extends CrudRepository<AssetPosition, Integer> {
 
     Optional<AssetPosition> findFirstByAssetIdOrderByTimestampDesc(Integer assetId);
-    Optional<AssetPosition> findFirstByAssetIdAndTimestampBefore(Integer assetId, LocalDateTime timestamp);
     List<AssetPosition> findAllByAssetIdAndTimestampAfter(Integer assetId, LocalDateTime timestamp);
+    Optional<AssetPosition> findFirstByAssetIdAndTimestampBeforeOrderByTimestampDesc(Integer assetId, LocalDateTime timestamp);
     List<AssetPosition> findAllByAssetId(Integer assetId);
 
 }

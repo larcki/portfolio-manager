@@ -118,8 +118,14 @@ public class ClassifiedChartService {
     }
 
     private List<BigDecimal> pricesForAsset(List<LocalDate> days, Asset asset, BigDecimal proportion) {
-        List<AssetPosition> assetPositions = assetPositionRepo.findAllByAssetIdAndTimestampAfter(asset.getId(), tenDaysBeforeFirstDate(days));
-        return days.stream().map(day -> assetPositions.stream()
+        Optional<AssetPosition> firstAssetPosition = assetPositionRepo.findFirstByAssetIdAndTimestampBeforeOrderByTimestampDesc(asset.getId(), days.get(0).atStartOfDay());
+        List<AssetPosition> assetPositions = assetPositionRepo.findAllByAssetIdAndTimestampAfter(asset.getId(), firstAssetPosition.map(AssetPosition::getTimestamp).orElse(tenDaysBeforeFirstDate(days)));
+
+        List<AssetPosition> assetPositionsToInclude = new ArrayList<>();
+        firstAssetPosition.ifPresent(assetPositionsToInclude::add);
+        assetPositionsToInclude.addAll(assetPositions);
+
+        return days.stream().map(day -> assetPositionsToInclude.stream()
                 .filter(beforeEndOfDay(day))
                 .max(comparing(AssetPosition::getTimestamp))
                 .map(assetPosition -> priceForAsset(proportion, assetPosition))
