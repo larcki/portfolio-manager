@@ -1,6 +1,5 @@
 package com.nordcomet.pflio.chart.classification;
 
-import com.nordcomet.pflio.asset.classification.AssetClass2;
 import com.nordcomet.pflio.asset.classification.AssetClassification;
 import com.nordcomet.pflio.asset.classification.AssetClassificationService;
 import com.nordcomet.pflio.asset.model.Asset;
@@ -23,7 +22,10 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 import static java.util.Comparator.comparing;
@@ -54,12 +56,17 @@ public class ClassifiedChartService {
     protected ChartJSData getStackedValueChart(List<AssetClassification> classifications, int daysAgoExcluding) {
         Map<Object, String> colourPalette = ColourPalette.createColourPalette(classifications);
         List<LocalDate> days = daysResolver.resolveDays(daysAgoExcluding);
-        Map<Asset, BigDecimal> assetProportionsExhausted = new HashMap<>();
+        AssetProportionUsageHelper assetProportionUsageHelper = new AssetProportionUsageHelper();
 
         List<ChartJSDataset> datasets = classifications.stream().map(classification -> {
 
-            List<Asset> assets = assetClassificationService.findAssets(classification);
-            List<List<BigDecimal>> prices = calculatePricesForAssets(days, assetProportionsExhausted, classification, assets);
+            List<List<BigDecimal>> prices = assetClassificationService.findAssets(classification).stream()
+                    .map(asset -> {
+                        BigDecimal proportionToUse = assetProportionUsageHelper.getProportionToUse(asset, classification);
+                        return pricesForAsset(days, asset, proportionToUse);
+                    })
+                    .collect(toList());
+
             List<BigDecimal> tagsPrices = combinePrices(days, prices);
 
             return new ChartJSDatasetBuilder()
@@ -71,36 +78,7 @@ public class ClassifiedChartService {
 
         }).collect(toList());
 
-        assetProportionsExhausted.forEach((key, value) ->
-                log.info("Asset {} proportion calculated {}", key.getName(), value));
-
         return new ChartJSData(days, datasets);
-    }
-
-    private List<List<BigDecimal>> calculatePricesForAssets(List<LocalDate> days, Map<Asset, BigDecimal> assetProportionsExhausted, AssetClassification classification, List<Asset> assets) {
-
-        return assets.stream()
-                .map(asset -> {
-                    BigDecimal exhaustedProportion = getExhaustedProportion(assetProportionsExhausted, asset);
-                    BigDecimal proportionLeft = BigDecimal.ONE.subtract(exhaustedProportion);
-                    BigDecimal proportion = proportionThatIncludesClassification(classification, asset);
-                    BigDecimal proportionToExhaust = proportionLeft.min(proportion);
-                    assetProportionsExhausted.put(asset, exhaustedProportion.add(proportionToExhaust));
-                    return pricesForAsset(days, asset, proportionToExhaust);
-                })
-                .collect(toList());
-
-    }
-
-    private BigDecimal getExhaustedProportion(Map<Asset, BigDecimal> assetProportionsExhausted, Asset asset) {
-        return assetProportionsExhausted.get(asset) != null ? assetProportionsExhausted.get(asset) : BigDecimal.ZERO;
-    }
-
-    private BigDecimal proportionThatIncludesClassification(AssetClassification classification, Asset asset) {
-        List<AssetClass2> matchingClasses = asset.getAssetClasses2().stream()
-                .filter(classification::includes)
-                .collect(toList());
-        return matchingClasses.stream().map(AssetClass2::getProportion).reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     private List<BigDecimal> combinePrices(List<LocalDate> days, List<List<BigDecimal>> prices) {

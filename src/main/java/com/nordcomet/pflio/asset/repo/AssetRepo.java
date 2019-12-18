@@ -11,8 +11,6 @@ import java.util.Set;
 
 public interface AssetRepo extends CrudRepository<Asset, Integer> {
 
-    Set<Asset> findAssetsByAssetClassesNameIn(List<AssetClassType> assetClassTypes);
-
     Set<Asset> findAssetsByParserOptionsNotNull();
 
     Optional<Asset> findAssetsById(Integer assetId);

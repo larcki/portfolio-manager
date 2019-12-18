@@ -33,19 +33,13 @@ public class PieChartService {
 
     public Object getPieChart(List<AssetClassification> assetClasses) {
         Map<Object, String> colourPalette = ColourPalette.createColourPalette(assetClasses);
-        Map<Asset, BigDecimal> assetProportionsExhausted = new HashMap<>();
+        AssetProportionUsageHelper assetProportionUsageHelper = new AssetProportionUsageHelper();
 
         List<BigDecimal> data = assetClasses.stream()
                 .map(classification -> assetClassificationService.findAssets(classification).stream()
                         .map(asset -> {
-                            BigDecimal exhaustedProportion = getExhaustedProportion(assetProportionsExhausted, asset);
-                            BigDecimal proportionLeft = BigDecimal.ONE.subtract(exhaustedProportion);
-                            BigDecimal proportion = proportionThatIncludesClassification(classification, asset);
-                            BigDecimal proportionToExhaust = proportionLeft.min(proportion);
-                            assetProportionsExhausted.put(asset, exhaustedProportion.add(proportionToExhaust));
-
-                            return assetPositionService.getTotalValueOf(asset).multiply(proportionToExhaust);
-
+                            BigDecimal proportionToUse = assetProportionUsageHelper.getProportionToUse(asset, classification);
+                            return assetPositionService.getTotalValueOf(asset).multiply(proportionToUse);
                         })
                         .reduce(BigDecimal.ZERO, BigDecimal::add))
 
@@ -53,16 +47,4 @@ public class PieChartService {
 
         return ChartJSFactory.createPieChart(assetClasses, colourPalette, data);
     }
-
-    private BigDecimal getExhaustedProportion(Map<Asset, BigDecimal> assetProportionsExhausted, Asset asset) {
-        return assetProportionsExhausted.get(asset) != null ? assetProportionsExhausted.get(asset) : BigDecimal.ZERO;
-    }
-
-    private BigDecimal proportionThatIncludesClassification(AssetClassification classification, Asset asset) {
-        List<AssetClass2> matchingClasses = asset.getAssetClasses2().stream()
-                .filter(classification::includes)
-                .collect(toList());
-        return matchingClasses.stream().map(AssetClass2::getProportion).reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
-
 }
