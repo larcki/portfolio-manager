@@ -1,5 +1,6 @@
 package com.nordcomet.pflio.chart.service;
 
+import com.nordcomet.pflio.asset.classification.AssetClassification;
 import com.nordcomet.pflio.asset.model.AssetClassType;
 
 import java.math.BigDecimal;
@@ -69,14 +70,14 @@ public class ChartJSFactory {
         );
     }
 
-    public static Map<String, Object> createPieChart(List<AssetClassType> assetClasses, Map<Object, String> colourPalette, List<BigDecimal> data) {
+    public static Map<String, Object> createPieChart(List<AssetClassification> classifications, Map<Object, String> colourPalette, List<BigDecimal> data) {
         return Map.of(
                 "type", "pie",
                 "data", Map.of(
-                        "labels", assetClasses.stream().map(Enum::name).collect(toList()),
+                        "labels", classifications.stream().map(AssetClassification::getName).collect(toList()),
                         "datasets", List.of(
                                 Map.of(
-                                        "backgroundColor", assetClasses.stream().map(colourPalette::get).collect(toList()),
+                                        "backgroundColor", classifications.stream().map(colourPalette::get).collect(toList()),
                                         "data", data
                                 )
                         )

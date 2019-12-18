@@ -25,23 +25,11 @@ public class Asset {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
-            name = "asset_class_mapping",
-            joinColumns = @JoinColumn(name = "asset_id"),
-            inverseJoinColumns = @JoinColumn(name = "asset_class_id")
-    )
-    private Set<AssetClass> assetClasses;
-
-
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinTable(
             name = "asset_class_mapping_2",
             joinColumns = @JoinColumn(name = "asset_id"),
             inverseJoinColumns = @JoinColumn(name = "asset_class_id")
     )
     private Set<AssetClass2> assetClasses2;
-
-    @Enumerated(EnumType.STRING)
-    private Region region;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     private Account account;
@@ -53,12 +41,5 @@ public class Asset {
 
     @Enumerated(EnumType.STRING)
     private Currency quoteCurrency;
-
-    public BigDecimal getProportionOfAssetClass(AssetClassType assetClassType) {
-        return getAssetClasses().stream()
-                .filter(assetClass -> assetClass.getName() == assetClassType)
-                .findFirst().map(AssetClass::getProportion)
-                .orElse(BigDecimal.ZERO);
-    }
 
 }

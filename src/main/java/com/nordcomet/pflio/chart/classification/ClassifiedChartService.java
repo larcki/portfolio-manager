@@ -77,10 +77,7 @@ public class ClassifiedChartService {
         return new ChartJSData(days, datasets);
     }
 
-    private List<List<BigDecimal>> calculatePricesForAssets(List<LocalDate> days,
-                                                            Map<Asset, BigDecimal> assetProportionsExhausted,
-                                                            AssetClassification classification,
-                                                            List<Asset> assets) {
+    private List<List<BigDecimal>> calculatePricesForAssets(List<LocalDate> days, Map<Asset, BigDecimal> assetProportionsExhausted, AssetClassification classification, List<Asset> assets) {
 
         return assets.stream()
                 .map(asset -> {
@@ -92,6 +89,7 @@ public class ClassifiedChartService {
                     return pricesForAsset(days, asset, proportionToExhaust);
                 })
                 .collect(toList());
+
     }
 
     private BigDecimal getExhaustedProportion(Map<Asset, BigDecimal> assetProportionsExhausted, Asset asset) {

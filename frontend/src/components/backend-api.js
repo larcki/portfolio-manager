@@ -26,10 +26,8 @@ export default {
         });
     },
 
-    getPieChart(assetClasses) {
-        return AXIOS.get('/chart/pie', {
-            params: {'assetClasses': assetClasses}
-        });
+    getPieChart() {
+        return AXIOS.get('/chart/pie');
     },
 
     getAssets() {

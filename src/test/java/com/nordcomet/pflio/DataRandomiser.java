@@ -1,7 +1,7 @@
 package com.nordcomet.pflio;
 
+import com.nordcomet.pflio.asset.classification.AssetClass2;
 import com.nordcomet.pflio.asset.model.*;
-import com.nordcomet.pflio.asset.model.AssetPosition;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -10,7 +10,10 @@ import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 
-import static com.nordcomet.pflio.asset.model.AssetClassType.*;
+import static com.nordcomet.pflio.asset.model.AssetClassType.BOND;
+import static com.nordcomet.pflio.asset.model.AssetClassType.STOCK;
+import static com.nordcomet.pflio.asset.model.Region.DEVELOPED;
+import static com.nordcomet.pflio.asset.model.Region.EMERGING;
 
 public class DataRandomiser {
 
@@ -24,8 +27,7 @@ public class DataRandomiser {
         return Asset.builder()
                 .account(randomAccount())
                 .name(randomString())
-                .assetClasses(randomAssetClasses())
-                .region(randomRegion())
+                .assetClasses2(randomAssetClasses())
                 .isin(randomString())
                 .quoteCurrency(Currency.EUR)
                 .baseCurrency(Currency.EUR);
@@ -35,16 +37,11 @@ public class DataRandomiser {
         return randomAssetBuilder().build();
     }
 
-    private static Region randomRegion() {
-        return Region.values()[randomInt(0, Region.values().length - 1)];
-    }
-
-    private static Set<AssetClass> randomAssetClasses() {
+    private static Set<AssetClass2> randomAssetClasses() {
         return Set.of(
-                new AssetClass(BOND, new BigDecimal("0.4")),
-                new AssetClass(STOCK, new BigDecimal("0.1")),
-                new AssetClass(PROPERTY, new BigDecimal("0.3")),
-                new AssetClass(CASH_EUR, new BigDecimal("0.2"))
+                new AssetClass2(DEVELOPED, STOCK, new BigDecimal("0.6")),
+                new AssetClass2(EMERGING, STOCK, new BigDecimal("0.2")),
+                new AssetClass2(null, BOND, new BigDecimal("0.2"))
         );
     }
 

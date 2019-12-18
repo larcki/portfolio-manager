@@ -1,9 +1,6 @@
 package com.nordcomet.pflio.asset.service;
 
-import com.nordcomet.pflio.asset.model.AssetPosition;
-import com.nordcomet.pflio.asset.model.Currency;
-import com.nordcomet.pflio.asset.model.Money;
-import com.nordcomet.pflio.asset.model.Transaction;
+import com.nordcomet.pflio.asset.model.*;
 import com.nordcomet.pflio.asset.repo.AssetPositionRepo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +40,12 @@ public class AssetPositionService {
     public AssetPosition save(AssetPosition assetPosition) {
         logger.info("Saved asset position for {} - {}", assetPosition.getAsset().getName(), assetPosition);
         return assetPositionRepo.save(assetPosition);
+    }
+
+    public BigDecimal getTotalValueOf(Asset asset) {
+        return assetPositionRepo.findFirstByAssetIdOrderByTimestampDesc(asset.getId())
+                .map(AssetPosition::getTotalValue)
+                .orElse(BigDecimal.ZERO);
     }
 
     private BigDecimal unitPriceInBaseCurrency(Transaction transaction) {

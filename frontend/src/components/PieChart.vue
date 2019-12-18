@@ -19,7 +19,7 @@
             }
         },
         mounted() {
-            api.getPieChart(this.assetClasses)
+            api.getPieChart()
                 .then(response => {
                     this.chart = new Chart(this.$refs.chart, response.data)
                 })

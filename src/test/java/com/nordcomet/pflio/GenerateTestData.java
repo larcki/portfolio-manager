@@ -1,9 +1,8 @@
 package com.nordcomet.pflio;
 
-import com.nordcomet.pflio.asset.model.*;
+import com.nordcomet.pflio.asset.model.Asset;
 import com.nordcomet.pflio.asset.repo.*;
 import com.nordcomet.pflio.asset.service.TransactionService;
-import com.nordcomet.pflio.chart.service.ChartService;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -11,10 +10,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -44,9 +41,6 @@ class GenerateTestData {
 
     @Autowired
     private FeeRepo feeRepo;
-
-    @Autowired
-    private ChartService chartService;
 
     @Autowired
     private AccountRepo accountRepo;
