@@ -1,6 +1,6 @@
 package com.nordcomet.pflio.chart.classification;
 
-import com.nordcomet.pflio.asset.classification.AssetClass2;
+import com.nordcomet.pflio.asset.classification.AssetClass;
 import com.nordcomet.pflio.asset.classification.AssetClassification;
 import com.nordcomet.pflio.asset.model.Asset;
 import com.nordcomet.pflio.asset.model.Currency;
@@ -43,18 +43,18 @@ class PieChartServiceTest {
     void name() {
 
         createAssetWithTransaction("Asset A", "500", Set.of(
-                new AssetClass2(DEVELOPED, STOCK, new BigDecimal("0.8")),
-                new AssetClass2(EMERGING, STOCK, new BigDecimal("0.2"))));
+                new AssetClass(DEVELOPED, STOCK, new BigDecimal("0.8")),
+                new AssetClass(EMERGING, STOCK, new BigDecimal("0.2"))));
 
         createAssetWithTransaction("Asset B", "200", Set.of(
-                new AssetClass2(DEVELOPED, STOCK, new BigDecimal("0.5")),
-                new AssetClass2(null, BOND, new BigDecimal("0.5"))));
+                new AssetClass(DEVELOPED, STOCK, new BigDecimal("0.5")),
+                new AssetClass(null, BOND, new BigDecimal("0.5"))));
 
         createAssetWithTransaction("Asset C", "700", Set.of(
-                new AssetClass2(null, PROPERTY, new BigDecimal("1"))));
+                new AssetClass(null, PROPERTY, new BigDecimal("1"))));
 
         createAssetWithTransaction("Asset D", "300", Set.of(
-                new AssetClass2(NORDIC, STOCK, new BigDecimal("1"))));
+                new AssetClass(NORDIC, STOCK, new BigDecimal("1"))));
 
 
         Object result = underTest.getPieChart(List.of(
@@ -68,10 +68,10 @@ class PieChartServiceTest {
 
     }
 
-    private void createAssetWithTransaction(String name, String value, Set<AssetClass2> assetClasses2) {
+    private void createAssetWithTransaction(String name, String value, Set<AssetClass> assetClasses2) {
         Asset asset = assetRepo.save(randomAssetBuilder()
                 .name(name)
-                .assetClasses2(assetClasses2)
+                .assetClasses(assetClasses2)
                 .build());
 
         transactionService.save(TransactionSaveRequest.builder()

@@ -1,9 +1,7 @@
 package com.nordcomet.pflio.chart.classification;
 
-import com.nordcomet.pflio.asset.classification.AssetClass2;
 import com.nordcomet.pflio.asset.classification.AssetClassification;
 import com.nordcomet.pflio.asset.classification.AssetClassificationService;
-import com.nordcomet.pflio.asset.model.Asset;
 import com.nordcomet.pflio.asset.service.AssetPositionService;
 import com.nordcomet.pflio.chart.service.ChartJSFactory;
 import com.nordcomet.pflio.chart.service.ColourPalette;
@@ -11,12 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.toList;
 
 
 @Service

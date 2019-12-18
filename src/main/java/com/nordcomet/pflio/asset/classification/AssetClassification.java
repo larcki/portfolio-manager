@@ -27,7 +27,7 @@ public enum AssetClassification {
     private final List<Region> regions;
     private final List<AssetClassType> assetClassTypes;
 
-    public boolean includes(AssetClass2 assetClass) {
+    public boolean includes(AssetClass assetClass) {
         boolean regionMatch = regions.isEmpty() || regions.stream().anyMatch(region -> assetClass.getRegion() == region);
         boolean assetClassTypeMatch = assetClassTypes.isEmpty() || assetClassTypes.stream().anyMatch(classType -> assetClass.getAssetClassType() == classType);
         return regionMatch && assetClassTypeMatch;

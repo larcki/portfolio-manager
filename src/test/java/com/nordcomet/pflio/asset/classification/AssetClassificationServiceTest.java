@@ -26,7 +26,7 @@ class AssetClassificationServiceTest {
         AssetClassificationService underTest = new AssetClassificationService(assetRepo);
 
         Asset asset = assetRepo.save(randomAssetBuilder()
-                .assetClasses2(Set.of(new AssetClass2(Region.DEVELOPED, AssetClassType.STOCK, BigDecimal.ONE)))
+                .assetClasses(Set.of(new AssetClass(Region.DEVELOPED, AssetClassType.STOCK, BigDecimal.ONE)))
                 .build());
         assertThat(underTest.findAssets(AssetClassification.DEVELOPED_STOCK).get(0), is(asset));
         assertThat(underTest.findAssets(AssetClassification.DEVELOPED).get(0), is(asset));
@@ -38,9 +38,9 @@ class AssetClassificationServiceTest {
         AssetClassificationService underTest = new AssetClassificationService(assetRepo);
 
         Asset asset = assetRepo.save(randomAssetBuilder()
-                .assetClasses2(Set.of(
-                        new AssetClass2(Region.DEVELOPED, AssetClassType.STOCK, new BigDecimal("0.5")),
-                        new AssetClass2(Region.EMERGING, AssetClassType.STOCK, new BigDecimal("0.5"))
+                .assetClasses(Set.of(
+                        new AssetClass(Region.DEVELOPED, AssetClassType.STOCK, new BigDecimal("0.5")),
+                        new AssetClass(Region.EMERGING, AssetClassType.STOCK, new BigDecimal("0.5"))
                 ))
                 .build());
         assertThat(underTest.findAssets(AssetClassification.DEVELOPED_STOCK).get(0), is(asset));
@@ -52,8 +52,8 @@ class AssetClassificationServiceTest {
         AssetClassificationService underTest = new AssetClassificationService(assetRepo);
 
         Asset asset = assetRepo.save(randomAssetBuilder()
-                .assetClasses2(Set.of(
-                        new AssetClass2(null, AssetClassType.PROPERTY, BigDecimal.ONE)
+                .assetClasses(Set.of(
+                        new AssetClass(null, AssetClassType.PROPERTY, BigDecimal.ONE)
                 ))
                 .build());
         assertThat(underTest.findAssets(AssetClassification.PROPERTY).get(0), is(asset));

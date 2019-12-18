@@ -1,6 +1,6 @@
 package com.nordcomet.pflio;
 
-import com.nordcomet.pflio.asset.classification.AssetClass2;
+import com.nordcomet.pflio.asset.classification.AssetClass;
 import com.nordcomet.pflio.asset.model.*;
 
 import java.math.BigDecimal;
@@ -27,7 +27,7 @@ public class DataRandomiser {
         return Asset.builder()
                 .account(randomAccount())
                 .name(randomString())
-                .assetClasses2(randomAssetClasses())
+                .assetClasses(randomAssetClasses())
                 .isin(randomString())
                 .quoteCurrency(Currency.EUR)
                 .baseCurrency(Currency.EUR);
@@ -37,11 +37,11 @@ public class DataRandomiser {
         return randomAssetBuilder().build();
     }
 
-    private static Set<AssetClass2> randomAssetClasses() {
+    private static Set<AssetClass> randomAssetClasses() {
         return Set.of(
-                new AssetClass2(DEVELOPED, STOCK, new BigDecimal("0.6")),
-                new AssetClass2(EMERGING, STOCK, new BigDecimal("0.2")),
-                new AssetClass2(null, BOND, new BigDecimal("0.2"))
+                new AssetClass(DEVELOPED, STOCK, new BigDecimal("0.6")),
+                new AssetClass(EMERGING, STOCK, new BigDecimal("0.2")),
+                new AssetClass(null, BOND, new BigDecimal("0.2"))
         );
     }
 

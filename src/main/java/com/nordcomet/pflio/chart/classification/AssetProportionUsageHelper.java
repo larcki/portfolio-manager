@@ -1,6 +1,6 @@
 package com.nordcomet.pflio.chart.classification;
 
-import com.nordcomet.pflio.asset.classification.AssetClass2;
+import com.nordcomet.pflio.asset.classification.AssetClass;
 import com.nordcomet.pflio.asset.classification.AssetClassification;
 import com.nordcomet.pflio.asset.model.Asset;
 
@@ -29,10 +29,10 @@ class AssetProportionUsageHelper {
     }
 
     private BigDecimal getProportionOfAssetThatBelongsToClassification(AssetClassification classification, Asset asset) {
-        List<AssetClass2> matchingClasses = asset.getAssetClasses2().stream()
+        List<AssetClass> matchingClasses = asset.getAssetClasses().stream()
                 .filter(classification::includes)
                 .collect(toList());
-        return matchingClasses.stream().map(AssetClass2::getProportion).reduce(BigDecimal.ZERO, BigDecimal::add);
+        return matchingClasses.stream().map(AssetClass::getProportion).reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
 }

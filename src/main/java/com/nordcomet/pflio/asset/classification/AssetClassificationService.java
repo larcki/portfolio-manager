@@ -24,13 +24,13 @@ public class AssetClassificationService {
             return new ArrayList<>(assetRepo.findAll());
         }
         if (assetClassification.getAssetClassTypes().isEmpty()) {
-            return assetRepo.findAssetsByAssetClasses2RegionIn(assetClassification.getRegions());
+            return assetRepo.findAssetsByAssetClassesRegionIn(assetClassification.getRegions());
         }
         if (assetClassification.getRegions().isEmpty()) {
-            return assetRepo.findAssetsByAssetClasses2AssetClassTypeIn(assetClassification.getAssetClassTypes());
+            return assetRepo.findAssetsByAssetClassesAssetClassTypeIn(assetClassification.getAssetClassTypes());
         }
 
-        return assetRepo.findAssetsByAssetClasses2AssetClassTypeInAndAssetClasses2RegionIn(
+        return assetRepo.findAssetsByAssetClassesAssetClassTypeInAndAssetClassesRegionIn(
                 assetClassification.getAssetClassTypes(),
                 assetClassification.getRegions());
     }

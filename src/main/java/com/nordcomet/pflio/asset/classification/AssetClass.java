@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 @Getter
 @EqualsAndHashCode
 @NoArgsConstructor
-public class AssetClass2 {
+public class AssetClass {
 
     @Id
     @GeneratedValue
@@ -27,7 +27,7 @@ public class AssetClass2 {
     @Enumerated(EnumType.STRING)
     private Region region;
 
-    public AssetClass2(Region region, AssetClassType assetClassType, BigDecimal proportion) {
+    public AssetClass(Region region, AssetClassType assetClassType, BigDecimal proportion) {
         this.proportion = proportion;
         this.assetClassType = assetClassType;
         this.region = region;

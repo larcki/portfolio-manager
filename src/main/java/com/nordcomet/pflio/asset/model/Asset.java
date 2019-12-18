@@ -1,10 +1,9 @@
 package com.nordcomet.pflio.asset.model;
 
-import com.nordcomet.pflio.asset.classification.AssetClass2;
+import com.nordcomet.pflio.asset.classification.AssetClass;
 import lombok.*;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 import java.util.Set;
 
 @Builder
@@ -25,11 +24,11 @@ public class Asset {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
-            name = "asset_class_mapping_2",
+            name = "asset_class_mapping",
             joinColumns = @JoinColumn(name = "asset_id"),
             inverseJoinColumns = @JoinColumn(name = "asset_class_id")
     )
-    private Set<AssetClass2> assetClasses2;
+    private Set<AssetClass> assetClasses;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     private Account account;
