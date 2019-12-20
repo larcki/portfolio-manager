@@ -4,6 +4,7 @@ import com.nordcomet.pflio.chart.classification.ClassificationProvider;
 import com.nordcomet.pflio.chart.classification.ClassifiedChartService;
 import com.nordcomet.pflio.chart.classification.PieChartService;
 import com.nordcomet.pflio.chart.model.PortfolioChartType;
+import com.nordcomet.pflio.chart.performance.PurchaseAmountAndValueChartService;
 import com.nordcomet.pflio.chart.service.PerformanceChartCalculator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +26,9 @@ public class ChartController {
     @Autowired
     private ClassifiedChartService classifiedChartService;
 
+    @Autowired
+    private PurchaseAmountAndValueChartService purchaseAmountAndValueChartService;
+
     @RequestMapping("/api/chart/pie")
     public Object getPieChart() {
         return chartService.getPieChart(ClassificationProvider.defaultClassification());
@@ -41,7 +45,7 @@ public class ChartController {
             return performanceChartCalculator.getPerformancePercentageChart(period);
         }
         if (chartType == PortfolioChartType.LINE_TOTAL_PERFORMANCE) {
-            return performanceChartCalculator.getPerformanceValueChart(period);
+            return purchaseAmountAndValueChartService.createChart(period);
         }
 
         return null;

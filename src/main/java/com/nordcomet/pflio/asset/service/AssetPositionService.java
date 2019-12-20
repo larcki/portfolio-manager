@@ -9,7 +9,11 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AssetPositionService {
@@ -46,6 +50,23 @@ public class AssetPositionService {
         return assetPositionRepo.findFirstByAssetIdOrderByTimestampDesc(asset.getId())
                 .map(AssetPosition::getTotalValue)
                 .orElse(BigDecimal.ZERO);
+    }
+
+    public List<AssetPosition> findAssetPositionsForAssetStartingFrom(Asset asset, LocalDate date) {
+        Optional<AssetPosition> firstAssetPosition = assetPositionRepo.findFirstByAssetIdAndTimestampBeforeOrderByTimestampDesc(
+                asset.getId(), date.atStartOfDay()
+        );
+        List<AssetPosition> assetPositions = assetPositionRepo.findAllByAssetIdAndTimestampAfter(
+                asset.getId(), firstAssetPosition.map(AssetPosition::getTimestamp).orElse(tenDaysBefore(date))
+        );
+        List<AssetPosition> assetPositionsToInclude = new ArrayList<>();
+        firstAssetPosition.ifPresent(assetPositionsToInclude::add);
+        assetPositionsToInclude.addAll(assetPositions);
+        return assetPositionsToInclude;
+    }
+
+    private LocalDateTime tenDaysBefore(LocalDate date) {
+        return date.minusDays(10).atStartOfDay();
     }
 
     private BigDecimal unitPriceInBaseCurrency(Transaction transaction) {
