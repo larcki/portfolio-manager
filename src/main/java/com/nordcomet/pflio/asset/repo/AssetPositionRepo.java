@@ -13,5 +13,6 @@ public interface AssetPositionRepo extends CrudRepository<AssetPosition, Integer
     List<AssetPosition> findAllByAssetIdAndTimestampAfter(Integer assetId, LocalDateTime timestamp);
     Optional<AssetPosition> findFirstByAssetIdAndTimestampBeforeOrderByTimestampDesc(Integer assetId, LocalDateTime timestamp);
     List<AssetPosition> findAllByAssetId(Integer assetId);
+    List<AssetPosition> findAllByAssetIdInOrderByTimestampDesc(List<Integer> assets);
 
 }

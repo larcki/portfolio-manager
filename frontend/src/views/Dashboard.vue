@@ -12,6 +12,12 @@
                     <v-card :elevation="n - 1">
                         <pie-chart asset-classes="BOND,STOCK,PROPERTY"/>
                     </v-card>
+
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col cols="4">
+                    <summary-tile></summary-tile>
                 </v-col>
             </v-row>
 
@@ -21,10 +27,12 @@
 <script>
     import PieChart from "../components/PieChart";
     import ChartSelector from "../components/ChartSelector";
+    import SummaryTile from "../components/SummaryCard";
 
     export default {
         name: 'Dashboard',
         components: {
+            SummaryTile,
             PieChart,
             ChartSelector
         }

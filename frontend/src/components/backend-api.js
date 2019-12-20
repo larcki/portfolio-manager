@@ -48,6 +48,10 @@ export default {
 
     saveTransaction(transaction) {
         return AXIOS.post('/transaction', transaction);
+    },
+
+    getSummary() {
+        return AXIOS.get('/summary')
     }
 
 }

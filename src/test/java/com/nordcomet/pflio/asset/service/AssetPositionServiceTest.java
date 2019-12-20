@@ -2,6 +2,7 @@ package com.nordcomet.pflio.asset.service;
 
 import com.nordcomet.pflio.asset.model.*;
 import com.nordcomet.pflio.asset.repo.AssetPositionRepo;
+import com.nordcomet.pflio.asset.repo.AssetRepo;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -13,7 +14,8 @@ import static org.mockito.Mockito.verify;
 class AssetPositionServiceTest {
 
     private final AssetPositionRepo assetPositionRepo = mock(AssetPositionRepo.class);
-    private final AssetPositionService underTest = new AssetPositionService(assetPositionRepo);
+    private final AssetRepo assetRepo = mock(AssetRepo.class);
+    private final AssetPositionService underTest = new AssetPositionService(assetPositionRepo, assetRepo);
 
     @Test
     void shouldSaveAssetPosition() {

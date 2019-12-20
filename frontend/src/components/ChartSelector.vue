@@ -39,8 +39,8 @@
             return {
                 charts: [
                     {text: "Asset class allocation over time", value: "STACKED_ASSET_CLASS_ALLOCATION"},
+                    {text: "Total purchase amount vs market value", value: "LINE_TOTAL_PURCHASE_AND_VALUE"},
                     {text: "Total performance for selected period (%)", value: "LINE_TOTAL_PERFORMANCE_PERCENTAGE"},
-                    {text: "Total performance over time (EUR)", value: "LINE_TOTAL_PERFORMANCE"},
                 ],
                 selection: "STACKED_ASSET_CLASS_ALLOCATION",
                 period: 180,

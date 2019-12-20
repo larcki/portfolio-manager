@@ -2,6 +2,7 @@ package com.nordcomet.pflio.asset.service;
 
 import com.nordcomet.pflio.asset.model.*;
 import com.nordcomet.pflio.asset.repo.AssetPositionRepo;
+import com.nordcomet.pflio.asset.repo.AssetRepo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,10 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static java.util.Comparator.comparing;
 
 @Service
 public class AssetPositionService {
@@ -21,10 +26,12 @@ public class AssetPositionService {
     private static final Logger logger = LoggerFactory.getLogger(AssetPositionService.class);
 
     private final AssetPositionRepo assetPositionRepo;
+    private final AssetRepo assetRepo;
 
     @Autowired
-    public AssetPositionService(AssetPositionRepo assetPositionRepo) {
+    public AssetPositionService(AssetPositionRepo assetPositionRepo, AssetRepo assetRepo) {
         this.assetPositionRepo = assetPositionRepo;
+        this.assetRepo = assetRepo;
     }
 
     public AssetPosition createBasedOn(Transaction transaction) {
@@ -50,6 +57,31 @@ public class AssetPositionService {
         return assetPositionRepo.findFirstByAssetIdOrderByTimestampDesc(asset.getId())
                 .map(AssetPosition::getTotalValue)
                 .orElse(BigDecimal.ZERO);
+    }
+
+    public PortfolioSummary getPortfolioSummary() {
+        Set<Asset> allAssets = assetRepo.findAll();
+        List<AssetPosition> assetPositions = assetPositionRepo.findAllByAssetIdInOrderByTimestampDesc(allAssets.stream().map(Asset::getId).collect(Collectors.toList()));
+
+        BigDecimal totalValue = allAssets.stream()
+                .map(asset -> findLatestAssetPosition(asset, assetPositions))
+                .map(AssetPosition::getTotalValue)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        BigDecimal totalPurchaseAmount = allAssets.stream()
+                .map(asset -> findLatestAssetPosition(asset, assetPositions))
+                .map(AssetPosition::getTotalPurchaseAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        BigDecimal totalProfit = totalValue.subtract(totalPurchaseAmount);
+        BigDecimal totalProfitPercentage = totalValue.divide(totalPurchaseAmount, 4, RoundingMode.HALF_UP).subtract(BigDecimal.ONE);
+
+        return new PortfolioSummary(
+                display(totalValue),
+                display(totalPurchaseAmount),
+                display(totalProfit),
+                display(totalProfitPercentage.multiply(new BigDecimal("100")))
+        );
     }
 
     public List<AssetPosition> findAssetPositionsForAssetStartingFrom(Asset asset, LocalDate date) {
@@ -80,4 +112,13 @@ public class AssetPositionService {
         return unitPrice.getAmount();
     }
 
+    private AssetPosition findLatestAssetPosition(Asset asset, List<AssetPosition> assetPositions) {
+        return assetPositions.stream().filter(assetPosition -> asset.getId().equals(assetPosition.getAsset().getId()))
+                .max(comparing(AssetPosition::getTimestamp))
+                .orElseThrow(IllegalAccessError::new);
+    }
+
+    private String display(BigDecimal value) {
+        return value.setScale(2, RoundingMode.HALF_UP).toString();
+    }
 }

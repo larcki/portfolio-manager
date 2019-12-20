@@ -44,7 +44,7 @@ public class ChartController {
         if (chartType == PortfolioChartType.LINE_TOTAL_PERFORMANCE_PERCENTAGE) {
             return performanceChartCalculator.getPerformancePercentageChart(period);
         }
-        if (chartType == PortfolioChartType.LINE_TOTAL_PERFORMANCE) {
+        if (chartType == PortfolioChartType.LINE_TOTAL_PURCHASE_AND_VALUE) {
             return purchaseAmountAndValueChartService.createChart(period);
         }
 
