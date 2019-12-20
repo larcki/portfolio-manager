@@ -1,5 +1,6 @@
 package com.nordcomet.pflio.asset.service.importer;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -13,6 +14,7 @@ class NordnetTransactionReaderTest {
     private NordnetTransactionReader underTest = new NordnetTransactionReader();
 
     @Test
+    @Disabled
     void shouldImportNordnetTransactions() {
         String filename = getClass().getClassLoader().getResource("PortfolioReport.xls").getFile();
 
