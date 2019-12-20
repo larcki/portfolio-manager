@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @Slf4j
 public class AssetPriceUpdateJob {
 
-    private static final String EVERY_NOON = "0 12 * * *";
+    private static final String EVERY_NOON = "0 0 12 * * *";
 
     @Autowired
     private AssetRepo assetRepo;
