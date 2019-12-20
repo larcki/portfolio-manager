@@ -1,10 +1,12 @@
 package com.nordcomet.pflio.asset.service.importer;
 
+import com.nordcomet.pflio.asset.model.TransactionSaveRequest;
 import com.nordcomet.pflio.asset.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.util.stream.Collectors;
 
 @Service
 public class NordnetTransactionsImportOrchestrator {
@@ -30,7 +32,9 @@ public class NordnetTransactionsImportOrchestrator {
 
         nordnetTransactionReader.readTransactions(portfolioReport).stream()
                 .map(nordnetTransactionsToTransactionRequestMapper::toTransactionSaveRequest)
-                .forEachOrdered(transactionService::save);
+                .collect(Collectors.groupingBy(TransactionSaveRequest::getAssetId))
+                .entrySet().parallelStream()
+                .forEach(entry -> entry.getValue().forEach(transactionService::save));
 
     }
 

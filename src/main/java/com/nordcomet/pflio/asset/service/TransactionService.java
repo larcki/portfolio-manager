@@ -4,6 +4,7 @@ import com.nordcomet.pflio.asset.TransactionResponse;
 import com.nordcomet.pflio.asset.model.*;
 import com.nordcomet.pflio.asset.repo.AssetRepo;
 import com.nordcomet.pflio.asset.repo.TransactionRepo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 import static java.math.RoundingMode.HALF_UP;
 
 @Service
+@Slf4j
 public class TransactionService {
 
     @Autowired
@@ -30,6 +32,8 @@ public class TransactionService {
     private AssetRepo assetRepo;
 
     public void save(TransactionSaveRequest dto) {
+        log.info("Saving transaction for Asset {} date {}", dto.getAssetId(), dto.getTimestamp());
+
         Asset asset = assetRepo.findAssetsById(dto.getAssetId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         Fee fee = Fee.builder()

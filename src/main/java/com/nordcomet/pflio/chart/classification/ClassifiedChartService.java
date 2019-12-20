@@ -92,7 +92,9 @@ public class ClassifiedChartService {
     }
 
     private List<BigDecimal> pricesForAsset(List<LocalDate> days, Asset asset, BigDecimal proportion) {
-        return days.stream().map(day -> assetPositionService.findAssetPositionsForAssetStartingFrom(asset, days.get(0)).stream()
+        List<AssetPosition> assetPositions = assetPositionService.findAssetPositionsForAssetStartingFrom(asset, days.get(0));
+
+        return days.stream().map(day -> assetPositions.stream()
                 .filter(beforeEndOfDay(day))
                 .max(comparing(AssetPosition::getTimestamp))
                 .map(assetPosition -> priceForAsset(proportion, assetPosition))

@@ -3,8 +3,7 @@ package com.nordcomet.pflio.asset.service;
 import com.nordcomet.pflio.asset.model.*;
 import com.nordcomet.pflio.asset.repo.AssetPositionRepo;
 import com.nordcomet.pflio.asset.repo.AssetRepo;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,9 +20,8 @@ import java.util.stream.Collectors;
 import static java.util.Comparator.comparing;
 
 @Service
+@Slf4j
 public class AssetPositionService {
-
-    private static final Logger logger = LoggerFactory.getLogger(AssetPositionService.class);
 
     private final AssetPositionRepo assetPositionRepo;
     private final AssetRepo assetRepo;
@@ -49,7 +47,7 @@ public class AssetPositionService {
     }
 
     public AssetPosition save(AssetPosition assetPosition) {
-        logger.info("Saved asset position for {} - {}", assetPosition.getAsset().getName(), assetPosition);
+        log.info("Saved asset position for {} - {}", assetPosition.getAsset().getName(), assetPosition);
         return assetPositionRepo.save(assetPosition);
     }
 
