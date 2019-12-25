@@ -10,12 +10,9 @@
                 </v-col>
 
                 <v-col cols="12" lg="4">
-
-                    <v-card :elevation="n - 1">
-                        <pie-chart asset-classes="BOND,STOCK,PROPERTY"/>
-                    </v-card>
+                    <pie-chart/>
                     <div class="summary-card">
-                        <summary-tile></summary-tile>
+                        <summary-tile/>
                     </div>
 
                 </v-col>

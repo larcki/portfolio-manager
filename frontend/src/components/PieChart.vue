@@ -1,7 +1,10 @@
 <template>
-    <div class="pie-chart-container">
-        <canvas ref="chart"></canvas>
-    </div>
+    <v-card :elevation="n - 1">
+        <v-card-title>Asset allocation</v-card-title>
+        <div class="pie-chart-container">
+            <canvas ref="chart"></canvas>
+        </div>
+    </v-card>
 </template>
 
 <script>
@@ -10,9 +13,6 @@
 
     export default {
         name: "PieChart",
-        props: {
-            assetClasses: String
-        },
         data() {
             return {
                 chart: null
@@ -29,7 +29,7 @@
 
 <style scoped>
     .pie-chart-container {
-        padding-top: 30px;
+        padding-top: 15px;
         padding-bottom: 30px;
     }
 
