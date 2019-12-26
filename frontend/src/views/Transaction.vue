@@ -82,7 +82,7 @@
                 <v-col cols="12" sm="8">
                     <v-card :elevation="n - 1">
                         <v-card-title>
-                            Transactions
+                            Latest transactions
                         </v-card-title>
                         <v-card-text>
 
