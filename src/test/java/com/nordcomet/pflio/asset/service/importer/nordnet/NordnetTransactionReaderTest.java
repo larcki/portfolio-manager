@@ -1,4 +1,4 @@
-package com.nordcomet.pflio.asset.service.importer;
+package com.nordcomet.pflio.asset.service.importer.nordnet;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;

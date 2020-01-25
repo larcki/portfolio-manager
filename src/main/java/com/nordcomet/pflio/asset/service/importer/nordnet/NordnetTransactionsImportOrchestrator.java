@@ -1,4 +1,4 @@
-package com.nordcomet.pflio.asset.service.importer;
+package com.nordcomet.pflio.asset.service.importer.nordnet;
 
 import com.nordcomet.pflio.asset.model.TransactionSaveRequest;
 import com.nordcomet.pflio.asset.service.TransactionService;
