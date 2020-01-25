@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 @Service
 public class HalifaxTransactionMapper {
@@ -31,7 +32,7 @@ public class HalifaxTransactionMapper {
     }
 
     private BigDecimal penceToPounds(BigDecimal pennyPrice) {
-        return pennyPrice.multiply(new BigDecimal("100"));
+        return pennyPrice.divide(new BigDecimal("100"), 8, RoundingMode.HALF_UP);
     }
 
     private Integer findAssetId(String isin) {

@@ -14,6 +14,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.util.Comparator.comparing;
+
 @Service
 public class HalifaxTransactionReader {
 
@@ -30,6 +32,7 @@ public class HalifaxTransactionReader {
                         Elements row = element.getElementsByTag("td");
                         return toHalifaxTransaction(row);
                     })
+                    .sorted(comparing(HalifaxTransaction::getDate))
                     .collect(Collectors.toList());
         } catch (IOException e) {
             throw new RuntimeException(e);
