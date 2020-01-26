@@ -12,7 +12,6 @@ import java.time.LocalDate;
 @ToString
 public class FidelityTransaction {
 
-    private final String date;
     private final LocalDate orderDate;
     private final String transactionType;
     private final String investment;

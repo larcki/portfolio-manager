@@ -38,7 +38,7 @@ public enum AssetClassification {
     }
 
     private static List<Region> developed() {
-        return List.of(Region.DEVELOPED, NORDIC, EUROPE, EURO_ZONE, WEST_EUROPE, UK, USA, FINLAND, JAPAN, AUSTRALASIA);
+        return List.of(Region.DEVELOPED, NORDIC, EUROPE, EURO_ZONE, WEST_EUROPE, UK, USA, FINLAND, JAPAN, AUSTRALASIA, DEVELOPED_EXCLUDING_UK);
     }
 
 }

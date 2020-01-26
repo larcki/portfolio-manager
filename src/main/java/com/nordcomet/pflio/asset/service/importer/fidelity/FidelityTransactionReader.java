@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,6 +26,7 @@ public class FidelityTransactionReader {
             return Files.lines(file.toPath())
                     .skip(8)
                     .map(this::toTransaction)
+                    .sorted(Comparator.comparing(FidelityTransaction::getOrderDate))
                     .collect(Collectors.toList());
         } catch (IOException e) {
             log.error("Failed to read file {}", file, e);
@@ -37,11 +39,15 @@ public class FidelityTransactionReader {
 
         return FidelityTransaction.builder()
                 .orderDate(toLocalDate(values[0]))
-                .investment(values[3])
+                .investment(parseQuotes(values[3]))
                 .amount(toBigDecimal(values[7]))
                 .quantity(toBigDecimal(values[8]))
                 .pricePerUnit(toBigDecimal(values[9]))
                 .build();
+    }
+
+    private String parseQuotes(String value) {
+        return value.replace("\"", "");
     }
 
     private BigDecimal toBigDecimal(String value) {

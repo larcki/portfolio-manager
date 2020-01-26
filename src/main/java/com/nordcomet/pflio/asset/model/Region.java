@@ -3,6 +3,7 @@ package com.nordcomet.pflio.asset.model;
 public enum Region {
 
     DEVELOPED,
+    DEVELOPED_EXCLUDING_UK,
     EMERGING,
     FRONTIER,
     EUROPE,
