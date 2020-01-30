@@ -12,10 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-
-@RestController
+@RestController("/api/chart")
 @Slf4j
 public class ChartController {
 
@@ -32,12 +29,12 @@ public class ChartController {
         this.purchaseAmountAndValueChartService = purchaseAmountAndValueChartService;
     }
 
-    @RequestMapping("/api/chart/pie")
+    @RequestMapping("/pie")
     public Object getPieChart() {
         return chartService.getPieChart(ClassificationProvider.defaultClassification());
     }
 
-    @RequestMapping("/api/chart/line")
+    @RequestMapping("/line")
     public Object getLineChart(@RequestParam Integer period,
                                @RequestParam PortfolioChartType chartType) {
 
@@ -55,12 +52,7 @@ public class ChartController {
 
     }
 
-    @RequestMapping("/api/total-amount")
-    public BigDecimal getTotalAmountInfo() {
-        return performanceChartCalculator.getTotalValue().setScale(2, RoundingMode.HALF_UP);
-    }
-
-    @RequestMapping("/api/chart/performance")
+    @RequestMapping("/performance")
     public Object getPerformanceLineChart(@RequestParam Integer period,
                                           @RequestParam(required = false) Integer assetId) {
         if (assetId != null) {

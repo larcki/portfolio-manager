@@ -186,14 +186,6 @@ public class PerformanceChartCalculator {
         return new PerformanceCalculationItem(assetPosition.getTotalValue(), assetPosition.getTotalPurchaseAmount());
     }
 
-    public BigDecimal getTotalValue() {
-        return assetRepo.findAll().stream()
-                .map(asset -> assetPositionRepo.findFirstByAssetIdOrderByTimestampDesc(asset.getId())
-                        .map(AssetPosition::getTotalValue)
-                        .orElse(ZERO))
-                .reduce(ZERO, BigDecimal::add);
-    }
-
     @Data
     @AllArgsConstructor
     class PerformanceCalculationItem {
