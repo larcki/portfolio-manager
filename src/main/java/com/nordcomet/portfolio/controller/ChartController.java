@@ -19,17 +19,18 @@ import java.math.RoundingMode;
 @Slf4j
 public class ChartController {
 
-    @Autowired
-    private PieChartService chartService;
+    private final PieChartService chartService;
+    private final PerformanceChartCalculator performanceChartCalculator;
+    private final ClassifiedChartService classifiedChartService;
+    private final PurchaseAmountAndValueChartService purchaseAmountAndValueChartService;
 
     @Autowired
-    private PerformanceChartCalculator performanceChartCalculator;
-
-    @Autowired
-    private ClassifiedChartService classifiedChartService;
-
-    @Autowired
-    private PurchaseAmountAndValueChartService purchaseAmountAndValueChartService;
+    public ChartController(PieChartService chartService, PerformanceChartCalculator performanceChartCalculator, ClassifiedChartService classifiedChartService, PurchaseAmountAndValueChartService purchaseAmountAndValueChartService) {
+        this.chartService = chartService;
+        this.performanceChartCalculator = performanceChartCalculator;
+        this.classifiedChartService = classifiedChartService;
+        this.purchaseAmountAndValueChartService = purchaseAmountAndValueChartService;
+    }
 
     @RequestMapping("/api/chart/pie")
     public Object getPieChart() {

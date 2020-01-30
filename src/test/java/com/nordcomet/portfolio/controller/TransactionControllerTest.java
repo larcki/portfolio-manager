@@ -18,7 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DirtiesContext
 @AutoConfigureMockMvc
 @Disabled
-class AssetControllerTest {
+class TransactionControllerTest {
 
     @Autowired
     private AssetRepo assetRepo;
