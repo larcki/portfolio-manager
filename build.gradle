@@ -6,7 +6,7 @@ plugins {
 }
 
 
-group 'com.nordcomet.pflio'
+group 'com.nordcomet.portfolio'
 version '1.0-SNAPSHOT'
 
 sourceCompatibility = 11
