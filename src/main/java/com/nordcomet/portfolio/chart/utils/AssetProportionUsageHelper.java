@@ -13,7 +13,7 @@ import static java.util.stream.Collectors.toList;
 
 public class AssetProportionUsageHelper {
 
-    private Map<Asset, BigDecimal> assetProportionUsed = new HashMap<>();
+    private final Map<Asset, BigDecimal> assetProportionUsed = new HashMap<>();
 
     public BigDecimal getProportionToUse(Asset asset, AssetClassification classification) {
         BigDecimal usedProportion = getProportionUsed(asset);

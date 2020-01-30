@@ -137,12 +137,12 @@ public class PerformanceChartCalculator {
         if (firstItem.getTotalPurchaseAmount().compareTo(ZERO) == 0 && firstItem.getTotalValue().compareTo(ZERO) == 0) {
             PerformanceCalculationItem firstNonZeroItem = null;
             for (Map.Entry<LocalDate, PerformanceCalculationItem> itemEntry : calculationItemsByDay.entrySet()) {
-                if (!itemEntry.getValue().isZero()) {
+                if (itemEntry.getValue().isNotZero()) {
                     firstNonZeroItem = itemEntry.getValue();
                 }
             }
             for (Map.Entry<LocalDate, PerformanceCalculationItem> itemEntry : calculationItemsByDay.entrySet()) {
-                if (!itemEntry.getValue().isZero()) {
+                if (itemEntry.getValue().isNotZero()) {
                     return;
                 }
                 calculationItemsByDay.replace(itemEntry.getKey(), firstNonZeroItem);
@@ -200,8 +200,8 @@ public class PerformanceChartCalculator {
         private BigDecimal totalValue;
         private BigDecimal totalPurchaseAmount;
 
-        boolean isZero() {
-            return this.totalValue.compareTo(BigDecimal.ZERO) == 0 && this.totalPurchaseAmount.compareTo(BigDecimal.ZERO) == 0;
+        boolean isNotZero() {
+            return this.totalValue.compareTo(BigDecimal.ZERO) != 0 || this.totalPurchaseAmount.compareTo(BigDecimal.ZERO) != 0;
         }
 
         PerformanceCalculationItem accumulate(PerformanceCalculationItem other) {

@@ -6,7 +6,7 @@ import com.nordcomet.portfolio.data.asset.ParserOptions;
 import com.nordcomet.portfolio.data.priceupdate.PriceUpdate;
 import com.nordcomet.portfolio.data.priceupdate.PriceUpdateRepo;
 import com.nordcomet.portfolio.data.transaction.TransactionRepo;
-import com.nordcomet.portfolio.service.priceupdate.imports.parser.ParserType;
+import com.nordcomet.portfolio.service.priceupdate.parser.ParserType;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;

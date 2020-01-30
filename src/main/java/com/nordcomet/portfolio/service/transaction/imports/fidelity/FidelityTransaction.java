@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @EqualsAndHashCode
 @AllArgsConstructor
 @ToString
-public class FidelityTransaction {
+class FidelityTransaction {
 
     private final LocalDate orderDate;
     private final String transactionType;

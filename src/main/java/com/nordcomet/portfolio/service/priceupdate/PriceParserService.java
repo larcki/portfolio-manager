@@ -1,10 +1,10 @@
-package com.nordcomet.portfolio.service.priceupdate.imports;
+package com.nordcomet.portfolio.service.priceupdate;
 
 import com.nordcomet.portfolio.common.Money;
 import com.nordcomet.portfolio.data.asset.ParserOptions;
-import com.nordcomet.portfolio.service.priceupdate.imports.parser.MorningstarFundParser;
-import com.nordcomet.portfolio.service.priceupdate.imports.parser.MorningstarFundUkParser;
-import com.nordcomet.portfolio.service.priceupdate.imports.parser.MorningstarStockParser;
+import com.nordcomet.portfolio.service.priceupdate.parser.MorningstarFundParser;
+import com.nordcomet.portfolio.service.priceupdate.parser.MorningstarFundUkParser;
+import com.nordcomet.portfolio.service.priceupdate.parser.MorningstarStockParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-import static com.nordcomet.portfolio.service.priceupdate.imports.parser.ParserType.*;
+import static com.nordcomet.portfolio.service.priceupdate.parser.ParserType.*;
 
 @Service
 public class PriceParserService {

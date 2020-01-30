@@ -19,9 +19,9 @@ import static java.util.Comparator.comparing;
 @Service
 public class HalifaxTransactionReader {
 
-    private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMM yyyy");
+    private final static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMM yyyy");
 
-    public List<HalifaxTransaction> readTransactions(File file) {
+    List<HalifaxTransaction> readTransactions(File file) {
         try {
             return Jsoup.parse(Files.readString(file.toPath()))
                     .getElementById("divDealingHistDT")

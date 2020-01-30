@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @EqualsAndHashCode
 @AllArgsConstructor
 @ToString
-public class HalifaxTransaction {
+class HalifaxTransaction {
 
     private final LocalDate date;
     private final String companyCode;

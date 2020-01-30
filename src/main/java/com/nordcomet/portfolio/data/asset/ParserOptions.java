@@ -1,6 +1,6 @@
 package com.nordcomet.portfolio.data.asset;
 
-import com.nordcomet.portfolio.service.priceupdate.imports.parser.ParserType;
+import com.nordcomet.portfolio.service.priceupdate.parser.ParserType;
 
 import javax.persistence.Embeddable;
 

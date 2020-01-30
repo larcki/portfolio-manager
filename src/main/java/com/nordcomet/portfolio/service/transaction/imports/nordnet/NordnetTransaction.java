@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @EqualsAndHashCode
 @AllArgsConstructor
 @ToString
-public class NordnetTransaction {
+class NordnetTransaction {
 
     private final LocalDate date;
     private final String assetName;

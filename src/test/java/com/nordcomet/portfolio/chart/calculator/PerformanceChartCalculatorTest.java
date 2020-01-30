@@ -36,7 +36,7 @@ class PerformanceChartCalculatorTest {
     private final AssetRepo assetRepo = mock(AssetRepo.class);
     private final ChartDaysResolver daysResolver = mock(ChartDaysResolver.class);
 
-    private PerformanceChartCalculator underTest = new PerformanceChartCalculator(daysResolver, assetRepo, assetPositionRepo);
+    private final PerformanceChartCalculator underTest = new PerformanceChartCalculator(daysResolver, assetRepo, assetPositionRepo);
 
     @Test
     void getPerformanceLineChart() {

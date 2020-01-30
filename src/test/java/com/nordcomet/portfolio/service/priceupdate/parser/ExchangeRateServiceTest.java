@@ -1,6 +1,5 @@
-package com.nordcomet.portfolio.service.priceupdate.imports;
+package com.nordcomet.portfolio.service.priceupdate.parser;
 
-import com.nordcomet.portfolio.service.priceupdate.imports.parser.ExchangeRateService;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -11,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ExchangeRateServiceTest {
 
-    private ExchangeRateService exchangeRateService = new ExchangeRateService();
+    private final ExchangeRateService exchangeRateService = new ExchangeRateService();
 
     @ParameterizedTest
     @CsvSource({

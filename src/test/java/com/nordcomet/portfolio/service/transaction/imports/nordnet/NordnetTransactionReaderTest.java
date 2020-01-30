@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class NordnetTransactionReaderTest {
 
-    private NordnetTransactionReader underTest = new NordnetTransactionReader();
+    private final NordnetTransactionReader underTest = new NordnetTransactionReader();
 
     @Test
     @Disabled

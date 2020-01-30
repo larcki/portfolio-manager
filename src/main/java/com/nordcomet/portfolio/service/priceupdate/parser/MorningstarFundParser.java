@@ -1,4 +1,4 @@
-package com.nordcomet.portfolio.service.priceupdate.imports.parser;
+package com.nordcomet.portfolio.service.priceupdate.parser;
 
 import com.nordcomet.portfolio.common.Currency;
 import com.nordcomet.portfolio.common.Money;
@@ -11,25 +11,32 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.Optional;
 
+import static java.util.Optional.of;
+
 @Service
 @Slf4j
-public class MorningstarStockParser {
+public class MorningstarFundParser {
 
     private final ExchangeRateService exchangeRateService;
     private final PageDocumentProvider pageDocumentProvider;
 
     @Autowired
-    public MorningstarStockParser(ExchangeRateService exchangeRateService, PageDocumentProvider pageDocumentProvider) {
+    public MorningstarFundParser(ExchangeRateService exchangeRateService,
+                                 PageDocumentProvider pageDocumentProvider) {
         this.exchangeRateService = exchangeRateService;
         this.pageDocumentProvider = pageDocumentProvider;
     }
 
     public Optional<Money> parsePrice(ParserOptions parserOptions) {
-        return getPage(parserOptions.getCode())
+        return pageDocumentProvider.getPage(getUrl(parserOptions.getCode()))
                 .flatMap(document -> parsePriceText(document)
                 .flatMap(priceText -> parsePrice(priceText)
                 .flatMap(price -> convertCurrency(price, parserOptions)
-                .map(convertedPrice -> Money.of(convertedPrice, Currency.toCurrency(parserOptions.getTargetCurrency()))))));
+                .map(eurPrice -> Money.of(eurPrice, Currency.toCurrency(parserOptions.getTargetCurrency()))))));
+    }
+
+    protected String getUrl(String code) {
+        return "http://www.morningstar.fi/fi/funds/snapshot/snapshot.aspx?id=" + code;
     }
 
     private Optional<BigDecimal> convertCurrency(BigDecimal price, ParserOptions parserOptions) {
@@ -37,20 +44,22 @@ public class MorningstarStockParser {
     }
 
     private Optional<BigDecimal> parsePrice(String priceText) {
-        return Optional.of(new BigDecimal(priceText.replace(",", ".")));
-    }
-
-    private Optional<String> parsePriceText(Document page) {
         try {
-            return Optional.ofNullable(page.select("#Col0Price").text());
+            String[] split = priceText.split("\\s");
+            return of(new BigDecimal(split[1].replace(",", ".")));
         } catch (Exception e) {
-            log.error("Could not parse price text", e);
+            log.error("Count not parse price", e);
             return Optional.empty();
         }
     }
 
-    private Optional<Document> getPage(String code) {
-        return pageDocumentProvider.getPage("http://tools.morningstar.fi/fi/stockreport/default.aspx?Site=fi&id=" + code);
+    private Optional<String> parsePriceText(Document page) {
+        try {
+            return Optional.ofNullable(page.select("#overviewQuickstatsDiv table tr").get(1).select("td").last().text());
+        } catch (Exception e) {
+            log.error("Count not parse price test", e);
+            return Optional.empty();
+        }
     }
 
 }

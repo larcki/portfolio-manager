@@ -18,9 +18,9 @@ import java.util.stream.StreamSupport;
 @Service
 public class NordnetTransactionReader {
 
-    private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
-    public List<NordnetTransaction> readTransactions(File file) {
+    List<NordnetTransaction> readTransactions(File file) {
 
         try {
             FileInputStream excelFile = new FileInputStream(file);

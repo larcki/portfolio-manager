@@ -1,4 +1,4 @@
-package com.nordcomet.portfolio.service.priceupdate.imports.parser;
+package com.nordcomet.portfolio.service.priceupdate.parser;
 
 public enum ParserType {
 

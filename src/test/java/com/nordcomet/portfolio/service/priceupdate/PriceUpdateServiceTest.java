@@ -1,4 +1,4 @@
-package com.nordcomet.portfolio.service.priceupdate.imports;
+package com.nordcomet.portfolio.service.priceupdate;
 
 import com.nordcomet.portfolio.data.asset.Asset;
 import com.nordcomet.portfolio.data.asset.AssetRepo;
@@ -6,7 +6,6 @@ import com.nordcomet.portfolio.data.assetposition.AssetPosition;
 import com.nordcomet.portfolio.data.assetposition.AssetPositionRepo;
 import com.nordcomet.portfolio.data.priceupdate.PriceUpdate;
 import com.nordcomet.portfolio.data.priceupdate.PriceUpdateRepo;
-import com.nordcomet.portfolio.service.priceupdate.PriceUpdateService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;

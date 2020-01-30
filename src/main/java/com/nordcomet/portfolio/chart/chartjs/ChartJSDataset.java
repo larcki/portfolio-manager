@@ -7,11 +7,11 @@ import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ChartJSDataset {
-    private String label;
-    private List<BigDecimal> data;
-    private String backgroundColor;
-    private String borderColor;
-    private Boolean fill;
+    private final String label;
+    private final List<BigDecimal> data;
+    private final String backgroundColor;
+    private final String borderColor;
+    private final Boolean fill;
 
     public ChartJSDataset(String label, List<BigDecimal> data, String backgroundColor, String borderColor, Boolean fill) {
         this.label = label;

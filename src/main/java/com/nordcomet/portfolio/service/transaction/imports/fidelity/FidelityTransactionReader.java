@@ -19,7 +19,7 @@ import static java.util.Collections.emptyList;
 @Slf4j
 public class FidelityTransactionReader {
 
-    private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMM yyyy");
+    private final static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMM yyyy");
 
     public List<FidelityTransaction> readTransactions(File file) {
         try {

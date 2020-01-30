@@ -1,4 +1,4 @@
-package com.nordcomet.portfolio.service.priceupdate.imports.parser;
+package com.nordcomet.portfolio.service.priceupdate.parser;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

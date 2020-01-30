@@ -1,4 +1,4 @@
-package com.nordcomet.portfolio.service.priceupdate.imports.parser;
+package com.nordcomet.portfolio.service.priceupdate.parser;
 
 import kong.unirest.Unirest;
 import org.slf4j.Logger;
