@@ -1,16 +1,18 @@
 <template>
     <v-list-item-content>
         <v-list-item-title>{{title}}</v-list-item-title>
-        <v-list-item-subtitle class="green--text darken-1">+{{profit}}</v-list-item-subtitle>
-        <v-list-item-subtitle class="green--text darken-1">+{{percentage}}%</v-list-item-subtitle>
+        <coloured-profit-label :amount=profit></coloured-profit-label>
+        <coloured-profit-label :amount=percentage suffix="%"></coloured-profit-label>
     </v-list-item-content>
 </template>
 
 <script>
     import api from "./backend-api";
+    import ColouredProfitLabel from "./ColouredProfitLabel";
 
     export default {
         name: "ProfitItem",
+        components: {ColouredProfitLabel},
         props: {
             days: String,
             title: String
