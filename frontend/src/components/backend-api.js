@@ -52,6 +52,13 @@ export default {
 
     getSummary() {
         return AXIOS.get('/summary')
+    },
+
+    getSummarySince(days) {
+        return AXIOS.get('/summary/', {
+            params: {'days': days}
+        })
     }
+
 
 }

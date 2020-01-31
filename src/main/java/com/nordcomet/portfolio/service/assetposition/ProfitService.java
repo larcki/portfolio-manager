@@ -83,7 +83,14 @@ public class ProfitService {
     private AssetPosition findLatestAssetPosition(Asset asset, List<AssetPosition> assetPositions) {
         return assetPositions.stream().filter(assetPosition -> asset.getId().equals(assetPosition.getAsset().getId()))
                 .max(comparing(AssetPosition::getTimestamp))
-                .orElseThrow(IllegalAccessError::new);
+                .orElse(zeroAssetPosition());
+    }
+
+    private AssetPosition zeroAssetPosition() {
+        return AssetPosition.builder()
+                .totalPurchaseAmount(BigDecimal.ZERO)
+                .totalValue(BigDecimal.ZERO)
+                .build();
     }
 
 }
