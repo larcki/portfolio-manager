@@ -25,15 +25,18 @@ import static java.math.RoundingMode.HALF_UP;
 @Slf4j
 public class TransactionService {
 
-    @Autowired
-    private TransactionRepo transactionRepo;
+    private final TransactionRepo transactionRepo;
+    private final AssetPositionService assetPositionService;
+    private final AssetRepo assetRepo;
 
     @Autowired
-    private AssetPositionService assetPositionService;
+    public TransactionService(TransactionRepo transactionRepo, AssetPositionService assetPositionService, AssetRepo assetRepo) {
+        this.transactionRepo = transactionRepo;
+        this.assetPositionService = assetPositionService;
+        this.assetRepo = assetRepo;
+    }
 
-    @Autowired
-    private AssetRepo assetRepo;
-
+    @Transactional
     public void save(TransactionSaveRequest dto) {
         log.info("Saving transaction for Asset {} date {}", dto.getAssetId(), dto.getTimestamp());
 

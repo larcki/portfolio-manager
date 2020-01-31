@@ -3,7 +3,6 @@ package com.nordcomet.portfolio.data.assetposition;
 import com.nordcomet.portfolio.common.Currency;
 import com.nordcomet.portfolio.common.Money;
 import com.nordcomet.portfolio.data.asset.Asset;
-import com.nordcomet.portfolio.data.asset.AssetRepo;
 import com.nordcomet.portfolio.data.transaction.Transaction;
 import com.nordcomet.portfolio.service.assetposition.AssetPositionService;
 import org.junit.jupiter.api.Test;
@@ -17,8 +16,7 @@ import static org.mockito.Mockito.verify;
 class AssetPositionServiceTest {
 
     private final AssetPositionRepo assetPositionRepo = mock(AssetPositionRepo.class);
-    private final AssetRepo assetRepo = mock(AssetRepo.class);
-    private final AssetPositionService underTest = new AssetPositionService(assetPositionRepo, assetRepo);
+    private final AssetPositionService underTest = new AssetPositionService(assetPositionRepo);
 
     @Test
     void shouldSaveAssetPosition() {

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController("/api/chart")
+@RestController
 @Slf4j
 public class ChartController {
 
@@ -29,12 +29,12 @@ public class ChartController {
         this.purchaseAmountAndValueChartService = purchaseAmountAndValueChartService;
     }
 
-    @RequestMapping("/pie")
+    @RequestMapping("/api/chart/pie")
     public Object getPieChart() {
         return chartService.getPieChart(ClassificationProvider.defaultClassification());
     }
 
-    @RequestMapping("/line")
+    @RequestMapping("/api/chart/line")
     public Object getLineChart(@RequestParam Integer period,
                                @RequestParam PortfolioChartType chartType) {
 
@@ -52,7 +52,7 @@ public class ChartController {
 
     }
 
-    @RequestMapping("/performance")
+    @RequestMapping("/api/chart/performance")
     public Object getPerformanceLineChart(@RequestParam Integer period,
                                           @RequestParam(required = false) Integer assetId) {
         if (assetId != null) {

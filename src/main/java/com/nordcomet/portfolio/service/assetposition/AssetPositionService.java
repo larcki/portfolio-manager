@@ -3,7 +3,6 @@ package com.nordcomet.portfolio.service.assetposition;
 import com.nordcomet.portfolio.common.Currency;
 import com.nordcomet.portfolio.common.Money;
 import com.nordcomet.portfolio.data.asset.Asset;
-import com.nordcomet.portfolio.data.asset.AssetRepo;
 import com.nordcomet.portfolio.data.assetposition.AssetPosition;
 import com.nordcomet.portfolio.data.assetposition.AssetPositionRepo;
 import com.nordcomet.portfolio.data.transaction.Transaction;
@@ -19,21 +18,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
-import static java.util.Comparator.comparing;
+import static com.nordcomet.portfolio.service.assetposition.AssetPositionFunctions.beforeEndOfDay;
+import static java.util.stream.Collectors.toList;
+
 
 @Service
 @Slf4j
 public class AssetPositionService {
 
     private final AssetPositionRepo assetPositionRepo;
-    private final AssetRepo assetRepo;
 
     @Autowired
-    public AssetPositionService(AssetPositionRepo assetPositionRepo, AssetRepo assetRepo) {
+    public AssetPositionService(AssetPositionRepo assetPositionRepo) {
         this.assetPositionRepo = assetPositionRepo;
-        this.assetRepo = assetRepo;
     }
 
     public AssetPosition createBasedOn(Transaction transaction) {
@@ -61,31 +59,6 @@ public class AssetPositionService {
                 .orElse(BigDecimal.ZERO);
     }
 
-    public PortfolioSummary getPortfolioSummary() {
-        Set<Asset> allAssets = assetRepo.findAll();
-        List<AssetPosition> assetPositions = assetPositionRepo.findAllByAssetIdInOrderByTimestampDesc(allAssets.stream().map(Asset::getId).collect(Collectors.toList()));
-
-        BigDecimal totalValue = allAssets.stream()
-                .map(asset -> findLatestAssetPosition(asset, assetPositions))
-                .map(AssetPosition::getTotalValue)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        BigDecimal totalPurchaseAmount = allAssets.stream()
-                .map(asset -> findLatestAssetPosition(asset, assetPositions))
-                .map(AssetPosition::getTotalPurchaseAmount)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        BigDecimal totalProfit = totalValue.subtract(totalPurchaseAmount);
-        BigDecimal totalProfitPercentage = totalValue.divide(totalPurchaseAmount, 4, RoundingMode.HALF_UP).subtract(BigDecimal.ONE);
-
-        return new PortfolioSummary(
-                display(totalValue),
-                display(totalPurchaseAmount),
-                display(totalProfit),
-                display(totalProfitPercentage.multiply(new BigDecimal("100")))
-        );
-    }
-
     public List<AssetPosition> findAssetPositionsForAssetStartingFrom(Asset asset, LocalDate date) {
         Optional<AssetPosition> firstAssetPosition = assetPositionRepo.findFirstByAssetIdAndTimestampBeforeOrderByTimestampDesc(
                 asset.getId(), date.atStartOfDay()
@@ -97,6 +70,14 @@ public class AssetPositionService {
         firstAssetPosition.ifPresent(assetPositionsToInclude::add);
         assetPositionsToInclude.addAll(assetPositions);
         return assetPositionsToInclude;
+    }
+
+    public List<AssetPosition> findAssetPositionsByDateFor(Set<Asset> allAssets, LocalDateTime localDateTime) {
+        return assetPositionRepo.findAllByAssetIdInOrderByTimestampDesc(allAssets.stream()
+                .map(Asset::getId)
+                .collect(toList())).stream()
+                .filter(beforeEndOfDay(localDateTime))
+                .collect(toList());
     }
 
     private LocalDateTime tenDaysBefore(LocalDate date) {
@@ -114,13 +95,4 @@ public class AssetPositionService {
         return unitPrice.getAmount();
     }
 
-    private AssetPosition findLatestAssetPosition(Asset asset, List<AssetPosition> assetPositions) {
-        return assetPositions.stream().filter(assetPosition -> asset.getId().equals(assetPosition.getAsset().getId()))
-                .max(comparing(AssetPosition::getTimestamp))
-                .orElseThrow(IllegalAccessError::new);
-    }
-
-    private String display(BigDecimal value) {
-        return value.setScale(2, RoundingMode.HALF_UP).toString();
-    }
 }

@@ -1,10 +1,7 @@
 package com.nordcomet.portfolio.data.assetposition;
 
 import com.nordcomet.portfolio.data.asset.Asset;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -15,6 +12,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @EqualsAndHashCode
 @ToString
+@Builder
+@AllArgsConstructor
 public class AssetPosition {
 
     @Id

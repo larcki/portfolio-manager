@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@RestController("/api/transaction")
+@RestController
 public class TransactionController {
 
     private final TransactionService transactionService;
@@ -21,12 +21,12 @@ public class TransactionController {
         this.transactionService = transactionService;
     }
 
-    @PostMapping
+    @PostMapping("/api/transaction")
     public void saveTransaction(@RequestBody TransactionSaveRequest saveRequest) {
         transactionService.save(saveRequest);
     }
 
-    @RequestMapping
+    @RequestMapping("/api/transaction")
     public List<TransactionResponse> getTransactions() {
         return transactionService.getTransactions();
     }
