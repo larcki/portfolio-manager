@@ -22,10 +22,8 @@ deploy:
   region: "eu-west-1"
   app: "portfolio-manager"
   env: "preview"
-  access_key_id:
-    secure: "$AWS_ACCESS_KEY"
-  secret_access_key:
-    secure: "$AWS_SECRET_KEY"
+  access_key_id: "$AWS_ACCESS_KEY"
+  secret_access_key: "$AWS_SECRET_KEY"
   bucket-name: "$BUCKET_NAME"
   on:
     branch: master
