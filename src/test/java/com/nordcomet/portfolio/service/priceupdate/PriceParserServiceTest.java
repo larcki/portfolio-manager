@@ -25,7 +25,6 @@ class PriceParserServiceTest {
         assertParserFor(new ParserOptions(MORNINGSTAR_FUND, "F00000TH8U", "NOK", "EUR"));
         assertParserFor(new ParserOptions(MORNINGSTAR_FUND, "F00000TH8W", "EUR", "EUR"));
         assertParserFor(new ParserOptions(MORNINGSTAR_STOCK, "0P00009VJH", "CAD", "EUR"));
-        assertParserFor(new ParserOptions(MORNINGSTAR_FUND_UK, "F00000OXGD", "GBX", "GBP"));
         assertParserFor(new ParserOptions(MORNINGSTAR_FUND_UK, "F000003VEC", "GBP", "GBP"));
     }
 
