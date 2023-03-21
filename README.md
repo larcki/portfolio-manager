@@ -5,7 +5,7 @@
 Single page application for visualising and tracking financial portfolio performance.
 
 See a dummy portfolio in action:
-http://portfolio-manager-preview.eu-west-1.elasticbeanstalk.com
+http://portfolio-manager-preview.eba-wpv8qkmm.eu-west-1.elasticbeanstalk.com
 
 ### Structure
 ```
